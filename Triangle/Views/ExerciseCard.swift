@@ -8,40 +8,34 @@
 import SwiftUI
 
 
-struct ExerciseCard<Destination: View>: View {
+struct ExerciseCard: View {
     let title: String
-    let imageNames: [String]
-    let destination: Destination
+    let isLocked: Bool
+    let onTap: () -> Void
 
     var body: some View {
-        NavigationLink(destination: destination) {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                Spacer()
-                HStack {
-                    ForEach(imageNames, id: \.self) { imageName in
-                        Image(imageName)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 450, height: 300)
-                            .padding()
-                    }
-                }
-                Spacer()
-                Text("Exercise 1")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                
-                ProgressView(value: 0.5)
-                    .tint(.blue)
+        Button(action: onTap) {
+            VStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(isLocked ? ColorTheme.lightGray : ColorTheme.primary)
+                    .frame(height: 150)
+                    .overlay(
+                        VStack {
+                            if isLocked {
+                                Image(systemName: "lock.fill")
+                                    .font(.title)
+                                    .foregroundColor(.white)
+                            } else {
+                                Text(title)
+                                    .font(.montserratHeadline)
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.center)
+                            }
+                        }
+                    )
             }
-            .padding()
-            .frame(maxWidth: .infinity, minHeight: 500)
-            .background(Color.white)
-            .cornerRadius(10)
-            .shadow(color: .gray.opacity(0.4), radius: 4, x: 2, y: 2)
         }
+        .disabled(isLocked)
+        .padding(.horizontal)
     }
 }

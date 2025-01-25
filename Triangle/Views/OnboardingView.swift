@@ -1,5 +1,7 @@
 import SwiftUI
 
+// TODO: Add the full onboarding process with questions about the user for a tailored experience
+
 struct OnboardingView: View {
     @State private var currentForm: FormType = .none
     
@@ -50,7 +52,6 @@ struct OnboardingView: View {
                                 }) {
                                     Text("Sign in")
                                         .frame(maxWidth: .infinity)
-                                        .padding()
                                         .cornerRadius(10)
                                         .contentShape(Rectangle())
                                 }
@@ -73,7 +74,6 @@ struct OnboardingView: View {
                                 }) {
                                     Text("Create an account")
                                         .frame(maxWidth: .infinity)
-                                        .padding()
                                         .cornerRadius(10)
                                         .contentShape(Rectangle())
                                 }
@@ -128,7 +128,6 @@ struct LoginForm: View {
                             } else {
                                 Text("Sign in")
                                     .frame(maxWidth: .infinity)
-                                    .padding()
                                     .cornerRadius(10)
                                     .contentShape(Rectangle())
                             }

@@ -12,30 +12,12 @@ struct DashboardView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    HStack {
-                        Spacer()
-                        HStack(spacing: 16) {
-                            NavigationLink(destination: DetailView(title: "Profile")) {
-                                Text("Profile")
-                            }
-                            .buttonStyle(NavbarButton())
-                            NavigationLink(destination: DetailView(title: "Settings")) {
-                                Image(systemName: "gearshape.fill")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                
-                            }
-                            .buttonStyle(NavbarButton())
-                        }
-                        .padding(.horizontal, 20)
-                    }
-                    .padding(.top, 20)
-                    
+                    Navbar()
                     VStack(spacing: 40) {
                         ForEach(0..<2, id: \.self) { row in
                             HStack(spacing: 40) {
-                                DashboardCard(title: "Social", imageNames: ["SocialTriangle"], destination: DetailView(title: "Social"), progress: 0.5)
-                                DashboardCard(title: "Focus & Attention", imageNames: ["SocialTriangle"], destination: DetailView(title: "Focus & Attention"), progress: 0.3)
+                                DashboardCard(title: "Social", imageNames: ["SocialTriangle"], destination: ExerciseSelectorView(), progress: 0.5)
+                                DashboardCard(title: "Focus & Attention", imageNames: ["SocialTriangle"], destination: ExerciseSelectorView(), progress: 0.3)
                             }
                             .frame(maxWidth: .infinity)
                         }

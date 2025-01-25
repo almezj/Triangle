@@ -7,40 +7,52 @@
 
 import SwiftUI
 
+// Define a central color theme
+struct ColorTheme {
+    static let primary = Color(hex: 0x4C708A)
+    static let secondary = Color(hex: 0xDAE8F6)
+    static let accent = Color(hex: 0x96B6CF)
+    static let background = Color(hex: 0xB5CFE3)
+    static let text = Color(hex: 0x4C708A)
+    static let lightGray = Color(hex: 0xD9D9D9)
+    static let shadowGray = Color.gray.opacity(0.4)
+}
 
-// TODO: Import Montserrat font and apply to the UI
-// This will make the buttons more readable
-
+// Define Montserrat font styles
+// TODO: Find a way to import variable fonts as this is not working
+extension Font {
+    static let montserratHeadline = Font.custom("Montserrat-Bold", size: 18)
+    static let montserratTitle = Font.custom("Montserrat-Bold", size: 24)
+    static let montserratBody = Font.custom("Montserrat-Regular", size: 16)
+}
 
 struct NavbarButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .frame(height: 20)
             .padding()
-            .foregroundColor(Color(hex: 0x4C708A))
-            .font(.headline)
+            .foregroundColor(ColorTheme.text)
+            .font(.title2)
             .fontWeight(.black)
-            .background(Color(hex: 0xD9D9D9))
-            .foregroundStyle(.white)
+            .background(ColorTheme.lightGray)
             .cornerRadius(60)
-            .shadow(color: .gray.opacity(0.4), radius: 4, x: 2, y: 2)
+            .shadow(color: ColorTheme.shadowGray, radius: 4, x: 2, y: 2)
     }
 }
 
 struct TrianglePrimaryButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(minWidth: 50, minHeight: 20, idealHeight: 20, maxHeight: 20)
+            .frame(minWidth: 50, minHeight: 20)
             .padding(.vertical, 15)
-            .foregroundColor(Color(hex: 0xDAE8F6))
+            .foregroundColor(ColorTheme.secondary)
             .font(.title2)
             .fontWeight(.black)
-            .background(Color(hex: 0x4C708A))
-            .foregroundStyle(.white)
+            .background(ColorTheme.primary)
             .cornerRadius(60)
             .overlay(
                 RoundedRectangle(cornerRadius: 60)
-                    .stroke(Color(hex: 0x4C708A), lineWidth: 3) // Optional border
+                    .stroke(ColorTheme.primary, lineWidth: 3)
             )
     }
 }
@@ -50,15 +62,14 @@ struct TriangleSecondaryButton: ButtonStyle {
         configuration.label
             .frame(height: 20)
             .padding(.vertical, 15)
-            .foregroundColor(Color(hex: 0x4C708A))
+            .foregroundColor(ColorTheme.primary)
             .font(.title2)
             .fontWeight(.black)
-            .background(Color(hex: 0xDAE8F6))
-            .foregroundStyle(.white)
+            .background(ColorTheme.secondary)
             .cornerRadius(60)
             .overlay(
                 RoundedRectangle(cornerRadius: 60)
-                    .stroke(Color(hex: 0xDAE8F6), lineWidth: 3) // Optional border
+                    .stroke(ColorTheme.secondary, lineWidth: 3)
             )
     }
 }
@@ -68,18 +79,17 @@ struct TriangleTextFieldStyle: TextFieldStyle {
         configuration
             .frame(height: 20)
             .padding(.vertical, 15)
-            .background(Color(hex: 0xD9D9D9, opacity: 0.1))
+            .background(ColorTheme.lightGray.opacity(0.1))
             .cornerRadius(60)
             .font(.title2)
             .fontWeight(.black)
-            .foregroundColor(Color(hex: 0x4C708A)) // Text color
+            .foregroundColor(ColorTheme.text)
             .overlay(
                 RoundedRectangle(cornerRadius: 60)
-                    .stroke(Color(hex: 0x4C708A), lineWidth: 3) // Optional border
+                    .stroke(ColorTheme.text, lineWidth: 3)
             )
             .multilineTextAlignment(.center)
             .autocapitalization(.none)
             .autocorrectionDisabled(true)
     }
 }
-
