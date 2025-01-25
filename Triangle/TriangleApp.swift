@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct TriangleApp: App {
+    
     var body: some Scene {
         WindowGroup {
             OnboardingView()
