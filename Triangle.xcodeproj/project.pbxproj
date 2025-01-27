@@ -54,6 +54,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		CEED2E302D478CC90023D099 /* Cloudkituser */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Cloudkituser;
+			sourceTree = "<group>";
+		};
 		D0A3ED5D2D270C1000123268 /* Triangle */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -106,6 +111,7 @@
 				D0A3ED6E2D270C1100123268 /* TriangleTests */,
 				D0A3ED782D270C1100123268 /* TriangleUITests */,
 				D0A3ED5C2D270C1000123268 /* Products */,
+				CEED2E302D478CC90023D099 /* Cloudkituser */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,6 +142,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				CEED2E302D478CC90023D099 /* Cloudkituser */,
 				D0A3ED5D2D270C1000123268 /* Triangle */,
 			);
 			name = Triangle;
@@ -421,9 +428,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Triangle/Triangle.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Triangle/Preview Content\"";
+				DEVELOPMENT_TEAM = 6CMPT693F2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Triangle/Info.plist;
@@ -454,9 +463,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Triangle/Triangle.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Triangle/Preview Content\"";
+				DEVELOPMENT_TEAM = 6CMPT693F2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Triangle/Info.plist;
