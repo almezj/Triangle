@@ -4,31 +4,36 @@
 //
 //  Created by Josef Zemlicka on 18.01.2025.
 //
+//  Edited By Ciaran Mullen on 30.01.2025.
 
-
-import Foundation
+import SwiftUI
 
 class RegisterViewViewModel: ObservableObject {
-    @Published var username: String = ""
-    @Published var email: String = ""
-    @Published var password: String = ""
-    @Published var confirmPassword: String = ""
-    @Published var errorMessage: String? = nil
-    @Published var isLoading: Bool = false
-    @Published var navigateToDashboard: Bool = false
-    
-    
-    // Empty constructor, idk what to do with it now but we might find some use for it later
-    init() {}
-    
-    // Hardcoded register for now
-    // TODO: Server validation + create new user
+    @Published var username = ""
+    @Published var email = ""
+    @Published var password = ""
+    @Published var confirmPassword = ""
+    @Published var errorMessage: String?
+    @Published var isLoading = false
+
     func register() {
-        self.isLoading = true
-        self.errorMessage = nil
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.isLoading = false
-            self.errorMessage = "Can't register user at this time. Please try again later."
+        guard !username.isEmpty, !email.isEmpty, !password.isEmpty, password == confirmPassword else {
+            errorMessage = "⚠️ Please fill all fields correctly."
+            return
+        }
+
+        isLoading = true
+        errorMessage = nil
+
+        CloudKitManager.shared.saveUser(username: username, email: email) { success, error in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                if success {
+                    print("✅ Registration successful!")
+                } else {
+                    self.errorMessage = "❌ Registration failed: \(error?.localizedDescription ?? "Unknown error")"
+                }
+            }
         }
     }
 }

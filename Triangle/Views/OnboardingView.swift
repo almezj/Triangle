@@ -11,15 +11,13 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack {
-            
             Color(hex: 0xB5CFE3)
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
-                // Back button
                 HStack(spacing: 0) {
-                    if( currentForm != .none){
-                        Button(action:{ self.currentForm = .none} ) {
+                    if currentForm != .none {
+                        Button(action: { self.currentForm = .none }) {
                             Image(systemName: "chevron.left")
                                 .resizable()
                                 .frame(width: 30, height: 30)
@@ -29,23 +27,21 @@ struct OnboardingView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 25)
+                
                 Spacer()
                 Image("VLogo")
                     .resizable()
                     .frame(width: 250, height: 250)
                 Spacer()
+                
                 VStack(spacing: 16) {
                     if currentForm == .login {
                         LoginForm()
                     } else if currentForm == .register {
                         RegisterForm()
                     } else {
-                        // View where the user chooses between Sign in or Register -> Might change later idk
-                        // We might need to add Sign up using Google, Apple, etc..
-                        // That is for later though
-                        // TODO: Sign up options
                         VStack(spacing: 30) {
-                            HStack(spacing : 300){
+                            HStack(spacing: 300) {
                                 Spacer()
                                 Button(action: {
                                     withAnimation { currentForm = .login }
@@ -59,15 +55,13 @@ struct OnboardingView: View {
                                 Spacer()
                             }
                             
-                            // START DIVIDER
                             VStack {
                                 LabelledDivider(label: "or", horizontalPadding: 20, color: Color.white)
                                     .frame(height: 1)
                             }
                             .padding(.horizontal, 400)
-                            // END DIVIDER
                             
-                            HStack(spacing : 300){
+                            HStack(spacing: 300) {
                                 Spacer()
                                 Button(action: {
                                     withAnimation { currentForm = .register }
@@ -92,123 +86,84 @@ struct OnboardingView: View {
 
 struct LoginForm: View {
     @StateObject var viewModel = LoginViewViewModel()
-    
+
     var body: some View {
-        ZStack {
-            VStack(spacing: 16) {
-                if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage)
-                            .font(.body)
-                            .foregroundColor(.red)
-                            .padding()
-                            .background(Color.white.opacity(0.3))
-                            .cornerRadius(60)
-                            .frame(maxWidth: .infinity)
-                            .transition(.opacity)
-                }
-                HStack(spacing:300) {
-                    Spacer()
-                    TextField("Username", text: $viewModel.username)
-                        .textFieldStyle(TriangleTextFieldStyle())
-                    Spacer()
-                }
-                HStack(spacing:300) {
-                    Spacer()
-                    SecureField("Password", text: $viewModel.password)
-                        .textFieldStyle(TriangleTextFieldStyle())
-                    Spacer()
-                }
-                HStack(spacing: 300) {
-                    Spacer()
-                    Button(action: viewModel.login) {
-                        ZStack {
-                            if viewModel.isLoading {
-                                ProgressView()
-                                    .scaleEffect(1.5)
-                            } else {
-                                Text("Sign in")
-                                    .frame(maxWidth: .infinity)
-                                    .cornerRadius(10)
-                                    .contentShape(Rectangle())
-                            }
-                        }
-                    }
-                    .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
-                    .buttonStyle(TrianglePrimaryButton())
-                    .disabled(viewModel.isLoading)
-                    Spacer()
+        VStack(spacing: 16) {
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .font(.body)
+                    .foregroundColor(.red)
+                    .padding()
+                    .background(Color.white.opacity(0.3))
+                    .cornerRadius(60)
+                    .frame(maxWidth: .infinity)
+                    .transition(.opacity)
+            }
+            
+            TextField("Username", text: $viewModel.username)
+                .textFieldStyle(TriangleTextFieldStyle())
+                
+            SecureField("Password", text: $viewModel.password)
+                .textFieldStyle(TriangleTextFieldStyle())
+                
+            Button(action: viewModel.login) {
+                if viewModel.isLoading {
+                    ProgressView()
+                } else {
+                    Text("Sign in")
+                        .frame(maxWidth: .infinity)
+                        .cornerRadius(10)
+                        .contentShape(Rectangle())
                 }
             }
-            .padding()
+            .buttonStyle(TrianglePrimaryButton())
+            .disabled(viewModel.isLoading || !viewModel.isiCloudAvailable)
         }
-        .animation(.easeInOut, value: viewModel.errorMessage)
+        .padding()
     }
 }
 
-
-// Register Form
 struct RegisterForm: View {
     @StateObject var viewModel = RegisterViewViewModel()
     
     var body: some View {
         VStack(spacing: 16) {
             if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage)
-                        .font(.body)
-                        .foregroundColor(.red)
-                        .padding()
-                        .background(Color.white.opacity(0.3))
-                        .cornerRadius(60)
+                Text(errorMessage)
+                    .font(.body)
+                    .foregroundColor(.red)
+                    .padding()
+                    .background(Color.white.opacity(0.3))
+                    .cornerRadius(60)
+                    .frame(maxWidth: .infinity)
+                    .transition(.opacity)
+            }
+            
+            TextField("Username", text: $viewModel.username)
+                .textFieldStyle(TriangleTextFieldStyle())
+                
+            TextField("Email", text: $viewModel.email)
+                .textFieldStyle(TriangleTextFieldStyle())
+                
+            SecureField("Password", text: $viewModel.password)
+                .textFieldStyle(TriangleTextFieldStyle())
+                
+            SecureField("Confirm Password", text: $viewModel.confirmPassword)
+                .textFieldStyle(TriangleTextFieldStyle())
+                
+            Button(action: viewModel.register) {
+                if viewModel.isLoading {
+                    ProgressView()
+                } else {
+                    Text("Create Account")
                         .frame(maxWidth: .infinity)
-                        .transition(.opacity)
-            }
-            HStack(spacing:300){
-                Spacer()
-                TextField("Username", text: $viewModel.username)
-                    .textFieldStyle(TriangleTextFieldStyle())
-                Spacer()
-            }
-            
-            HStack(spacing:300){
-                Spacer()
-                TextField("Email", text: $viewModel.email)
-                    .textFieldStyle(TriangleTextFieldStyle())
-                Spacer()
-            }
-            
-            HStack(spacing:300){
-                Spacer()
-                SecureField("Password", text: $viewModel.password)
-                    .textFieldStyle(TriangleTextFieldStyle())
-                Spacer()
-            }
-            
-            HStack(spacing:300){
-                Spacer()
-                SecureField("Confirm Password", text: $viewModel.confirmPassword)
-                    .textFieldStyle(TriangleTextFieldStyle())
-                Spacer()
-            }
-            HStack(spacing:300){
-                Spacer()
-                Button(action: viewModel.register) {
-                    ZStack {
-                        if viewModel.isLoading {
-                            ProgressView()
-                        } else {
-                            Text("Create Account")
-                                .frame(maxWidth: .infinity)
-                                .cornerRadius(10)
-                                .contentShape(Rectangle())
-                        }
-                    }
+                        .cornerRadius(10)
+                        .contentShape(Rectangle())
                 }
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
-                .buttonStyle(TrianglePrimaryButton())
-                .disabled(viewModel.isLoading)
-                Spacer()
             }
-            
+            .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
+            .buttonStyle(TrianglePrimaryButton())
+            .disabled(viewModel.isLoading)
         }
         .padding()
     }
@@ -224,7 +179,6 @@ struct OnboardingView_Previews: PreviewProvider {
 }
 
 struct LabelledDivider: View {
-    
     let label: String
     let horizontalPadding: CGFloat
     let color: Color

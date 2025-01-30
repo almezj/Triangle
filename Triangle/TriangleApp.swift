@@ -20,7 +20,5 @@ struct TriangleApp: App {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView()
-            .previewInterfaceOrientation(.landscapeLeft)
-            .previewDevice("iPad Pro 11-inch")
     }
 }

@@ -4,33 +4,41 @@
 //
 //  Created by Josef Zemlicka on 18.01.2025.
 //
-
-import Foundation
+//  Edited by Ciaran Mullen on 30.01.2025
+import SwiftUI
+import CloudKit
 
 class LoginViewViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
-    @Published var errorMessage: String? = nil
+    @Published var isiCloudAvailable: Bool = false
     @Published var isLoading: Bool = false
-    @Published var navigateToDashboard = false
-    
-    
-    // Empty constructor, idk what to do with it now but we might find some use for it later
-    init() {}
-    
-    // Hardcoded login for now
-    // TODO: Server validation
-    // TODO: Navigate to dashboard after succesfull login
+    @Published var errorMessage: String?
+
+    private let cloudKitManager = CloudKitManager.shared
+
+    init() {
+        checkiCloudAvailability()
+    }
+
+    func checkiCloudAvailability() {
+        cloudKitManager.checkiCloudStatus { [weak self] available in
+            DispatchQueue.main.async {
+                self?.isiCloudAvailable = available
+            }
+        }
+    }
+
     func login() {
-        self.isLoading = true
-        self.errorMessage = nil
+        guard !username.isEmpty, !password.isEmpty else {
+            errorMessage = "Username and password cannot be empty."
+            return
+        }
+        isLoading = true
+        // Perform login logic here...
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.isLoading = false
-            if self.username == "user" && self.password == "password" {
-                self.navigateToDashboard = true
-            } else {
-                self.errorMessage = "Invalid username or password"
-            }
+            self.errorMessage = nil // Clear error after successful login
         }
     }
 }
