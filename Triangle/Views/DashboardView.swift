@@ -18,24 +18,24 @@ struct DashboardView: View {
                         Grid(horizontalSpacing: 40, verticalSpacing: 40) {
                             GridRow {
                                 DashboardCard(
-                                    title: "Social",
+                                    title: "Getting Started",
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
                                         exerciseId: 1, currentLevelIndex: 1),
-                                    progress: 0.5,
+                                    progress: 0,
                                     currentExercise: 1,
                                     locked: false)
                                 DashboardCard(
-                                    title: "Emotion Recognition",
+                                    title: "A Day in the Park",
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
                                         exerciseId: 2, currentLevelIndex: 3),
                                     progress: 0.3, currentExercise: 3,
-                                    locked: false)
+                                    locked: true)
                             }
                             GridRow {
                                 DashboardCard(
-                                    title: "Body Language",
+                                    title: "School Sports Day",
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
                                         exerciseId: 3, currentLevelIndex: 1),
