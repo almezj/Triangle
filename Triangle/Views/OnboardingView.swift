@@ -1,94 +1,139 @@
 import SwiftUI
 
-// TODO: Add the full onboarding process with questions about the user for a tailored experience
-
 struct OnboardingView: View {
     @State private var currentForm: FormType = .none
-    
+    @StateObject var loginViewModel = LoginViewViewModel()
+
     enum FormType {
         case none, login, register
     }
-    
+
     var body: some View {
-        ZStack {
-            
-            Color(hex: 0xB5CFE3)
-                .edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 0) {
-                // Back button
-                HStack(spacing: 0) {
-                    if( currentForm != .none){
-                        Button(action:{ self.currentForm = .none} ) {
-                            Image(systemName: "chevron.left")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .foregroundStyle(Color(hex: 0x4C708A))
+        NavigationStack {
+            ZStack {
+                Color(hex: 0xB5CFE3)
+                    .edgesIgnoringSafeArea(.all)
+
+                VStack(spacing: 0) {
+                    HStack(spacing: 0) {
+                        if currentForm != .none {
+                            Button(action: { self.currentForm = .none }) {
+                                Image(systemName: "chevron.left")
+                                    .resizable()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundStyle(Color(hex: 0x4C708A))
+                            }
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, 25)
+
+                    Spacer()
+
+                    Image("VLogo")
+                        .resizable()
+                        .frame(width: 250, height: 250)
+
+                    Spacer()
+
+                    VStack(spacing: 16) {
+                        if currentForm == .login {
+                            VStack {
+                                HStack(spacing:300) {
+                                    Spacer()
+                                    TextField("Username", text: $loginViewModel.username)
+                                        .textFieldStyle(TriangleTextFieldStyle())
+                                    Spacer()
+                                }
+                                HStack(spacing:300) {
+                                    Spacer()
+                                    SecureField("Password", text: $loginViewModel.password)
+                                        .textFieldStyle(TriangleTextFieldStyle())
+                                    Spacer()
+                                }
+                                
+                                if let errorMessage = loginViewModel.errorMessage {
+                                    Text(errorMessage)
+                                        .foregroundColor(.red)
+                                        .padding()
+                                        .background(Color.white.opacity(0.3))
+                                        .cornerRadius(60)
+                                        .transition(.opacity)
+                                }
+                                HStack(spacing: 300) {
+                                    Spacer()
+                                    Button(action: loginViewModel.login) {
+                                        ZStack {
+                                            if loginViewModel.isLoading {
+                                                ProgressView()
+                                                    .scaleEffect(1.5)
+                                            } else {
+                                                Text("Sign in")
+                                                    .frame(maxWidth: .infinity)
+                                                    .cornerRadius(10)
+                                                    .contentShape(Rectangle())
+                                            }
+                                        }
+                                    }
+                                    .animation(.easeInOut(duration: 0.3), value: loginViewModel.isLoading)
+                                    .buttonStyle(TrianglePrimaryButton())
+                                    .disabled(loginViewModel.isLoading)
+                                    Spacer()
+                                }
+                            }
+
+                            // ✅ Navigation when login is successful
+                            .navigationDestination(isPresented: $loginViewModel.navigateToDashboard) {
+                                DashboardView()
+                            }
+                        } else if currentForm == .register {
+                            RegisterForm()
+                        } else {
+                            VStack(spacing: 30) {
+                                HStack(spacing: 300) {
+                                    Spacer()
+                                    Button(action: {
+                                        withAnimation { currentForm = .login }
+                                    }) {
+                                        Text("Sign in")
+                                            .frame(maxWidth: .infinity)
+                                            .cornerRadius(10)
+                                            .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(TrianglePrimaryButton())
+                                    Spacer()
+                                }
+
+                                VStack {
+                                    LabelledDivider(label: "or", horizontalPadding: 20, color: Color.white)
+                                        .frame(height: 1)
+                                }
+                                .padding(.horizontal, 400)
+
+                                HStack(spacing: 300) {
+                                    Spacer()
+                                    Button(action: {
+                                        withAnimation { currentForm = .register }
+                                    }) {
+                                        Text("Create an account")
+                                            .frame(maxWidth: .infinity)
+                                            .cornerRadius(10)
+                                            .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(TriangleSecondaryButton())
+                                    Spacer()
+                                }
+                            }
                         }
                     }
                     Spacer()
                 }
-                .padding(.horizontal, 25)
-                Spacer()
-                Image("VLogo")
-                    .resizable()
-                    .frame(width: 250, height: 250)
-                Spacer()
-                VStack(spacing: 16) {
-                    if currentForm == .login {
-                        LoginForm()
-                    } else if currentForm == .register {
-                        RegisterForm()
-                    } else {
-                        // View where the user chooses between Sign in or Register -> Might change later idk
-                        // We might need to add Sign up using Google, Apple, etc..
-                        // That is for later though
-                        // TODO: Sign up options
-                        VStack(spacing: 30) {
-                            HStack(spacing : 300){
-                                Spacer()
-                                Button(action: {
-                                    withAnimation { currentForm = .login }
-                                }) {
-                                    Text("Sign in")
-                                        .frame(maxWidth: .infinity)
-                                        .cornerRadius(10)
-                                        .contentShape(Rectangle())
-                                }
-                                .buttonStyle(TrianglePrimaryButton())
-                                Spacer()
-                            }
-                            
-                            // START DIVIDER
-                            VStack {
-                                LabelledDivider(label: "or", horizontalPadding: 20, color: Color.white)
-                                    .frame(height: 1)
-                            }
-                            .padding(.horizontal, 400)
-                            // END DIVIDER
-                            
-                            HStack(spacing : 300){
-                                Spacer()
-                                Button(action: {
-                                    withAnimation { currentForm = .register }
-                                }) {
-                                    Text("Create an account")
-                                        .frame(maxWidth: .infinity)
-                                        .cornerRadius(10)
-                                        .contentShape(Rectangle())
-                                }
-                                .buttonStyle(TriangleSecondaryButton())
-                                Spacer()
-                            }
-                        }
-                    }
-                }
-                Spacer()
+                .animation(.easeInOut, value: currentForm)
             }
-            .animation(.easeInOut, value: currentForm)
         }
     }
 }
+
 
 struct LoginForm: View {
     @StateObject var viewModel = LoginViewViewModel()
@@ -97,14 +142,14 @@ struct LoginForm: View {
         ZStack {
             VStack(spacing: 16) {
                 if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage)
-                            .font(.body)
-                            .foregroundColor(.red)
-                            .padding()
-                            .background(Color.white.opacity(0.3))
-                            .cornerRadius(60)
-                            .frame(maxWidth: .infinity)
-                            .transition(.opacity)
+                    Text(errorMessage)
+                        .font(.body)
+                        .foregroundColor(.red)
+                        .padding()
+                        .background(Color.white.opacity(0.3))
+                        .cornerRadius(60)
+                        .frame(maxWidth: .infinity)
+                        .transition(.opacity)
                 }
                 HStack(spacing:300) {
                     Spacer()
@@ -141,7 +186,6 @@ struct LoginForm: View {
             }
             .padding()
         }
-        .animation(.easeInOut, value: viewModel.errorMessage)
     }
 }
 
