@@ -30,7 +30,7 @@ struct DashboardView: View {
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
                                         exerciseId: 2, currentLevelIndex: 3),
-                                    progress: 0.3, currentExercise: 3,
+                                    progress: 0.3, currentExercise: 1,
                                     locked: true)
                             }
                             GridRow {
