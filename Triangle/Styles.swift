@@ -9,7 +9,9 @@ import SwiftUI
 
 // Define a central color theme
 struct ColorTheme {
-    static let primary = Color(hex: 0x4C708A)
+
+    static let primary = Color(hex: 0x7297B1)
+    static let darker = Color(hex: 0x1D272F)
     static let secondary = Color(hex: 0xDAE8F6)
     static let accent = Color(hex: 0x96B6CF)
     static let background = Color(hex: 0xB5CFE3)
