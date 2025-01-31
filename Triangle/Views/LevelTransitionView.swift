@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RiveRuntime
 
 struct LevelTransitionView: View {
     @State private var navigateToLogin = false
