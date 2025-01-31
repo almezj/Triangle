@@ -21,28 +21,33 @@ struct DashboardView: View {
                                     title: "Social",
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
-                                        exerciseId: 1, currentLevelIndex: 3),
-                                    progress: 0.5)
+                                        exerciseId: 1, currentLevelIndex: 1),
+                                    progress: 0.5,
+                                    currentExercise: 1,
+                                    locked: false)
                                 DashboardCard(
-                                    title: "Focus & Attention",
+                                    title: "Emotion Recognition",
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
                                         exerciseId: 2, currentLevelIndex: 3),
-                                    progress: 0.3)
+                                    progress: 0.3, currentExercise: 3,
+                                    locked: false)
                             }
                             GridRow {
                                 DashboardCard(
-                                    title: "Social",
+                                    title: "Body Language",
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
-                                        exerciseId: 3, currentLevelIndex: 3),
-                                    progress: 0.5)
+                                        exerciseId: 3, currentLevelIndex: 1),
+                                    progress: 0, currentExercise: 1,
+                                    locked: true)
                                 DashboardCard(
-                                    title: "Focus & Attention",
+                                    title: "Coming soon...",
                                     imageNames: ["SocialTriangle"],
                                     destination: HexagonView(
-                                        exerciseId: 4, currentLevelIndex: 3),
-                                    progress: 0.3)
+                                        exerciseId: 4, currentLevelIndex: 1),
+                                    progress: 0, currentExercise: 1,
+                                    locked: true)
                             }
                         }
                         .frame(maxWidth: .infinity)
