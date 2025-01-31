@@ -16,6 +16,7 @@ struct ColorTheme {
     static let text = Color(hex: 0x4C708A)
     static let lightGray = Color(hex: 0xD9D9D9)
     static let shadowGray = Color.gray.opacity(0.4)
+    static let green = Color(hex: 0x72B1A0)
 }
 
 // Define Montserrat font styles
