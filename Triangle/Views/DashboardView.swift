@@ -20,8 +20,7 @@ struct DashboardView: View {
                                 DashboardCard(
                                     title: "Getting Started",
                                     imageNames: ["SocialTriangle"],
-                                    destination: HexagonView(
-                                        exerciseId: 1, currentLevelIndex: 1),
+                                    destination: LevelTransitionView(),
                                     progress: 0,
                                     currentExercise: 1,
                                     locked: false)
