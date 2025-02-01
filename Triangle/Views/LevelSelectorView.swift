@@ -13,6 +13,8 @@ struct LevelSelectorView: View {
     @Binding var selectedLevelId: Int?
     @State private var hexagons: [Hexagon] = []
     @State private var currentLevelIndex: Int
+    @State private var navigateToExercise = false
+    @State private var selectedExerciseId: Int?
 
     init(
         totalTriangles: Int, currentLevelIndex: Int,
@@ -41,7 +43,13 @@ struct LevelSelectorView: View {
                                 offsetY: -CGFloat(hexIndex) * (size * 2.4),
                                 currentLevelIndex: $currentLevelIndex,
                                 onLevelSelect: { levelId in
-                                    selectedLevelId = levelId
+                                    // ✅ Only allow selection if it's the blue current level
+                                    if levelId == currentLevelIndex {
+                                        selectedExerciseId = levelId
+                                        navigateToExercise = true
+                                    } else {
+                                        print("❌ Cannot access level \(levelId). Only level \(currentLevelIndex) is playable.")
+                                    }
                                 },
                                 isClockwise: hexIndex.isMultiple(of: 2)
                             )
@@ -61,6 +69,25 @@ struct LevelSelectorView: View {
         }
         .background(Color(ColorTheme.background))
         .ignoresSafeArea()
+        .navigationDestination(isPresented: $navigateToExercise) {
+            if let exerciseId = selectedExerciseId {
+                ExerciseView(exerciseId: exerciseId, onComplete: {
+                    unlockNextLevel()
+                })
+            }
+        }
+    }
+
+    // ✅ Unlocks the next level ONLY if the current level is completed
+    func unlockNextLevel() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            if currentLevelIndex < totalTriangles {
+                print("✅ Unlocking Level \(currentLevelIndex + 1)")
+                currentLevelIndex += 1
+            } else {
+                print("✅ All levels completed!")
+            }
+        }
     }
 }
 
@@ -169,8 +196,14 @@ struct HexagonShape: View {
 
                 
                 Button(action: {
-                    print("Triangle button tapped! " + globalIndex.description)
-                    tapEvent()
+                    if globalIndex == currentLevelIndex {  // ✅ Only blue levels are playable
+                        print("✅ Level \(globalIndex) selected")
+                        onLevelSelect(globalIndex)
+                    } else if globalIndex < currentLevelIndex {
+                        print("❌ Level \(globalIndex) is already completed and locked.")
+                    } else {
+                        print("❌ Level \(globalIndex) is locked.")
+                    }
                 }) {
                     TriangleShape()
                         .fill(triangleColor)
@@ -179,9 +212,7 @@ struct HexagonShape: View {
                         .rotationEffect(rotations[triIndex])
                         .overlay(
                             Text("\(globalIndex)")
-                                .font(
-                                    .system(size: size * 0.3, weight: .bold)
-                                )
+                                .font(.system(size: size * 0.3, weight: .bold))
                                 .foregroundColor(Color.white)
                         )
                 }
