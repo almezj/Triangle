@@ -13,6 +13,8 @@ struct LevelSelectorView: View {
     @Binding var selectedLevelId: Int?
     @State private var hexagons: [Hexagon] = []
     @State private var currentLevelIndex: Int
+    @State private var navigateToExercise = false
+    @State private var selectedExerciseId: Int?
 
     init(
         totalTriangles: Int, currentLevelIndex: Int,
@@ -41,7 +43,8 @@ struct LevelSelectorView: View {
                                 offsetY: -CGFloat(hexIndex) * (size * 2.4),
                                 currentLevelIndex: $currentLevelIndex,
                                 onLevelSelect: { levelId in
-                                    selectedLevelId = levelId
+                                    selectedExerciseId = levelId
+                                    navigateToExercise = true
                                 },
                                 isClockwise: hexIndex.isMultiple(of: 2)
                             )
@@ -61,8 +64,24 @@ struct LevelSelectorView: View {
         }
         .background(Color(ColorTheme.background))
         .ignoresSafeArea()
+        .navigationDestination(isPresented: $navigateToExercise) {
+            if let exerciseId = selectedExerciseId {
+                ExerciseView(exerciseId: exerciseId, onComplete: {
+                    unlockNextLevel()
+                })
+            }
+        }
+    }
+
+    // ✅ Unlock the next level after completing an exercise
+    func unlockNextLevel() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            currentLevelIndex += 1
+            print("✅ Level \(currentLevelIndex) unlocked")
+        }
     }
 }
+
 
 // MARK: - Main HexagonView
 struct HexagonView: View {
@@ -169,8 +188,10 @@ struct HexagonShape: View {
 
                 
                 Button(action: {
-                    print("Triangle button tapped! " + globalIndex.description)
-                    tapEvent()
+                    if globalIndex <= currentLevelIndex {  // ✅ Allow only unlocked levels
+                        print("✅ Level \(globalIndex) selected")
+                        onLevelSelect(globalIndex)
+                    }
                 }) {
                     TriangleShape()
                         .fill(triangleColor)
@@ -179,9 +200,7 @@ struct HexagonShape: View {
                         .rotationEffect(rotations[triIndex])
                         .overlay(
                             Text("\(globalIndex)")
-                                .font(
-                                    .system(size: size * 0.3, weight: .bold)
-                                )
+                                .font(.system(size: size * 0.3, weight: .bold))
                                 .foregroundColor(Color.white)
                         )
                 }
