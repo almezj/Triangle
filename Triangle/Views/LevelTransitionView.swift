@@ -10,7 +10,7 @@ import RiveRuntime
 
 struct LevelTransitionView: View {
     @State private var navigateToLevelSelector = false
-    @State private var riveViewModel = RiveViewModel(fileName: "ch_t") // ✅ Load mascot animation
+    @State private var riveViewModel = RiveViewModel(fileName: "ch_t", animationName: "Timeline 1") // ✅ Load mascot animation
     
     // ✅ Provide realistic values for navigation
     let totalTriangles: Int
