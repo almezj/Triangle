@@ -36,6 +36,8 @@ class LoginViewViewModel: ObservableObject {
         }
         isLoading = true
         // Perform login logic here...
+        print("login please")
+        ExerciseSelectorView()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.isLoading = false
             self.errorMessage = nil // Clear error after successful login
