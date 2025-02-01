@@ -12,41 +12,64 @@ class CloudKitManager {
     private let container = CKContainer.default()
     private let privateDatabase = CKContainer.default().privateCloudDatabase
 
-    /// Check if iCloud is available
     func checkiCloudStatus(completion: @escaping (Bool) -> Void) {
         container.accountStatus { status, error in
             DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Error checking iCloud status: \(error.localizedDescription)")
+                    completion(false)
+                    return
+                }
+
                 switch status {
                 case .available:
                     print("✅ iCloud Available")
                     completion(true)
                 case .noAccount:
-                    print("⚠️ No iCloud Account")
+                    print("⚠️ No iCloud Account - Please sign in to iCloud.")
                     completion(false)
                 case .restricted:
-                    print("⛔ iCloud Restricted")
+                    print("⛔ iCloud is Restricted - Check parental controls or MDM settings.")
                     completion(false)
                 case .couldNotDetermine:
-                    print("❓ iCloud Status Unknown")
+                    print("❓ iCloud Status Unknown - Try again later.")
                     completion(false)
-                @unknown default:
+                case .temporarilyUnavailable:
+                    print("❓ iCloud Status Unknown - Try again later.")
+                    completion(false)
+                @unknown default: // ✅ Required for Swift 6
+                    print("🚨 Unknown iCloud status - Future case.")
                     completion(false)
                 }
             }
         }
     }
 
+
+
     /// Fetch an existing user from CloudKit (for login verification)
     func fetchUser(username: String, completion: @escaping (Bool, CKRecord?, Error?) -> Void) {
         let predicate = NSPredicate(format: "username == %@", username)
         let query = CKQuery(recordType: "TriangleUsers", predicate: predicate)
 
-        self.privateDatabase.perform(query, inZoneWith: nil) { records, error in
+        let queryOperation = CKQueryOperation(query: query)
+        queryOperation.resultsLimit = 1 // ✅ Limits to 1 record (best practice for login)
+        
+        var fetchedRecord: CKRecord?
+
+        queryOperation.recordMatchedBlock = { recordID, result in
+            switch result {
+            case .success(let record):
+                fetchedRecord = record
+            case .failure(let error):
+                print("⚠️ Error fetching user: \(error.localizedDescription)")
+                completion(false, nil, error)
+            }
+        }
+
+        queryOperation.queryResultBlock = { result in
             DispatchQueue.main.async {
-                if let error = error {
-                    print("⚠️ Error fetching user: \(error.localizedDescription)")
-                    completion(false, nil, error)
-                } else if let record = records?.first {
+                if let record = fetchedRecord {
                     print("✅ User found: \(record["username"] ?? "Unknown")")
                     completion(true, record, nil)
                 } else {
@@ -55,6 +78,8 @@ class CloudKitManager {
                 }
             }
         }
+
+        privateDatabase.add(queryOperation) // ✅ Use CKQueryOperation instead of deprecated method
     }
 
     /// Save a new user to CloudKit (Prevents duplicate usernames)
