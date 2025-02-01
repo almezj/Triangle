@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE4FAC252D4B96350031E72A /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FAC242D4B96350031E72A /* CloudKitManager.swift */; };
+		CE4FAC262D4B96350031E72A /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FAC242D4B96350031E72A /* CloudKitManager.swift */; };
 		D0D654DB2D4D4F15006773DB /* RiveRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = D0D654DA2D4D4F15006773DB /* RiveRuntime */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CE4FAC242D4B96350031E72A /* CloudKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		D0A3ED5B2D270C1000123268 /* Triangle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Triangle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0A3ED6B2D270C1100123268 /* TriangleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TriangleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0A3ED752D270C1100123268 /* TriangleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TriangleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,11 +61,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		CEED2E302D478CC90023D099 /* Cloudkituser */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Cloudkituser;
-			sourceTree = "<group>";
-		};
 		D0A3ED5D2D270C1000123268 /* Triangle */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -109,6 +107,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE4FAC222D4B95EF0031E72A /* Cloudkituser */ = {
+			isa = PBXGroup;
+			children = (
+				CE4FAC242D4B96350031E72A /* CloudKitManager.swift */,
+			);
+			path = Cloudkituser;
+			sourceTree = "<group>";
+		};
 		D0A3ED522D270C1000123268 = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +122,7 @@
 				D0A3ED6E2D270C1100123268 /* TriangleTests */,
 				D0A3ED782D270C1100123268 /* TriangleUITests */,
 				D0A3ED5C2D270C1000123268 /* Products */,
+				CE4FAC222D4B95EF0031E72A /* Cloudkituser */,
 				CEED2E302D478CC90023D099 /* Cloudkituser */,
 				D0D654D92D4D4F15006773DB /* Frameworks */,
 			);
@@ -155,7 +162,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				CEED2E302D478CC90023D099 /* Cloudkituser */,
 				D0A3ED5D2D270C1000123268 /* Triangle */,
 			);
 			name = Triangle;
@@ -288,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE4FAC252D4B96350031E72A /* CloudKitManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +302,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE4FAC262D4B96350031E72A /* CloudKitManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
