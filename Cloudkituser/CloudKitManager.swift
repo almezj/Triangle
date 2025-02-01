@@ -58,7 +58,7 @@ class CloudKitManager {
     }
 
     /// Save a new user to CloudKit (Prevents duplicate usernames)
-    func saveUser(username: String, email: String, completion: @escaping (Bool, Error?) -> Void) {
+    func saveUser(username: String, email: String,password: String, completion: @escaping (Bool, Error?) -> Void) {
         // Step 1: Check if the username already exists
         fetchUser(username: username) { exists, _, error in
             if let error = error {
