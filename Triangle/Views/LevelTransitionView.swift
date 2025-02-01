@@ -9,8 +9,13 @@ import SwiftUI
 import RiveRuntime
 
 struct LevelTransitionView: View {
-    @State private var navigateToLogin = false
-    @State private var riveViewModel = RiveViewModel(fileName: "jump-2") // ✅ Load animation by filename
+    @State private var navigateToLevelSelector = false
+    @State private var riveViewModel = RiveViewModel(fileName: "ch_t") // ✅ Load mascot animation
+    
+    // ✅ Provide realistic values for navigation
+    let totalTriangles: Int
+    let currentLevelIndex: Int
+    @State private var selectedLevelId: Int? = nil // Needs to be a @State variable
 
     var body: some View {
         ZStack {
@@ -28,11 +33,15 @@ struct LevelTransitionView: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                navigateToLogin = true
+                navigateToLevelSelector = true
             }
         }
-        .navigationDestination(isPresented: $navigateToLogin) {
-            OnboardingView()
+        .navigationDestination(isPresented: $navigateToLevelSelector) {
+            LevelSelectorView(
+                totalTriangles: totalTriangles,
+                currentLevelIndex: currentLevelIndex,
+                selectedLevelId: $selectedLevelId // ✅ Pass Binding<Int?>
+            )
         }
     }
 }

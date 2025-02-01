@@ -20,7 +20,10 @@ struct DashboardView: View {
                                 DashboardCard(
                                     title: "Getting Started",
                                     imageNames: ["SocialTriangle"],
-                                    destination: LevelTransitionView(),
+                                    destination: LevelTransitionView(
+                                        totalTriangles: 10,  // ✅ Pass actual values
+                                        currentLevelIndex: 1 // ✅ Adjust as needed
+                                    ),
                                     progress: 0,
                                     currentExercise: 1,
                                     locked: false)
