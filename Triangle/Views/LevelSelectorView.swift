@@ -81,7 +81,7 @@ struct LevelSelectorView: View {
     // ✅ Unlocks the next level ONLY if the current level is completed
     func unlockNextLevel() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if currentLevelIndex < totalTriangles {  // Prevents out-of-bounds unlocking
+            if currentLevelIndex < totalTriangles {
                 print("✅ Unlocking Level \(currentLevelIndex + 1)")
                 currentLevelIndex += 1
             } else {

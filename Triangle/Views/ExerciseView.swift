@@ -10,6 +10,7 @@ import SwiftUI
 struct ExerciseView: View {
     let exerciseId: Int
     let onComplete: () -> Void // Callback to unlock the next level
+    @State private var buttonDisabled = false  // ✅ Prevents multiple unlocks
 
     var body: some View {
         VStack {
@@ -19,13 +20,19 @@ struct ExerciseView: View {
 
             Spacer()
 
-            Button("Complete Exercise") {
-                onComplete()
+            Button(action: {
+                if !buttonDisabled {
+                    buttonDisabled = true  // ✅ Disable button after first tap
+                    onComplete()
+                }
+            }) {
+                Text("Complete Exercise")
+                    .padding()
+                    .background(buttonDisabled ? Color.gray : Color.green)  // ✅ Gray out when disabled
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
             }
-            .padding()
-            .background(Color.green)
-            .foregroundColor(.white)
-            .cornerRadius(10)
+            .disabled(buttonDisabled) // ✅ Disable the button once clicked
 
             Spacer()
         }
