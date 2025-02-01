@@ -43,8 +43,13 @@ struct LevelSelectorView: View {
                                 offsetY: -CGFloat(hexIndex) * (size * 2.4),
                                 currentLevelIndex: $currentLevelIndex,
                                 onLevelSelect: { levelId in
-                                    selectedExerciseId = levelId
-                                    navigateToExercise = true
+                                    // ✅ Only allow selection if it's the blue current level
+                                    if levelId == currentLevelIndex {
+                                        selectedExerciseId = levelId
+                                        navigateToExercise = true
+                                    } else {
+                                        print("❌ Cannot access level \(levelId). Only level \(currentLevelIndex) is playable.")
+                                    }
                                 },
                                 isClockwise: hexIndex.isMultiple(of: 2)
                             )
@@ -73,15 +78,18 @@ struct LevelSelectorView: View {
         }
     }
 
-    // ✅ Unlock the next level after completing an exercise
+    // ✅ Unlocks the next level ONLY if the current level is completed
     func unlockNextLevel() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            currentLevelIndex += 1
-            print("✅ Level \(currentLevelIndex) unlocked")
+            if currentLevelIndex < totalTriangles {  // Prevents out-of-bounds unlocking
+                print("✅ Unlocking Level \(currentLevelIndex + 1)")
+                currentLevelIndex += 1
+            } else {
+                print("✅ All levels completed!")
+            }
         }
     }
 }
-
 
 // MARK: - Main HexagonView
 struct HexagonView: View {
@@ -188,9 +196,13 @@ struct HexagonShape: View {
 
                 
                 Button(action: {
-                    if globalIndex <= currentLevelIndex {  // ✅ Allow only unlocked levels
+                    if globalIndex == currentLevelIndex {  // ✅ Only blue levels are playable
                         print("✅ Level \(globalIndex) selected")
                         onLevelSelect(globalIndex)
+                    } else if globalIndex < currentLevelIndex {
+                        print("❌ Level \(globalIndex) is already completed and locked.")
+                    } else {
+                        print("❌ Level \(globalIndex) is locked.")
                     }
                 }) {
                     TriangleShape()
