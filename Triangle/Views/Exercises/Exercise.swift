@@ -8,10 +8,10 @@
 import SwiftUI
 
 protocol Exercise {
-    var id: Int { get }  // Unique ID for each exercise
-    var title: String { get }  // Exercise title
-    var description: String { get }  // Short description
-    var isCompleted: Bool { get set }  // Track progress
-
-    func startExercise() -> AnyView  // Returns the exercise's UI
+    var id: Int { get }
+    var title: String { get }
+    var description: String { get }
+    var isCompleted: Bool { get set }
+    
+    func startExercise(onComplete: @escaping () -> Void) -> AnyView
 }

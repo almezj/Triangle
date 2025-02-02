@@ -71,7 +71,17 @@ struct LevelSelectorView: View {
         .ignoresSafeArea()
         .navigationDestination(isPresented: $navigateToExercise) {
             if let exerciseId = selectedExerciseId {
-                ExerciseView(exerciseId: exerciseId, onComplete: {
+                let exercise: Exercise = {
+                    switch exerciseId {
+                    case 1:
+                        return EmotionRecognitionExercise()
+                    // Add other cases for additional exercises
+                    default:
+                        fatalError("No exercise found for ID \(exerciseId)")
+                    }
+                }()
+
+                exercise.startExercise(onComplete: {
                     unlockNextLevel()
                 })
             }
