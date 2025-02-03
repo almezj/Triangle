@@ -71,7 +71,26 @@ struct LevelSelectorView: View {
         .ignoresSafeArea()
         .navigationDestination(isPresented: $navigateToExercise) {
             if let exerciseId = selectedExerciseId {
-                ExerciseView(exerciseId: exerciseId, onComplete: {
+                let exercise: Exercise = {
+                    switch exerciseId {
+                    case 1:
+                        return EmotionRecognitionExercise(predefinedEmotion: .happy)
+                    case 2:
+                        return EmotionRecognitionExercise(predefinedEmotion: .angry)
+                    case 3:
+                        return EmotionRecognitionExercise(predefinedEmotion: .crying)
+                    case 4:
+                        return BodyLanguageRecognitionExercise(targetBodyLanguage: .proud)
+                    case 5:
+                        return BodyLanguageRecognitionExercise(targetBodyLanguage: .angry)
+                    case 6:
+                        return BodyLanguageRecognitionExercise(targetBodyLanguage: .frustrated)
+                    default:
+                        fatalError("No exercise found for ID \(exerciseId)")
+                    }
+                }()
+
+                exercise.startExercise(onComplete: {
                     unlockNextLevel()
                 })
             }
@@ -185,16 +204,17 @@ struct HexagonShape: View {
 
                 // Determine the correct color for each triangle button
                 let triangleColor: Color = {
-                    if globalIndex < currentLevelIndex {
-                        return ColorTheme.green  // Completed levels
+                    if globalIndex == 7 || globalIndex == 8 {
+                        return ColorTheme.darker  // ✅ Always locked
+                    } else if globalIndex < currentLevelIndex {
+                        return ColorTheme.green  // ✅ Completed levels
                     } else if globalIndex == currentLevelIndex {
-                        return ColorTheme.primary  // Current level
+                        return ColorTheme.primary  // ✅ Current level is blue
                     } else {
-                        return ColorTheme.darker  // Locked levels
+                        return ColorTheme.darker  // ✅ Future levels stay locked
                     }
                 }()
 
-                
                 Button(action: {
                     if globalIndex == currentLevelIndex {  // ✅ Only blue levels are playable
                         print("✅ Level \(globalIndex) selected")
