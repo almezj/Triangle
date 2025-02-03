@@ -8,12 +8,20 @@
 import SwiftUI
 
 struct EmotionRecognitionExercise: Exercise {
-    let id: Int = 1
-    let title: String = "Emotion Recognition"
-    let description: String = "Identify the emotion displayed by Tom the Triangle!"
+    let id: Int
+    let title: String
+    let description: String
     var isCompleted: Bool = false
+    let predefinedEmotion: Emotion?
+
+    init(id: Int = 1, predefinedEmotion: Emotion? = nil) {
+        self.id = id
+        self.predefinedEmotion = predefinedEmotion
+        self.title = "Emotion Recognition"
+        self.description = "Identify the emotion displayed by Tom the Triangle!"
+    }
 
     func startExercise(onComplete: @escaping () -> Void) -> AnyView {
-        AnyView(EmotionRecognitionView(onComplete: onComplete))
+        return AnyView(EmotionRecognitionView(predefinedEmotion: predefinedEmotion, onComplete: onComplete))
     }
 }

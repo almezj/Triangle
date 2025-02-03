@@ -2,11 +2,20 @@ import SwiftUI
 import RiveRuntime
 
 struct EmotionRecognitionView: View {
-    let onComplete: () -> Void // ✅ Completion handler
-    @State private var targetEmotion: Emotion = Emotion.random()
+    let onComplete: () -> Void
+    @State private var targetEmotion: Emotion
     @State private var selectedEmotion: Emotion? = nil
     @State private var isCorrect: Bool? = nil
-    @State private var riveViewModel = RiveViewModel(fileName: "ch_t", animationName: Emotion.random().animationName)
+    @State private var riveViewModel: RiveViewModel
+
+    init(predefinedEmotion: Emotion? = nil, onComplete: @escaping () -> Void) {
+        // ✅ If predefinedEmotion is set, use it. Otherwise, pick a random emotion.
+        let initialEmotion = predefinedEmotion ?? Emotion.random()
+
+        self.onComplete = onComplete
+        self._targetEmotion = State(initialValue: initialEmotion)
+        self._riveViewModel = State(initialValue: RiveViewModel(fileName: "ch_t", animationName: initialEmotion.animationName))
+    }
 
     var body: some View {
         VStack {
@@ -14,11 +23,9 @@ struct EmotionRecognitionView: View {
                 .font(.title)
                 .padding()
 
+            // 🎭 Display the Rive animation
             riveViewModel.view()
                 .frame(width: 300, height: 300)
-                .onAppear {
-                    riveViewModel.triggerInput(targetEmotion.animationName)
-                }
 
             VStack(spacing: 15) {
                 ForEach(Emotion.allCases, id: \.self) { emotion in
@@ -26,19 +33,17 @@ struct EmotionRecognitionView: View {
                         selectedEmotion = emotion
                         isCorrect = (emotion == targetEmotion)
                         
-                        if isCorrect == true {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                onComplete() // ✅ Notify the app that the exercise is completed
+                        if isCorrect == true { // ✅ Unlock the next level when correct
+                                onComplete()
                             }
-                        }
                     }) {
                         Text(emotion.rawValue)
-                            .padding()
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
-                            .background(isCorrect == nil ? Color.blue :
-                                        (isCorrect == true ? Color.green : Color.red))
-                            .foregroundColor(.white)
+                            .padding()
+                            .background(isCorrect == nil ? Color.gray : (isCorrect == true ? Color.green : Color.red))
                             .cornerRadius(10)
+                            .foregroundColor(.white)
                     }
                 }
             }
@@ -46,4 +51,3 @@ struct EmotionRecognitionView: View {
         }
     }
 }
-

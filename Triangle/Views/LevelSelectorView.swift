@@ -74,7 +74,7 @@ struct LevelSelectorView: View {
                 let exercise: Exercise = {
                     switch exerciseId {
                     case 1:
-                        return EmotionRecognitionExercise()
+                        return EmotionRecognitionExercise(predefinedEmotion: .happy)
                     // Add other cases for additional exercises
                     default:
                         fatalError("No exercise found for ID \(exerciseId)")
