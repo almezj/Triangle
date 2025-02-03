@@ -66,7 +66,7 @@ struct EmotionRecognitionView: View {
                                 .frame(width: 120, height: 50) // ✅ Fixed size for consistency
                                 .background(
                                     selectedEmotion == emotion
-                                        ? (isCorrect == true ? Color.green : Color.red) // ✅ Only the clicked button changes
+                                        ? (isCorrect == true ? Color(hex: 0x58D68D) : Color(hex: 0xEC7063)) // ✅ Only the clicked button changes
                                         : Color(hex: 0x4C708A) // Default color
                                 )
                                 .foregroundColor(.white)

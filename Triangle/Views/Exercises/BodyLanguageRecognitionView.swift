@@ -1,14 +1,7 @@
-//
-//  BodyLanguageRecognitionView.swift
-//  Triangle
-//
-//  Created by Dillon Reilly on 03/02/2025.
-//
-
-
 import SwiftUI
 
 struct BodyLanguageRecognitionView: View {
+    @Environment(\.presentationMode) var presentationMode // ✅ Allows dismissing the view
     let onComplete: () -> Void
     @State private var targetBodyLanguage: BodyLanguage
     @State private var selectedBodyLanguage: BodyLanguage? = nil
@@ -35,20 +28,26 @@ struct BodyLanguageRecognitionView: View {
 
             VStack {
                 Text("Which body language matches '\(targetBodyLanguage.rawValue)'?")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.system(size: 26, weight: .bold))
                     .foregroundColor(Color(hex: 0x4C708A))
-                    .padding(.bottom, 10)
+                    .padding(.bottom, 15)
 
                 // ✅ Display choices horizontally (3 images)
-                HStack(spacing: 20) {
+                HStack(spacing: 30) { // 🔹 Increased spacing for better layout
                     ForEach(availableBodyLanguages, id: \.self) { bodyLanguage in
                         Button(action: {
                             selectedBodyLanguage = bodyLanguage
                             isCorrect = (bodyLanguage == targetBodyLanguage) // ✅ Check against correct body language
 
                             if isCorrect == true {
-                                onComplete()
+                                onComplete() // ✅ Unlocks next level when correct
+
+                                // ✅ Delay for feedback, then navigate back
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    presentationMode.wrappedValue.dismiss() // ✅ Automatically return to Level Selector
+                                }
                             } else {
+                                // ✅ Reset after delay
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                     selectedBodyLanguage = nil
                                     isCorrect = nil
@@ -57,12 +56,13 @@ struct BodyLanguageRecognitionView: View {
                         }) {
                             Image(bodyLanguage.imageName) // ✅ Load correct image
                                 .resizable()
-                                .scaledToFit()
-                                .frame(width: 120, height: 120)
+                                .scaledToFit() // 🔹 Ensures full image is visible without zooming in
+                                .frame(width: 220, height: 220) // 🔹 Image size
+                                .clipShape(RoundedRectangle(cornerRadius: 15)) // 🔹 Makes images rounded
                                 .padding()
                                 .background(
                                     selectedBodyLanguage == bodyLanguage
-                                        ? (isCorrect == true ? Color.green : Color.red) // ✅ Highlight selection
+                                        ? (isCorrect == true ? Color(hex: 0x58D68D) : Color(hex: 0xEC7063)) // ✅ Muted colors
                                         : Color(hex: 0x96B6CF)
                                 )
                                 .cornerRadius(15)
@@ -70,7 +70,7 @@ struct BodyLanguageRecognitionView: View {
                         }
                     }
                 }
-                .padding(.top, 20)
+                .padding(.top, 30) // 🔹 Adjusted padding to balance the layout
             }
         }
     }
