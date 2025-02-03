@@ -2,6 +2,7 @@ import SwiftUI
 import RiveRuntime
 
 struct EmotionRecognitionView: View {
+    @Environment(\.presentationMode) var presentationMode // ✅ Allows dismissing the view
     let onComplete: () -> Void
     @State private var targetEmotion: Emotion
     @State private var selectedEmotion: Emotion? = nil
@@ -45,21 +46,33 @@ struct EmotionRecognitionView: View {
                             selectedEmotion = emotion
                             isCorrect = (emotion == targetEmotion)
 
-                            if isCorrect == true { // ✅ Unlock the next level when correct
-                                onComplete()
+                            if isCorrect == true {
+                                onComplete() // ✅ Unlocks next level when correct
+                                
+                                // ✅ Delay for visual feedback, then navigate back
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    presentationMode.wrappedValue.dismiss() // ✅ Automatically return to Level Selector
+                                }
+                            } else {
+                                // ✅ Reset after delay
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    selectedEmotion = nil
+                                    isCorrect = nil
+                                }
                             }
                         }) {
                             Text(emotion.rawValue)
                                 .font(.headline)
                                 .frame(width: 120, height: 50) // ✅ Fixed size for consistency
                                 .background(
-                                    isCorrect == nil
-                                        ? Color(hex: 0x4C708A) // Default
-                                        : (emotion == targetEmotion ? Color.green : Color.red) // ✅ Feedback colors
+                                    selectedEmotion == emotion
+                                        ? (isCorrect == true ? Color.green : Color.red) // ✅ Only the clicked button changes
+                                        : Color(hex: 0x4C708A) // Default color
                                 )
                                 .foregroundColor(.white)
                                 .cornerRadius(15)
                                 .shadow(radius: 5)
+                                .animation(.easeInOut(duration: 0.5), value: selectedEmotion) // ✅ Smooth transition effect
                         }
                     }
                 }
