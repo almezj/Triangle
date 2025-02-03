@@ -79,6 +79,9 @@ struct LevelSelectorView: View {
                         return EmotionRecognitionExercise(predefinedEmotion: .angry)
                     case 3:
                         return EmotionRecognitionExercise(predefinedEmotion: .crying)
+                    case 4:
+                        return BodyLanguageRecognitionExercise(targetBodyLanguage: .proud)
+
                     default:
                         fatalError("No exercise found for ID \(exerciseId)")
                     }
