@@ -30,7 +30,7 @@ struct EmotionRecognitionView: View {
                 .edgesIgnoringSafeArea(.all)
 
             VStack {
-                Text("What emotion is the mascot showing?")
+                Text("What emotion is Tom the Triangle showcasing?")
                     .font(.system(size: 24, weight: .bold))
                     .foregroundColor(Color(hex: 0x4C708A))
                     .padding(.bottom, 10)

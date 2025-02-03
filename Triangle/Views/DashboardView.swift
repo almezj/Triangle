@@ -21,7 +21,7 @@ struct DashboardView: View {
                                     title: "Getting Started",
                                     imageNames: ["SocialTriangle"],
                                     destination: LevelTransitionView(
-                                        totalTriangles: 10,  // ✅ Pass actual values
+                                        totalTriangles: 8,  // ✅ Pass actual values
                                         currentLevelIndex: 1 // ✅ Adjust as needed
                                     ),
                                     progress: 0,

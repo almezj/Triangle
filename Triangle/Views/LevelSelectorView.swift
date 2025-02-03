@@ -204,16 +204,17 @@ struct HexagonShape: View {
 
                 // Determine the correct color for each triangle button
                 let triangleColor: Color = {
-                    if globalIndex < currentLevelIndex {
-                        return ColorTheme.green  // Completed levels
+                    if globalIndex == 7 || globalIndex == 8 {
+                        return ColorTheme.darker  // ✅ Always locked
+                    } else if globalIndex < currentLevelIndex {
+                        return ColorTheme.green  // ✅ Completed levels
                     } else if globalIndex == currentLevelIndex {
-                        return ColorTheme.primary  // Current level
+                        return ColorTheme.primary  // ✅ Current level is blue
                     } else {
-                        return ColorTheme.darker  // Locked levels
+                        return ColorTheme.darker  // ✅ Future levels stay locked
                     }
                 }()
 
-                
                 Button(action: {
                     if globalIndex == currentLevelIndex {  // ✅ Only blue levels are playable
                         print("✅ Level \(globalIndex) selected")

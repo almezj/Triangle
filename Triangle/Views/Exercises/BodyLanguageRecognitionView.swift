@@ -27,7 +27,7 @@ struct BodyLanguageRecognitionView: View {
                 .edgesIgnoringSafeArea(.all)
 
             VStack {
-                Text("Which body language matches '\(targetBodyLanguage.rawValue)'?")
+                Text("Which body language best matches '\(targetBodyLanguage.rawValue)'?")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundColor(Color(hex: 0x4C708A))
                     .padding(.bottom, 15)
