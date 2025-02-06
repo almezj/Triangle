@@ -17,8 +17,18 @@ class RegisterViewViewModel: ObservableObject {
             return
         }
 
+        guard isValidEmail(email) else {
+            errorMessage = "Invalid email format."
+            return
+        }
+
         guard password == confirmPassword else {
             errorMessage = "Passwords do not match."
+            return
+        }
+
+        guard isStrongPassword(password) else {
+            errorMessage = "Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, and a number."
             return
         }
 
@@ -55,4 +65,15 @@ class RegisterViewViewModel: ObservableObject {
         }
     }
 
+    /// Validate email format using regex
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
+    }
+
+    /// Check password strength: min 8 chars, includes upper, lower, and number
+    private func isStrongPassword(_ password: String) -> Bool {
+        let passwordRegex = #"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$"#
+        return NSPredicate(format: "SELF MATCHES %@", passwordRegex).evaluate(with: password)
+    }
 }
