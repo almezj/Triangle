@@ -24,29 +24,28 @@ class LoginViewViewModel: ObservableObject {
     }
 
     func login() {
-        guard !username.isEmpty else {
-            errorMessage = "Username cannot be empty."
+        guard !username.isEmpty, !password.isEmpty else {
+            errorMessage = "Username and password cannot be empty."
             return
         }
 
         isLoading = true
 
-        cloudKitManager.fetchUser(username: username) { exists, record, error in
+        cloudKitManager.fetchUserForLogin(username: username, password: password) { success, record, error in
             DispatchQueue.main.async {
                 self.isLoading = false
 
                 if let error = error {
                     self.errorMessage = "Login failed: \(error.localizedDescription)"
-                } else if exists {
+                } else if success {
                     self.errorMessage = nil
-                    print("✅ Login successful - Navigating to Exercise Selector")
-                    DispatchQueue.main.async {
-                        self.navigateToDashboard = true  // ✅ Enables navigation
-                    }
+                    print("✅ Login successful - Navigating to Dashboard")
+                    self.navigateToDashboard = true
                 } else {
-                    self.errorMessage = "User not found. Please check your username."
+                    self.errorMessage = "Invalid username or password."
                 }
             }
         }
     }
+
 }

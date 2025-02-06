@@ -24,8 +24,7 @@ class RegisterViewViewModel: ObservableObject {
 
         isLoading = true
 
-        // First, check if the username is already taken
-        cloudKitManager.fetchUser(username: username) { exists, _, error in
+        cloudKitManager.fetchUserForRegistration(username: username) { exists, _, error in
             if let error = error {
                 DispatchQueue.main.async {
                     self.isLoading = false
@@ -42,8 +41,7 @@ class RegisterViewViewModel: ObservableObject {
                 return
             }
 
-            // Username is available, proceed with registration
-            self.cloudKitManager.saveUser(username: self.username, email: self.email,password: self.password) { success, error in
+            self.cloudKitManager.saveUser(username: self.username, email: self.email, password: self.password) { success, error in
                 DispatchQueue.main.async {
                     self.isLoading = false
                     if let error = error {
@@ -51,10 +49,10 @@ class RegisterViewViewModel: ObservableObject {
                     } else {
                         print("✅ Registration successful!")
                         self.errorMessage = nil
-                        // TODO: Implement navigation logic here
                     }
                 }
             }
         }
     }
+
 }
