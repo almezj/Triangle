@@ -57,8 +57,8 @@ class RegisterViewViewModel: ObservableObject {
                     if let error = error {
                         self.errorMessage = "Registration failed: \(error.localizedDescription)"
                     } else {
+                        self.errorMessage = "Registration successful!"
                         print("✅ Registration successful!")
-                        self.errorMessage = nil
                     }
                 }
             }
