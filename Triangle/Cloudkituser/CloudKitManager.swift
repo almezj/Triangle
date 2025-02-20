@@ -142,7 +142,67 @@ class CloudKitManager {
         privateDatabase.add(queryOperation)
     }
 
-    
+    func saveUserProgress(username: String, level: Int, score: Int, completion: @escaping (Bool, Error?) -> Void) {
+        let predicate = NSPredicate(format: "username == %@", username)
+        let query = CKQuery(recordType: "UserProgress", predicate: predicate)
+        
+        privateDatabase.perform(query, inZoneWith: nil) { results, error in
+            if let error = error {
+                print("❌ Error fetching progress: \(error.localizedDescription)")
+                completion(false, error)
+                return
+            }
+
+            let record: CKRecord
+            if let existingRecord = results?.first {
+                record = existingRecord
+            } else {
+                record = CKRecord(recordType: "UserProgress")
+                record["username"] = username as CKRecordValue
+            }
+
+            record["level"] = level as CKRecordValue
+            record["score"] = score as CKRecordValue
+            record["timestamp"] = Date() as CKRecordValue
+
+            self.privateDatabase.save(record) { savedRecord, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("❌ Error saving progress: \(error.localizedDescription)")
+                        completion(false, error)
+                    } else {
+                        print("✅ Progress saved successfully for \(username)")
+                        completion(true, nil)
+                    }
+                }
+            }
+        }
+    }
+    func loadUserProgress(username: String, completion: @escaping (Int?, Int?, Error?) -> Void) {
+        let predicate = NSPredicate(format: "username == %@", username)
+        let query = CKQuery(recordType: "UserProgress", predicate: predicate)
+
+        privateDatabase.perform(query, inZoneWith: nil) { results, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    print("❌ Error loading progress: \(error.localizedDescription)")
+                    completion(nil, nil, error)
+                    return
+                }
+
+                if let record = results?.first,
+                   let level = record["level"] as? Int,
+                   let score = record["score"] as? Int {
+                    print("✅ Loaded progress - Level: \(level), Score: \(score)")
+                    completion(level, score, nil)
+                } else {
+                    print("⚠️ No progress found for \(username)")
+                    completion(nil, nil, nil)
+                }
+            }
+        }
+    }
+
     func checkiCloudStatus(completion: @escaping (Bool) -> Void) {
         container.accountStatus { status, error in
             DispatchQueue.main.async {

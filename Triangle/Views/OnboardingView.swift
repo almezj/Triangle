@@ -39,14 +39,14 @@ struct OnboardingView: View {
                     VStack(spacing: 16) {
                         if currentForm == .login {
                             VStack {
-                                HStack(spacing: 300) {
+                                HStack(spacing:10) {
                                     Spacer()
                                     TextField("Username", text: $loginViewModel.username)
                                         .textFieldStyle(TriangleTextFieldStyle())
                                     Spacer()
                                 }
 
-                                HStack(spacing: 300) {
+                                HStack(spacing: 10) {
                                     Spacer()
                                     SecureField("Password", text: $loginViewModel.password)
                                         .textFieldStyle(TriangleTextFieldStyle())
@@ -62,7 +62,7 @@ struct OnboardingView: View {
                                         .transition(.opacity)
                                 }
 
-                                HStack(spacing: 300) {
+                                HStack(spacing: 10) {
                                     Spacer()
                                     Button(action: loginViewModel.login) {
                                         ZStack {
@@ -152,21 +152,21 @@ struct LoginForm: View {
                     .transition(.opacity)
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 TextField("Username", text: $viewModel.username)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 SecureField("Password", text: $viewModel.password)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 Button(action: viewModel.login) {
                     ZStack {
@@ -208,35 +208,35 @@ struct RegisterForm: View {
                     .transition(.opacity)
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 TextField("Username", text: $viewModel.username)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 TextField("Email", text: $viewModel.email)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 SecureField("Password", text: $viewModel.password)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 SecureField("Confirm Password", text: $viewModel.confirmPassword)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
-            HStack(spacing: 300) {
+            HStack(spacing: 10) {
                 Spacer()
                 Button(action: viewModel.register) {
                     ZStack {
@@ -264,8 +264,6 @@ struct RegisterForm: View {
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView()
-            .previewInterfaceOrientation(.landscapeLeft)
-            .previewDevice("iPad Pro 11-inch")
     }
 }
 
