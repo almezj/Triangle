@@ -58,11 +58,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		CEED2E302D478CC90023D099 /* Cloudkituser */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Cloudkituser;
-			sourceTree = "<group>";
-		};
 		D0A3ED5D2D270C1000123268 /* Triangle */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -116,7 +111,6 @@
 				D0A3ED6E2D270C1100123268 /* TriangleTests */,
 				D0A3ED782D270C1100123268 /* TriangleUITests */,
 				D0A3ED5C2D270C1000123268 /* Products */,
-				CEED2E302D478CC90023D099 /* Cloudkituser */,
 				D0D654D92D4D4F15006773DB /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -155,7 +149,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				CEED2E302D478CC90023D099 /* Cloudkituser */,
 				D0A3ED5D2D270C1000123268 /* Triangle */,
 			);
 			name = Triangle;
