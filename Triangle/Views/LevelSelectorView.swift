@@ -265,7 +265,7 @@ struct Hexagon {
     var visibleCount: Int = 0
 }
 
-struct ContentView: View {
+struct PreviewView: View {
     var body: some View {
         HexagonView(exerciseId: 1, currentLevelIndex: 3)  // Example dynamic values
     }
@@ -273,7 +273,7 @@ struct ContentView: View {
 
 struct LevelSelectorView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        PreviewView()
             .previewInterfaceOrientation(.landscapeLeft)
             .previewDevice("iPad Pro 11-inch")
     }

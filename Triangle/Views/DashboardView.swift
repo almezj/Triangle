@@ -12,9 +12,7 @@ struct DashboardView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    Navbar()
                     VStack(spacing: 40) {
-
                         Grid(horizontalSpacing: 40, verticalSpacing: 40) {
                             GridRow {
                                 DashboardCard(
