@@ -1,2 +1,27 @@
 //LEAVE BUGS YOU FIND HERE IF THEY ARE FIXED PUT FIXED BY username
 
+1. Pressing the back button from the exercise screen gets stuck on the transition screen rather than taking the user back to the activities pathway. (Loading screen)
+
+2. Spamming the correct answer in an exercises completes all the exercises in the activities pathway
+
+3. Tapping on an exercise on the activities pathway that hasn't been created yet, results in the app crashing 
+
+4. Changing orientation glitches some of the sizing and placing of ui elements
+
+
+// GENERAL FEEDBACK
+
+1. Font colours of placeholder txt in both registration and log in screens should contrast better due to poor visibility
+
+2. Upon successful registration the app should automatically log in and take the user to the dashboard.
+
+3. Exercise 3. (Crying face) provides the both the options "sad" and "crying" too ambiguous, leading to user frustration,
+
+4. Some of the representations for body language exercises are too similar leading to confusion
+
+5. Emotion recognition exercises should have greater than 3 options, 5-6 as it means the user is required to sit and think carefully their choice.
+
+6. Slightly greater consequence for failure needed, doesn't emphasise wrong interaction,
+
+7. Slightly greater praise for successful exercise completion,
+
