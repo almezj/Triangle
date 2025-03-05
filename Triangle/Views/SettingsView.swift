@@ -7,23 +7,16 @@
 
 import SwiftUI
 
-// TODO: Implement the logic for buttons and sliders
-// Currently the sliders and buttons just print out the new values which is fine for now
-
 struct SettingsView: View {
-    @State private var musicVolume: Double = 0.5
-    @State private var sfxVolume: Double = 0.5
-    @State private var textSize: Double = 1.0
-    @State private var selectedLanguage: String = "English"
+    @StateObject var settingsController = SettingsController(
+        userId: "currentUserID")
     @State private var showPrivacyPolicy: Bool = false
-
-    let languages = ["English", "Czech", "Spanish"]
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // Account
+                    // Account Section
                     Group {
                         Text("Account")
                             .font(.pageTitle)
@@ -40,73 +33,76 @@ struct SettingsView: View {
 
                     Divider()
 
-                    // Accessibility
+                    // Accessibility Section
                     Group {
                         Text("Accessibility")
                             .font(.pageTitle)
-
                         VStack(alignment: .leading) {
                             Text("Text Size")
                                 .font(.bodyText)
-                            Slider(value: $textSize, in: 0.8...1.5, step: 0.1) {
-                                Text("Text Size")
-                            }
-                            .onChange(of: textSize, initial: true) { oldValue, newValue in
-                                print("Text size updated to: \(newValue)")
-                            }
+                            Slider(
+                                value: $settingsController.userData.settings
+                                    .textSize,
+                                in: 0.8...1.5,
+                                step: 0.1,
+                                label: { Text("Text Size") }
+                            )
                         }
                     }
 
                     Divider()
 
-                    // Sound
+                    // Sound Section
                     Group {
                         Text("Sound")
                             .font(.pageTitle)
-
                         VStack(alignment: .leading) {
                             Text("Music Volume")
                                 .font(.bodyText)
-                            Slider(value: $musicVolume, in: 0...1, step: 0.1) {
-                                Text("Music Volume")
-                            }
-                            .onChange(of: musicVolume, initial: true) { oldValue, newValue in
-                                print("Music volume updated to: \(newValue)")
-                            }
+                            Slider(
+                                value: $settingsController.userData.settings
+                                    .musicVolume,
+                                in: 0...1,
+                                step: 0.1,
+                                label: { Text("Music Volume") }
+                            )
 
                             Text("SFX Volume")
                                 .font(.bodyText)
-                            Slider(value: $sfxVolume, in: 0...1, step: 0.1) {
-                                Text("SFX Volume")
-                            }
-                            .onChange(of: sfxVolume, initial: true) { oldValue, newValue in
-                                print("SFX volume updated to: \(newValue)")
-                            }
+                            Slider(
+                                value: $settingsController.userData.settings
+                                    .sfxVolume,
+                                in: 0...1,
+                                step: 0.1,
+                                label: { Text("SFX Volume") }
+                            )
                         }
                     }
 
                     Divider()
 
-                    // General
+                    // General Section
                     Group {
                         Text("General")
                             .font(.pageTitle)
-
                         VStack(alignment: .leading) {
                             Text("Language")
                                 .font(.bodyText)
-                            Picker("Language", selection: $selectedLanguage) {
-                                ForEach(languages, id: \ .self) { language in
+                            Picker(
+                                "Language",
+                                selection: $settingsController.userData.settings
+                                    .selectedLanguage
+                            ) {
+                                ForEach(
+                                    settingsController.languages, id: \.self
+                                ) { language in
                                     Text(language)
                                 }
                             }
                             .pickerStyle(MenuPickerStyle())
-                            .onChange(of: selectedLanguage, initial: true) { oldValue, newValue in
-                                print("Language changed to: \(newValue)")
-                            }
 
                             Button("Reset Progress") {
-                                print("Reset Progress button tapped")
+                                settingsController.resetProgress()
                             }
                             .buttonStyle(TriangleSecondaryButton())
                         }
@@ -114,21 +110,20 @@ struct SettingsView: View {
 
                     Divider()
 
-                    // App Info
+                    // App Info Section
                     Group {
                         Text("App Info")
                             .font(.pageTitle)
-
                         VStack(alignment: .leading) {
                             Text("Version: 1.0.0")
                                 .font(.bodyText)
                             Button("Privacy Policy") {
-                                print("Privacy Policy button tapped")
                                 showPrivacyPolicy = true
                             }
                             .buttonStyle(TriangleSecondaryButton())
                             .sheet(isPresented: $showPrivacyPolicy) {
-                                PrivacyPolicyView(isPresented: $showPrivacyPolicy)
+                                PrivacyPolicyView(
+                                    isPresented: $showPrivacyPolicy)
                             }
                         }
                     }
@@ -148,4 +143,3 @@ struct SettingsView_Previews: PreviewProvider {
             .previewInterfaceOrientation(.landscapeLeft)
     }
 }
-

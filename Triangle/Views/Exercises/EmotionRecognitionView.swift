@@ -1,32 +1,21 @@
-import SwiftUI
 import RiveRuntime
+import SwiftUI
 
 struct EmotionRecognitionView: View {
-    @Environment(\.presentationMode) var presentationMode // ✅ Allows dismissing the view
+    @Environment(\.presentationMode) var presentationMode
     let onComplete: () -> Void
-    @State private var targetEmotion: Emotion
-    @State private var selectedEmotion: Emotion? = nil
-    @State private var isCorrect: Bool? = nil
-    @State private var riveViewModel: RiveViewModel
-    private let availableEmotions: [Emotion]
+    @StateObject var controller: EmotionRecognitionController
 
     init(predefinedEmotion: Emotion? = nil, onComplete: @escaping () -> Void) {
-        let initialEmotion = predefinedEmotion ?? Emotion.random()
         self.onComplete = onComplete
-        self._targetEmotion = State(initialValue: initialEmotion)
-        self._riveViewModel = State(initialValue: RiveViewModel(fileName: "ch_t", animationName: initialEmotion.animationName))
-
-        // ✅ Pick 2 incorrect random emotions, ensuring no duplicates
-        var otherEmotions = Emotion.allCases.filter { $0 != initialEmotion }.shuffled()
-        let selectedIncorrect = Array(otherEmotions.prefix(2))
-
-        // ✅ Ensure the correct emotion is included, then shuffle
-        self.availableEmotions = ([initialEmotion] + selectedIncorrect).shuffled()
+        _controller = StateObject(
+            wrappedValue: EmotionRecognitionController(
+                predefinedEmotion: predefinedEmotion))
     }
 
     var body: some View {
         ZStack {
-            Color(hex: 0xB5CFE3) // ✅ Background color from LevelTransitionView
+            Color(hex: 0xB5CFE3)
                 .edgesIgnoringSafeArea(.all)
 
             VStack {
@@ -35,49 +24,53 @@ struct EmotionRecognitionView: View {
                     .foregroundColor(Color(hex: 0x4C708A))
                     .padding(.bottom, 10)
 
-                // 🎭 Display the Rive animation
+                let riveViewModel = RiveViewModel(
+                    fileName: "ch_t",
+                    animationName: controller.targetEmotion.animationName)
                 riveViewModel.view()
-                    .frame(width: 320, height: 320) // ✅ Slightly larger for emphasis
+                    .frame(width: 320, height: 320)
 
-                // ✅ Display choices horizontally
                 HStack(spacing: 20) {
-                    ForEach(availableEmotions, id: \.self) { emotion in
+                    ForEach(controller.availableEmotions, id: \.self) {
+                        emotion in
                         Button(action: {
-                            selectedEmotion = emotion
-                            isCorrect = (emotion == targetEmotion)
-
-                            if isCorrect == true {
-                                onComplete() // ✅ Unlocks next level when correct
-                                
-                                // ✅ Delay for visual feedback, then navigate back
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                    presentationMode.wrappedValue.dismiss() // ✅ Automatically return to Level Selector
+                            controller.checkAnswer(
+                                selected: emotion,
+                                onComplete: onComplete,
+                                dismiss: {
+                                    presentationMode.wrappedValue.dismiss()
                                 }
-                            } else {
-                                // ✅ Reset after delay
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    selectedEmotion = nil
-                                    isCorrect = nil
-                                }
-                            }
+                            )
                         }) {
                             Text(emotion.rawValue)
                                 .font(.headline)
-                                .frame(width: 120, height: 50) // ✅ Fixed size for consistency
+                                .frame(width: 120, height: 50)
                                 .background(
-                                    selectedEmotion == emotion
-                                        ? (isCorrect == true ? Color(hex: 0x58D68D) : Color(hex: 0xEC7063)) // ✅ Only the clicked button changes
-                                        : Color(hex: 0x4C708A) // Default color
+                                    controller.selectedEmotion == emotion
+                                        ? (controller.isCorrect == true
+                                            ? Color(hex: 0x58D68D)
+                                            : Color(hex: 0xEC7063))
+                                        : Color(hex: 0x4C708A)
                                 )
                                 .foregroundColor(.white)
                                 .cornerRadius(15)
                                 .shadow(radius: 5)
-                                .animation(.easeInOut(duration: 0.5), value: selectedEmotion) // ✅ Smooth transition effect
+                                .animation(
+                                    .easeInOut(duration: 0.5),
+                                    value: controller.selectedEmotion)
                         }
                     }
                 }
                 .padding(.top, 20)
             }
         }
+    }
+}
+
+struct EmotionRecognitionView_Previews: PreviewProvider {
+    static var previews: some View {
+        EmotionRecognitionView(onComplete: {
+            print("Exercise complete!")
+        })
     }
 }

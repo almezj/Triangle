@@ -7,29 +7,25 @@
 
 import SwiftUI
 
-// TODO: Come up with a better layout for the profile view and settle on what we want to show on this screen
-// TODO: Add animated character
-
-
 struct ProfileView: View {
-    @State private var progress: Double = 0.75 // Example progress value
-    @State private var activities: [String] = [
-        "Completed 'Social Cues' exercise",
-        "Unlocked 'Party Hat' cosmetic",
-        "Achieved Level 5 in Focus Training"
-    ]
+    @StateObject var profileController = ProfileController()
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
 
+                    // Animated Character Placeholder
                     VStack {
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 150, height: 150)
                             .cornerRadius(75)
-                            .overlay(Text("Animated Character Here").font(.bodyText).foregroundColor(.gray))
+                            .overlay(
+                                Text("Animated Character Here")
+                                    .font(.bodyText)
+                                    .foregroundColor(.gray)
+                            )
                     }
                     .frame(maxWidth: .infinity)
 
@@ -40,17 +36,20 @@ struct ProfileView: View {
                         Text("Your Progress")
                             .font(.pageTitle)
 
-                        ProgressView(value: progress) {
-                            Text("Progress: \(Int(progress * 100))%")
-                                .font(.bodyText)
+                        ProgressView(value: profileController.progress) {
+                            Text(
+                                "Progress: \(Int(profileController.progress * 100))%"
+                            )
+                            .font(.bodyText)
                         }
-                        .progressViewStyle(LinearProgressViewStyle(tint: ColorTheme.primary))
+                        .progressViewStyle(
+                            LinearProgressViewStyle(tint: ColorTheme.primary))
 
                         HStack {
                             Text("Milestones Achieved:")
                                 .font(.bodyText)
                             Spacer()
-                            Text("3/5") // Example milestone data
+                            Text("3/5")  // Placeholder milestone data.
                                 .font(.bodyText)
                                 .foregroundColor(ColorTheme.primary)
                         }
@@ -63,7 +62,8 @@ struct ProfileView: View {
                         Text("Recent Activities")
                             .font(.pageTitle)
 
-                        ForEach(activities, id: \ .self) { activity in
+                        ForEach(profileController.activities, id: \.self) {
+                            activity in
                             HStack {
                                 Circle()
                                     .fill(ColorTheme.primary)
@@ -88,7 +88,5 @@ struct ProfileView: View {
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
-            .previewDevice("iPad Pro 11-inch")
     }
 }
-

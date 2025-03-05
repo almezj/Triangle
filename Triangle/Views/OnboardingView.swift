@@ -3,6 +3,7 @@ import SwiftUI
 struct OnboardingView: View {
     @State private var currentForm: FormType = .none
     @StateObject var controller = LoginController()
+    @EnvironmentObject var authManager: AuthenticationManager
 
     enum FormType {
         case none, login, register
@@ -150,7 +151,11 @@ struct OnboardingView: View {
                 .animation(.easeInOut, value: currentForm)
             }
         }
+        .onAppear {
+            controller.authManager = authManager
+        }
     }
+
 }
 
 struct LoginForm: View {
@@ -283,14 +288,12 @@ struct RegisterForm: View {
     }
 }
 
-// ✅ Preview
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView()
     }
 }
 
-// ✅ Labelled Divider
 struct LabelledDivider: View {
     let label: String
     let horizontalPadding: CGFloat

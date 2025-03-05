@@ -15,9 +15,9 @@ struct ExerciseParameters: Identifiable, Hashable {
 
 struct DashboardView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
-    @State private var selectedExerciseParameters: ExerciseParameters? = nil
+    @StateObject var dashboardController = DashboardController()
     @State private var navigateToLevelSelector: Bool = false
-    @State private var exerciseForNavigation: ExerciseParameters? = nil
+    @State private var exerciseForNavigation: ExerciseParameters?
 
     var body: some View {
         NavigationStack {
@@ -32,10 +32,11 @@ struct DashboardView: View {
                                 currentExercise: 3,
                                 locked: false,
                                 action: {
-                                    let params = ExerciseParameters(
-                                        id: 1, totalTriangles: 8,
-                                        currentLevelIndex: 3)
-                                    selectedExerciseParameters = params
+                                    dashboardController.selectExercise(
+                                        id: 1,
+                                        totalTriangles: 8,
+                                        currentLevelIndex: 3
+                                    )
                                 })
                             DashboardCard(
                                 title: "A Day in the Park",
@@ -43,10 +44,11 @@ struct DashboardView: View {
                                 progress: 0.1, currentExercise: 2,
                                 locked: true,
                                 action: {
-                                    let params = ExerciseParameters(
-                                        id: 2, totalTriangles: 8,
-                                        currentLevelIndex: 2)
-                                    selectedExerciseParameters = params
+                                    dashboardController.selectExercise(
+                                        id: 2,
+                                        totalTriangles: 8,
+                                        currentLevelIndex: 2
+                                    )
                                 })
                         }
                         GridRow {
@@ -56,10 +58,11 @@ struct DashboardView: View {
                                 progress: 0, currentExercise: 1,
                                 locked: true,
                                 action: {
-                                    let params = ExerciseParameters(
-                                        id: 3, totalTriangles: 8,
-                                        currentLevelIndex: 1)
-                                    selectedExerciseParameters = params
+                                    dashboardController.selectExercise(
+                                        id: 3,
+                                        totalTriangles: 8,
+                                        currentLevelIndex: 1
+                                    )
                                 })
                             DashboardCard(
                                 title: "Coming soon...",
@@ -67,10 +70,11 @@ struct DashboardView: View {
                                 progress: 0, currentExercise: 1,
                                 locked: true,
                                 action: {
-                                    let params = ExerciseParameters(
-                                        id: 4, totalTriangles: 8,
-                                        currentLevelIndex: 1)
-                                    selectedExerciseParameters = params
+                                    dashboardController.selectExercise(
+                                        id: 4,
+                                        totalTriangles: 8,
+                                        currentLevelIndex: 1
+                                    )
                                 })
                         }
                     }
@@ -84,14 +88,17 @@ struct DashboardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(hex: 0xB5CFE3))
             .edgesIgnoringSafeArea(.all)
-            .fullScreenCover(item: $selectedExerciseParameters) { params in
+            .fullScreenCover(
+                item: $dashboardController.selectedExerciseParameters
+            ) { params in
                 LevelTransitionView(
                     totalTriangles: params.totalTriangles,
                     currentLevelIndex: params.currentLevelIndex,
                     exerciseId: params.id,
                     onCompletion: {
+                        // TODO: Handle navigation to the level
+                        dashboardController.selectedExerciseParameters = nil
                         exerciseForNavigation = params
-                        selectedExerciseParameters = nil
                         navigateToLevelSelector = true
                     }
                 )
@@ -107,6 +114,7 @@ struct DashboardView: View {
                     .environmentObject(navbarVisibility)
                 }
             }
+
         }
     }
 }
