@@ -15,3 +15,7 @@ extension Color {
         self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
     }
 }
+
+final class NavbarVisibility: ObservableObject {
+    @Published var isVisible: Bool = true
+}

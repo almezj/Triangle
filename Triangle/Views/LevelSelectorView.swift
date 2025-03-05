@@ -16,6 +16,8 @@ struct LevelSelectorView: View {
     @State private var navigateToExercise = false
     @State private var selectedExerciseId: Int?
 
+    @Environment(\.dismiss) private var dismiss
+
     init(
         totalTriangles: Int, currentLevelIndex: Int,
         selectedLevelId: Binding<Int?>
@@ -26,78 +28,98 @@ struct LevelSelectorView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            let size = min(geometry.size.width, geometry.size.height) * 0.3
-            let requiredHeight = max(
-                CGFloat(hexagons.count) * size * 2.4, geometry.size.height * 1.7
-            )
-
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    ZStack {
-                        ForEach(hexagons.indices, id: \.self) { hexIndex in
-                            HexagonShape(
-                                hexagon: hexagons[hexIndex],
-                                hexIndex: hexIndex,
-                                size: size,
-                                offsetY: -CGFloat(hexIndex) * (size * 2.4),
-                                currentLevelIndex: $currentLevelIndex,
-                                onLevelSelect: { levelId in
-                                    // ✅ Only allow selection if it's the blue current level
-                                    if levelId == currentLevelIndex {
-                                        selectedExerciseId = levelId
-                                        navigateToExercise = true
-                                    } else {
-                                        print("❌ Cannot access level \(levelId). Only level \(currentLevelIndex) is playable.")
-                                    }
-                                },
-                                isClockwise: hexIndex.isMultiple(of: 2)
-                            )
-                        }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .rotationEffect(Angle(degrees: 180))
-                    Spacer(minLength: requiredHeight)
-                }
-                .frame(maxWidth: .infinity, minHeight: requiredHeight)
-            }
-            .rotationEffect(Angle(degrees: 180))
-            .onAppear {
-                hexagons = HexagonView.createHexagons(
-                    for: totalTriangles, currentLevelIndex: currentLevelIndex)
-            }
-        }
-        .background(Color(ColorTheme.background))
-        .ignoresSafeArea()
-        .navigationDestination(isPresented: $navigateToExercise) {
-            if let exerciseId = selectedExerciseId {
-                let exercise: Exercise = {
-                    switch exerciseId {
-                    case 1:
-                        return EmotionRecognitionExercise(predefinedEmotion: .happy)
-                    case 2:
-                        return EmotionRecognitionExercise(predefinedEmotion: .angry)
-                    case 3:
-                        return EmotionRecognitionExercise(predefinedEmotion: .crying)
-                    case 4:
-                        return BodyLanguageRecognitionExercise(targetBodyLanguage: .proud)
-                    case 5:
-                        return BodyLanguageRecognitionExercise(targetBodyLanguage: .angry)
-                    case 6:
-                        return BodyLanguageRecognitionExercise(targetBodyLanguage: .frustrated)
-                    default:
-                        fatalError("No exercise found for ID \(exerciseId)")
-                    }
-                }()
-
-                exercise.startExercise(onComplete: {
-                    unlockNextLevel()
+        VStack(spacing: 0) {
+            TopNavigationBar(
+                title: "Level Selector",
+                onBack: {
+                    dismiss()
                 })
+
+            GeometryReader { geometry in
+                let size = min(geometry.size.width, geometry.size.height) * 0.3
+                let requiredHeight = max(
+                    CGFloat(hexagons.count) * size * 2.4,
+                    geometry.size.height * 1.7
+                )
+
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack {
+                        ZStack {
+                            ForEach(hexagons.indices, id: \.self) { hexIndex in
+                                HexagonShape(
+                                    hexagon: hexagons[hexIndex],
+                                    hexIndex: hexIndex,
+                                    size: size,
+                                    offsetY: -CGFloat(hexIndex) * (size * 2.4),
+                                    currentLevelIndex: $currentLevelIndex,
+                                    onLevelSelect: { levelId in
+                                        // Only allow selection if it's the blue current level
+                                        if levelId == currentLevelIndex {
+                                            selectedExerciseId = levelId
+                                            navigateToExercise = true
+                                        } else {
+                                            print(
+                                                "❌ Cannot access level \(levelId). Only level \(currentLevelIndex) is playable."
+                                            )
+                                        }
+                                    },
+                                    isClockwise: hexIndex.isMultiple(of: 2)
+                                )
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .rotationEffect(Angle(degrees: 180))
+                        Spacer(minLength: requiredHeight)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: requiredHeight)
+                }
+                .rotationEffect(Angle(degrees: 180))
+                .onAppear {
+                    hexagons = HexagonView.createHexagons(
+                        for: totalTriangles,
+                        currentLevelIndex: currentLevelIndex)
+                }
+            }
+            .background(Color(ColorTheme.background))
+            .ignoresSafeArea()
+            .navigationDestination(isPresented: $navigateToExercise) {
+                if let exerciseId = selectedExerciseId {
+                    let exercise: Exercise = {
+                        switch exerciseId {
+                        case 1:
+                            return EmotionRecognitionExercise(
+                                predefinedEmotion: .happy)
+                        case 2:
+                            return EmotionRecognitionExercise(
+                                predefinedEmotion: .angry)
+                        case 3:
+                            return EmotionRecognitionExercise(
+                                predefinedEmotion: .crying)
+                        case 4:
+                            return BodyLanguageRecognitionExercise(
+                                targetBodyLanguage: .proud)
+                        case 5:
+                            return BodyLanguageRecognitionExercise(
+                                targetBodyLanguage: .angry)
+                        case 6:
+                            return BodyLanguageRecognitionExercise(
+                                targetBodyLanguage: .frustrated)
+                        default:
+                            fatalError("No exercise found for ID \(exerciseId)")
+                        }
+                    }()
+
+                    exercise.startExercise(onComplete: {
+                        unlockNextLevel()
+                    })
+                }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea(edges: .all)
+        .navigationBarHidden(true)
     }
 
-    // ✅ Unlocks the next level ONLY if the current level is completed
     func unlockNextLevel() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if currentLevelIndex < totalTriangles {
@@ -220,7 +242,9 @@ struct HexagonShape: View {
                         print("✅ Level \(globalIndex) selected")
                         onLevelSelect(globalIndex)
                     } else if globalIndex < currentLevelIndex {
-                        print("❌ Level \(globalIndex) is already completed and locked.")
+                        print(
+                            "❌ Level \(globalIndex) is already completed and locked."
+                        )
                     } else {
                         print("❌ Level \(globalIndex) is locked.")
                     }

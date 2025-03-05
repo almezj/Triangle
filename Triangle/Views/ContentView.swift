@@ -9,29 +9,36 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var selectedTab: Tab = .dashboard
+    @StateObject var navbarVisibility = NavbarVisibility()
 
     var body: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                Group {
-                    switch selectedTab {
-                    case .leaderboard:
-                        LeaderboardView()
-                    case .dashboard:
-                        DashboardView()
-                    case .profile:
-                        ProfileView()
-                    }
+        ZStack {
+            // Main content (with background)
+            Group {
+                switch selectedTab {
+                case .leaderboard:
+                    LeaderboardView()
+                case .dashboard:
+                    DashboardView()
+                case .profile:
+                    ProfileView()
                 }
-                .ignoresSafeArea(edges: .top)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .environmentObject(navbarVisibility)
+            .ignoresSafeArea(edges: .top)
+            .background(ColorTheme.background)
+            
 
-            Navbar(selectedTab: $selectedTab)
-                .frame(height: 100)
-                .padding(.bottom, 10)
+            // Overlay the navbar at the bottom
+            if navbarVisibility.isVisible {
+                VStack {
+                    Spacer()
+                    Navbar(selectedTab: $selectedTab)
+                }
+                .transition(.move(edge: .bottom))
+            }
         }
-        .background(ColorTheme.background)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea(edges: .bottom)
     }
 }

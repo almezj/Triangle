@@ -39,21 +39,29 @@ struct OnboardingView: View {
                     VStack(spacing: 16) {
                         if currentForm == .login {
                             VStack {
-                                HStack(spacing:10) {
+                                HStack(spacing: 10) {
                                     Spacer()
-                                    TextField("Username", text: $loginViewModel.username)
-                                        .textFieldStyle(TriangleTextFieldStyle())
+                                    TextField(
+                                        "Username",
+                                        text: $loginViewModel.username
+                                    )
+                                    .textFieldStyle(TriangleTextFieldStyle())
                                     Spacer()
                                 }
 
                                 HStack(spacing: 10) {
                                     Spacer()
-                                    SecureField("Password", text: $loginViewModel.password)
-                                        .textFieldStyle(TriangleTextFieldStyle())
+                                    SecureField(
+                                        "Password",
+                                        text: $loginViewModel.password
+                                    )
+                                    .textFieldStyle(TriangleTextFieldStyle())
                                     Spacer()
                                 }
 
-                                if let errorMessage = loginViewModel.errorMessage {
+                                if let errorMessage = loginViewModel
+                                    .errorMessage
+                                {
                                     Text(errorMessage)
                                         .foregroundColor(.red)
                                         .padding()
@@ -77,15 +85,20 @@ struct OnboardingView: View {
                                             }
                                         }
                                     }
-                                    .animation(.easeInOut(duration: 0.3), value: loginViewModel.isLoading)
+                                    .animation(
+                                        .easeInOut(duration: 0.3),
+                                        value: loginViewModel.isLoading
+                                    )
                                     .buttonStyle(TrianglePrimaryButton())
                                     .disabled(loginViewModel.isLoading)
                                     Spacer()
                                 }
                             }
-                            // ✅ Navigation when login is successful
-                            .navigationDestination(isPresented: $loginViewModel.navigateToDashboard) {
-                                DashboardView()
+                            .navigationDestination(
+                                isPresented: $loginViewModel.navigateToDashboard
+                            ) {
+                                ContentView()
+                                    .environmentObject(NavbarVisibility())
                             }
                         } else if currentForm == .register {
                             RegisterForm()
@@ -106,15 +119,20 @@ struct OnboardingView: View {
                                 }
 
                                 VStack {
-                                    LabelledDivider(label: "or", horizontalPadding: 20, color: Color.white)
-                                        .frame(height: 1)
+                                    LabelledDivider(
+                                        label: "or", horizontalPadding: 20,
+                                        color: Color.white
+                                    )
+                                    .frame(height: 1)
                                 }
                                 .padding(.horizontal, 400)
 
                                 HStack(spacing: 300) {
                                     Spacer()
                                     Button(action: {
-                                        withAnimation { currentForm = .register }
+                                        withAnimation {
+                                            currentForm = .register
+                                        }
                                     }) {
                                         Text("Create an account")
                                             .frame(maxWidth: .infinity)
@@ -181,7 +199,9 @@ struct LoginForm: View {
                         }
                     }
                 }
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
+                .animation(
+                    .easeInOut(duration: 0.3), value: viewModel.isLoading
+                )
                 .buttonStyle(TrianglePrimaryButton())
                 .disabled(viewModel.isLoading)
                 Spacer()
@@ -231,8 +251,10 @@ struct RegisterForm: View {
 
             HStack(spacing: 10) {
                 Spacer()
-                SecureField("Confirm Password", text: $viewModel.confirmPassword)
-                    .textFieldStyle(TriangleTextFieldStyle())
+                SecureField(
+                    "Confirm Password", text: $viewModel.confirmPassword
+                )
+                .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
@@ -250,7 +272,9 @@ struct RegisterForm: View {
                         }
                     }
                 }
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
+                .animation(
+                    .easeInOut(duration: 0.3), value: viewModel.isLoading
+                )
                 .buttonStyle(TrianglePrimaryButton())
                 .disabled(viewModel.isLoading)
                 Spacer()
@@ -273,7 +297,10 @@ struct LabelledDivider: View {
     let horizontalPadding: CGFloat
     let color: Color
 
-    init(label: String, horizontalPadding: CGFloat = 8, color: Color = Color(UIColor.separator)) {
+    init(
+        label: String, horizontalPadding: CGFloat = 8,
+        color: Color = Color(UIColor.separator)
+    ) {
         self.label = label
         self.horizontalPadding = horizontalPadding
         self.color = color
@@ -293,6 +320,7 @@ struct LabelledDivider: View {
     }
 
     var line: some View {
-        VStack { Divider().frame(height: 1).background(color) }.padding(horizontalPadding)
+        VStack { Divider().frame(height: 1).background(color) }.padding(
+            horizontalPadding)
     }
 }

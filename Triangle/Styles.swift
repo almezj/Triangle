@@ -7,92 +7,94 @@
 
 import SwiftUI
 
-// Define a central color theme
+// MARK: - Color Theme
 struct ColorTheme {
-
-    static let primary = Color(hex: 0x7297B1)
-    static let darker = Color(hex: 0x1D272F)
-    static let secondary = Color(hex: 0xDAE8F6)
-    static let accent = Color(hex: 0x96B6CF)
-    static let background = Color(hex: 0xB5CFE3)
-    static let text = Color(hex: 0x4C708A)
-    static let lightGray = Color(hex: 0xD9D9D9)
-    static let shadowGray = Color.gray.opacity(0.4)
-    static let green = Color(hex: 0x72B1A0)
+    static let primary     = Color(hex: 0x7297B1)
+    static let darker      = Color(hex: 0x1D272F)
+    static let secondary   = Color(hex: 0xDAE8F6)
+    static let accent      = Color(hex: 0x96B6CF)
+    static let background  = Color(hex: 0xB5CFE3)
+    static let text        = Color(hex: 0x4C708A)
+    static let lightGray   = Color(hex: 0xD9D9D9)
+    static let shadowGray  = Color.gray.opacity(0.4)
+    static let green       = Color(hex: 0x72B1A0)
 }
 
-// Define Montserrat font styles
-// TODO: Find a way to import variable fonts as this is not working
+// MARK: - Font Styles (Dynamic Type Ready)
 extension Font {
-    static let montserratHeadline = Font.custom("Montserrat-Bold", size: 18)
-    static let montserratTitle = Font.custom("Montserrat-Bold", size: 24)
-    static let montserratBody = Font.custom("Montserrat-Regular", size: 16)
+    static let pageTitle      = Font.system(size: 38, weight: .black, design: .rounded)
+    static let pageSubtitle   = Font.system(size: 24, weight: .black, design: .rounded)
+    static let bodyText       = Font.system(size: 18, weight: .bold,  design: .rounded)
+    static let buttonText     = Font.system(size: 20, weight: .black, design: .rounded)
+    static let textFieldText  = Font.system(size: 18, weight: .bold, design: .rounded)
 }
 
-struct NavbarButton: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .frame(height: 20)
-            .padding()
-            .foregroundColor(ColorTheme.text)
-            .font(.title2)
-            .fontWeight(.black)
-            .background(ColorTheme.lightGray)
-            .cornerRadius(60)
-            .shadow(color: ColorTheme.shadowGray, radius: 4, x: 2, y: 2)
-    }
-}
-
+// MARK: - Button Styles
 struct TrianglePrimaryButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(minWidth: 50, minHeight: 20)
-            .padding(.vertical, 15)
+            .font(.buttonText)
             .foregroundColor(ColorTheme.secondary)
-            .font(.title2)
-            .fontWeight(.black)
+            .padding(.horizontal, 24).padding(.vertical, 12)
             .background(ColorTheme.primary)
-            .cornerRadius(60)
+            .cornerRadius(30)
             .overlay(
-                RoundedRectangle(cornerRadius: 60)
-                    .stroke(ColorTheme.primary, lineWidth: 3)
+                RoundedRectangle(cornerRadius: 30)
+                    .stroke(ColorTheme.primary, lineWidth: 2)
             )
+            .shadow(color: ColorTheme.shadowGray, radius: 4, x: 2, y: 2)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
     }
 }
 
 struct TriangleSecondaryButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(height: 20)
-            .padding(.vertical, 15)
+            .font(.buttonText)
             .foregroundColor(ColorTheme.primary)
-            .font(.title2)
-            .fontWeight(.black)
+            .padding(.horizontal, 24).padding(.vertical, 12)
             .background(ColorTheme.secondary)
-            .cornerRadius(60)
+            .cornerRadius(30)
             .overlay(
-                RoundedRectangle(cornerRadius: 60)
-                    .stroke(ColorTheme.secondary, lineWidth: 3)
+                RoundedRectangle(cornerRadius: 30)
+                    .stroke(ColorTheme.secondary, lineWidth: 2)
             )
+            .shadow(color: ColorTheme.shadowGray, radius: 4, x: 2, y: 2)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
     }
 }
 
+// MARK: - TextField Style
 struct TriangleTextFieldStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
-            .frame(height: 20)
-            .padding(.vertical, 15)
+            .font(.textFieldText)
+            .padding(.horizontal, 20).padding(.vertical, 12)
             .background(ColorTheme.lightGray.opacity(0.1))
-            .cornerRadius(60)
-            .font(.title2)
-            .fontWeight(.black)
-            .foregroundColor(ColorTheme.text)
+            .cornerRadius(30)
             .overlay(
-                RoundedRectangle(cornerRadius: 60)
-                    .stroke(ColorTheme.text, lineWidth: 3)
+                RoundedRectangle(cornerRadius: 30)
+                    .stroke(ColorTheme.text, lineWidth: 2)
             )
             .multilineTextAlignment(.center)
-            .autocapitalization(.none)
+            .textInputAutocapitalization(.never)
             .autocorrectionDisabled(true)
+            .shadow(color: ColorTheme.shadowGray, radius: 2, x: 1, y: 2)
     }
+}
+
+// MARK: - Preview
+#Preview {
+    VStack(spacing: 20) {
+        Button("Primary Button") {}
+            .buttonStyle(TrianglePrimaryButton())
+
+        Button("Secondary Button") {}
+            .buttonStyle(TriangleSecondaryButton())
+
+        TextField("Enter text...", text: .constant(""))
+            .textFieldStyle(TriangleTextFieldStyle())
+    }
+    .padding()
+    .previewLayout(.sizeThatFits)
 }

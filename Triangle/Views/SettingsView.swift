@@ -26,7 +26,7 @@ struct SettingsView: View {
                     // Account
                     Group {
                         Text("Account")
-                            .font(.montserratHeadline)
+                            .font(.pageTitle)
                         Button("Update Email") {
                             print("Update Email button tapped")
                         }
@@ -43,11 +43,11 @@ struct SettingsView: View {
                     // Accessibility
                     Group {
                         Text("Accessibility")
-                            .font(.montserratHeadline)
+                            .font(.pageTitle)
 
                         VStack(alignment: .leading) {
                             Text("Text Size")
-                                .font(.montserratBody)
+                                .font(.bodyText)
                             Slider(value: $textSize, in: 0.8...1.5, step: 0.1) {
                                 Text("Text Size")
                             }
@@ -62,11 +62,11 @@ struct SettingsView: View {
                     // Sound
                     Group {
                         Text("Sound")
-                            .font(.montserratHeadline)
+                            .font(.pageTitle)
 
                         VStack(alignment: .leading) {
                             Text("Music Volume")
-                                .font(.montserratBody)
+                                .font(.bodyText)
                             Slider(value: $musicVolume, in: 0...1, step: 0.1) {
                                 Text("Music Volume")
                             }
@@ -75,7 +75,7 @@ struct SettingsView: View {
                             }
 
                             Text("SFX Volume")
-                                .font(.montserratBody)
+                                .font(.bodyText)
                             Slider(value: $sfxVolume, in: 0...1, step: 0.1) {
                                 Text("SFX Volume")
                             }
@@ -90,11 +90,11 @@ struct SettingsView: View {
                     // General
                     Group {
                         Text("General")
-                            .font(.montserratHeadline)
+                            .font(.pageTitle)
 
                         VStack(alignment: .leading) {
                             Text("Language")
-                                .font(.montserratBody)
+                                .font(.bodyText)
                             Picker("Language", selection: $selectedLanguage) {
                                 ForEach(languages, id: \ .self) { language in
                                     Text(language)
@@ -117,11 +117,11 @@ struct SettingsView: View {
                     // App Info
                     Group {
                         Text("App Info")
-                            .font(.montserratHeadline)
+                            .font(.pageTitle)
 
                         VStack(alignment: .leading) {
                             Text("Version: 1.0.0")
-                                .font(.montserratBody)
+                                .font(.bodyText)
                             Button("Privacy Policy") {
                                 print("Privacy Policy button tapped")
                                 showPrivacyPolicy = true
