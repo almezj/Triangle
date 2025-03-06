@@ -9,24 +9,38 @@ import SwiftUI
 
 // MARK: - Color Theme
 struct ColorTheme {
-    static let primary     = Color(hex: 0x7297B1)
-    static let darker      = Color(hex: 0x1D272F)
-    static let secondary   = Color(hex: 0xDAE8F6)
-    static let accent      = Color(hex: 0x96B6CF)
-    static let background  = Color(hex: 0xB5CFE3)
-    static let text        = Color(hex: 0x4C708A)
-    static let lightGray   = Color(hex: 0xD9D9D9)
-    static let shadowGray  = Color.gray.opacity(0.4)
-    static let green       = Color(hex: 0x72B1A0)
+    static let primary = Color(hex: 0x7297B1)
+    static let darker = Color(hex: 0x1D272F)
+    static let secondary = Color(hex: 0xDAE8F6)
+    static let accent = Color(hex: 0x96B6CF)
+    static let background = Color(hex: 0xB5CFE3)
+    static let text = Color(hex: 0x4C708A)
+    static let lightGray = Color(hex: 0xD9D9D9)
+    static let shadowGray = Color.gray.opacity(0.4)
+    static let green = Color(hex: 0x72B1A0)
 }
 
 // MARK: - Font Styles (Dynamic Type Ready)
 extension Font {
-    static let pageTitle      = Font.system(size: 38, weight: .black, design: .rounded)
-    static let pageSubtitle   = Font.system(size: 24, weight: .black, design: .rounded)
-    static let bodyText       = Font.system(size: 18, weight: .bold,  design: .rounded)
-    static let buttonText     = Font.system(size: 20, weight: .black, design: .rounded)
-    static let textFieldText  = Font.system(size: 18, weight: .bold, design: .rounded)
+    static var textScale: CGFloat = 1.0
+    static var pageTitle: Font {
+        Font.system(size: 38 * textScale, weight: .black, design: .rounded)
+    }
+    static var cardTitle: Font {
+        Font.system(size: 38 * textScale, weight: .black, design: .rounded)
+    }
+    static var pageSubtitle: Font {
+        Font.system(size: 24 * textScale, weight: .black, design: .rounded)
+    }
+    static var bodyText: Font {
+        Font.system(size: 18 * textScale, weight: .bold, design: .rounded)
+    }
+    static var buttonText: Font {
+        Font.system(size: 20 * textScale, weight: .black, design: .rounded)
+    }
+    static var textFieldText: Font {
+        Font.system(size: 18 * textScale, weight: .bold, design: .rounded)
+    }
 }
 
 // MARK: - Button Styles
@@ -86,6 +100,15 @@ struct TriangleTextFieldStyle: TextFieldStyle {
 // MARK: - Preview
 #Preview {
     VStack(spacing: 20) {
+        Text("Page Title")
+            .font(.pageTitle)
+            .foregroundColor(ColorTheme.primary)
+        Text("Subtitle")
+            .font(.pageSubtitle)
+            .foregroundColor(ColorTheme.secondary)
+        Text("Body Text")
+            .font(.bodyText)
+            .foregroundColor(ColorTheme.text)
         Button("Primary Button") {}
             .buttonStyle(TrianglePrimaryButton())
 

@@ -8,48 +8,59 @@
 import SwiftUI
 
 final class SettingsController: ObservableObject {
-    private let userId: String
-    private let userDataManager = UserDataManager.shared
-
-    @Published var userData: UserData {
-        didSet {
-            // Save the entire model on each change
-            // Might optimize this later but this should be good for now
-            userDataManager.saveUserData(userData, for: userId)
-        }
-    }
+    private let userDataStore: UserDataStore
 
     // Provide the list of available languages.
     var languages: [String] {
         return ["English", "Czech", "Spanish"]
     }
 
-    init(userId: String) {
-        self.userId = userId
-        self.userData = userDataManager.loadUserData(for: userId)
+    // Dependency injection via initializer.
+    init(userDataStore: UserDataStore) {
+        self.userDataStore = userDataStore
     }
 
     // MARK: - Updates
 
     func updateMusicVolume(_ volume: Double) {
-        userData.settings.musicVolume = volume
+        guard var currentSettings = userDataStore.userData?.settings else {
+            return
+        }
+        currentSettings.updateMusicVolume(volume)
+        userDataStore.updateSettings(currentSettings)
     }
 
     func updateSFXVolume(_ volume: Double) {
-        userData.settings.sfxVolume = volume
+        guard var currentSettings = userDataStore.userData?.settings else {
+            return
+        }
+        currentSettings.updateSFXVolume(volume)
+        userDataStore.updateSettings(currentSettings)
     }
 
     func updateTextSize(_ size: Double) {
-        userData.settings.textSize = size
+        guard var currentSettings = userDataStore.userData?.settings else {
+            return
+        }
+        currentSettings.updateTextSize(size)
+        userDataStore.updateSettings(currentSettings)
     }
 
     func updateLanguage(_ language: String) {
-        userData.settings.selectedLanguage = language
+        guard var currentSettings = userDataStore.userData?.settings else {
+            return
+        }
+        currentSettings.updateSelectedLanguage(language)
+        userDataStore.updateSettings(currentSettings)
     }
 
-    // MARK: - Reset
+    // MARK: - Reset Functions
+
+    func resetSettings() {
+        userDataStore.updateSettings(SettingsData.defaultSettings)
+    }
 
     func resetProgress() {
-        userData.progress = ProgressData()
+        userDataStore.updateProgress(ProgressData())
     }
 }

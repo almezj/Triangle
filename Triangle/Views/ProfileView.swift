@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject var profileController = ProfileController()
+    @EnvironmentObject var userDataStore: UserDataStore
 
     var body: some View {
         NavigationStack {
@@ -37,13 +38,12 @@ struct ProfileView: View {
                             .font(.pageTitle)
 
                         ProgressView(value: profileController.progress) {
-                            Text(
-                                "Progress: \(Int(profileController.progress * 100))%"
-                            )
-                            .font(.bodyText)
+                            Text("Progress: \(Int(profileController.progress * 100))%")
+                                .font(.bodyText)
                         }
                         .progressViewStyle(
-                            LinearProgressViewStyle(tint: ColorTheme.primary))
+                            LinearProgressViewStyle(tint: ColorTheme.primary)
+                        )
 
                         HStack {
                             Text("Milestones Achieved:")
@@ -62,20 +62,29 @@ struct ProfileView: View {
                         Text("Recent Activities")
                             .font(.pageTitle)
 
-                        ForEach(profileController.activities, id: \.self) {
-                            activity in
+                        ForEach(profileController.activities, id: \.self) { activity in
                             HStack {
                                 Circle()
                                     .fill(ColorTheme.primary)
                                     .frame(width: 8, height: 8)
-
                                 Text(activity)
                                     .font(.bodyText)
                                     .foregroundColor(.secondary)
                             }
                         }
+                        
+                        // Settings button as a NavigationLink
+                        NavigationLink(destination: SettingsView(settingsController: SettingsController(userDataStore: userDataStore))) {
+                            Text("Settings")
+                                .font(.headline)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(ColorTheme.primary)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                        }
+                        .padding(.top, 10)
                     }
-
                 }
                 .padding()
             }
@@ -88,5 +97,6 @@ struct ProfileView: View {
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
+            .environmentObject(UserDataStore(userId: "previewUser"))
     }
 }

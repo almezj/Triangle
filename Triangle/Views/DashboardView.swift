@@ -15,15 +15,15 @@ struct ExerciseParameters: Identifiable, Hashable {
 
 struct DashboardView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
-    let userId: String
+    @EnvironmentObject var userDataStore: UserDataStore
     @StateObject var dashboardController: DashboardController
     @State private var navigateToLevelSelector: Bool = false
     @State private var exerciseForNavigation: ExerciseParameters?
 
-    init(userId: String) {
-        self.userId = userId
+    // Inject a preconfigured DashboardController.
+    init(userDataStore: UserDataStore) {
         _dashboardController = StateObject(
-            wrappedValue: DashboardController(userId: userId))
+            wrappedValue: DashboardController(userDataStore: userDataStore))
     }
 
     var body: some View {
@@ -31,7 +31,6 @@ struct DashboardView: View {
             ScrollView {
                 VStack {
                     // Define your exercise definitions
-                    // This will be later taken from the storage
                     let exercises: [(id: Int, totalLevels: Int)] = [
                         (1, 8), (2, 8), (3, 8), (4, 8),
                     ]
@@ -60,8 +59,7 @@ struct DashboardView: View {
                                     dashboardController.selectExercise(
                                         id: exercise.id,
                                         totalTriangles: exercise.totalLevels,
-                                        currentLevelIndex: info.currentLevel
-                                    )
+                                        currentLevelIndex: info.currentLevel)
                                 }
                             )
                         }
@@ -104,7 +102,7 @@ struct DashboardView: View {
         }
     }
 
-    // MARK: - Helper Functions (This will be later taken from the storage)
+    // MARK: - Helper Functions
 
     func titleForExercise(exerciseId: Int) -> String {
         switch exerciseId {
@@ -128,8 +126,14 @@ struct DashboardView: View {
 
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView(userId: "user123")
+        let userDataStore = UserDataStore(userId: "previewUser")
+        userDataStore.userData = userDataStore.loadUserData(for: "previewUser")
+        let dashboardController = DashboardController(
+            userDataStore: userDataStore)
+
+        return DashboardView(userDataStore: userDataStore)
             .environmentObject(NavbarVisibility())
+            .environmentObject(userDataStore)
             .previewInterfaceOrientation(.landscapeLeft)
             .previewDevice("iPad Pro 11-inch")
     }

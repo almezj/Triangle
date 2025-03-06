@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab: Tab = .dashboard
     @StateObject var navbarVisibility = NavbarVisibility()
-    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var userDataStore: UserDataStore
 
     var body: some View {
         ZStack {
@@ -20,7 +20,7 @@ struct ContentView: View {
                 case .leaderboard:
                     LeaderboardView()
                 case .dashboard:
-                    DashboardView(userId: authManager.currentUserId!)
+                    DashboardView(userDataStore: userDataStore)
                 case .profile:
                     ProfileView()
                 }

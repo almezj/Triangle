@@ -21,8 +21,7 @@ struct DashboardCard: View {
                 // Locked state: non-interactive UI
                 VStack(alignment: .leading, spacing: 15) {
                     Text(title)
-                        .font(.largeTitle)
-                        .fontWeight(.black)
+                        .font(.cardTitle)
                         .foregroundColor(Color(hex: 0x4C708A))
                     Spacer()
                     HStack {
@@ -51,8 +50,7 @@ struct DashboardCard: View {
                 Button(action: action) {
                     VStack(alignment: .leading, spacing: 15) {
                         Text(title)
-                            .font(.largeTitle)
-                            .fontWeight(.black)
+                            .font(.cardTitle)
                             .foregroundColor(Color(hex: 0x4C708A))
                         Spacer()
                         HStack {

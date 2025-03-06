@@ -9,39 +9,11 @@ import SwiftUI
 
 final class DashboardController: ObservableObject {
     @Published var selectedExerciseParameters: ExerciseParameters?
-    @Published var progressData: ProgressData
 
-    private let userId: String
-    private let userDataManager = UserDataManager.shared
+    private let userDataStore: UserDataStore
 
-    init(userId: String) {
-        self.userId = userId
-        let userData = userDataManager.loadUserData(for: userId)
-        self.progressData = userData.progress
-    }
-
-    /// Computes the progress fraction and current level for a given exercise.
-    /// - Parameters:
-    ///   - exerciseId: The unique ID for the exercise.
-    ///   - totalLevels: The total number of levels in that exercise (e.g., 8).
-    /// - Returns: A tuple (progress: fraction, currentLevel: Int)
-    func getExerciseInfo(forExerciseId exerciseId: Int, totalLevels: Int) -> (
-        progress: Double, currentLevel: Int
-    ) {
-        // Find the ExerciseProgress for this exercise
-        guard
-            let exerciseProgress = progressData.exerciseProgresses.first(
-                where: { $0.exerciseId == exerciseId })
-        else {
-            // If none found, progress fraction = 0, currentLevel = 1
-            return (0.0, 1)
-        }
-        // Count completed levels
-        let completedCount = exerciseProgress.levels.filter { $0.completed }
-            .count
-        let fraction = Double(completedCount) / Double(totalLevels)
-        let currentLevel = completedCount + 1  // e.g. if 3 are completed, user is on level 4
-        return (fraction, currentLevel)
+    init(userDataStore: UserDataStore) {
+        self.userDataStore = userDataStore
     }
 
     /// Called when a dashboard card is tapped to set up navigation.
@@ -52,5 +24,29 @@ final class DashboardController: ObservableObject {
             currentLevelIndex: currentLevelIndex
         )
         self.selectedExerciseParameters = params
+    }
+
+    /// Returns exercise information for a given exercise id and total number of levels.
+    /// - Parameters:
+    ///   - id: The exercise identifier.
+    ///   - totalLevels: The total number of levels for the exercise.
+    /// - Returns: A tuple containing the progress (as a fraction) and the current level.
+    func getExerciseInfo(forExerciseId id: Int, totalLevels: Int) -> (
+        progress: Double, currentLevel: Int
+    ) {
+        guard let userData = userDataStore.userData else {
+            return (0, 1)
+        }
+        let progressData = userData.progress
+        if let exerciseProgress = progressData.exerciseProgresses.first(where: {
+            $0.exerciseId == id
+        }) {
+            let completedCount = exerciseProgress.levels.filter { $0.completed }
+                .count
+            let progress = Double(completedCount) / Double(totalLevels)
+            let currentLevel = exerciseProgress.currentLevelId
+            return (progress, currentLevel)
+        }
+        return (0, 1)
     }
 }
