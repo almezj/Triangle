@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct TriangleApp: App {
     @StateObject var authManager = AuthenticationManager()
+    @StateObject var userDataStore = UserDataStore(userId: "guest")
 
     init() {
         print(
@@ -21,6 +22,14 @@ struct TriangleApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(authManager)
+                .environmentObject(userDataStore)
+                .onAppear {
+                    if let userId = authManager.currentUserId, userId != "guest"
+                    {
+                        print("Logged in as \(userId)")
+                        print("DataStore" + "\(userDataStore.userData)")
+                    }
+                }
         }
     }
 }

@@ -27,8 +27,7 @@ final class UserDataManager {
         let defaultSettings = SettingsData(
             musicVolume: 0.5, sfxVolume: 0.5, textSize: 1.0,
             selectedLanguage: "English")
-        let defaultProgress = ProgressData(
-            currentLevel: 1, completedExercises: [])
+        let defaultProgress = ProgressData()
         let defaultCustomization = CustomizationData(
             currency: 0, unlockedCosmetics: [])
         return UserData(

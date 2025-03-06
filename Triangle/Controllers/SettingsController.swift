@@ -50,8 +50,6 @@ final class SettingsController: ObservableObject {
     // MARK: - Reset
 
     func resetProgress() {
-        // Reset function for debugging but idk, we might keep this in.
-        userData.progress = ProgressData(
-            currentLevel: 1, completedExercises: [])
+        userData.progress = ProgressData()
     }
 }

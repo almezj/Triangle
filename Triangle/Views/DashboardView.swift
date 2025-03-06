@@ -15,67 +15,55 @@ struct ExerciseParameters: Identifiable, Hashable {
 
 struct DashboardView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
-    @StateObject var dashboardController = DashboardController()
+    let userId: String
+    @StateObject var dashboardController: DashboardController
     @State private var navigateToLevelSelector: Bool = false
     @State private var exerciseForNavigation: ExerciseParameters?
+
+    init(userId: String) {
+        self.userId = userId
+        _dashboardController = StateObject(
+            wrappedValue: DashboardController(userId: userId))
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack {
-                    Grid(horizontalSpacing: 40, verticalSpacing: 40) {
-                        GridRow {
+                    // Define your exercise definitions
+                    // This will be later taken from the storage
+                    let exercises: [(id: Int, totalLevels: Int)] = [
+                        (1, 8), (2, 8), (3, 8), (4, 8),
+                    ]
+
+                    LazyVGrid(
+                        columns: [
+                            GridItem(.flexible()), GridItem(.flexible()),
+                        ],
+                        spacing: 40
+                    ) {
+                        ForEach(exercises, id: \.id) { exercise in
+                            let info = dashboardController.getExerciseInfo(
+                                forExerciseId: exercise.id,
+                                totalLevels: exercise.totalLevels)
                             DashboardCard(
-                                title: "Getting Started",
-                                imageNames: ["SocialTriangle"],
-                                progress: 0.3,
-                                currentExercise: 3,
-                                locked: false,
+                                title: titleForExercise(
+                                    exerciseId: exercise.id),
+                                imageNames: imageNamesForExercise(
+                                    exerciseId: exercise.id),
+                                progress: info.progress,
+                                currentExercise: info.currentLevel,
+                                locked: isExerciseLocked(
+                                    exerciseId: exercise.id,
+                                    currentLevel: info.currentLevel),
                                 action: {
                                     dashboardController.selectExercise(
-                                        id: 1,
-                                        totalTriangles: 8,
-                                        currentLevelIndex: 3
+                                        id: exercise.id,
+                                        totalTriangles: exercise.totalLevels,
+                                        currentLevelIndex: info.currentLevel
                                     )
-                                })
-                            DashboardCard(
-                                title: "A Day in the Park",
-                                imageNames: ["SocialTriangle"],
-                                progress: 0.1, currentExercise: 2,
-                                locked: true,
-                                action: {
-                                    dashboardController.selectExercise(
-                                        id: 2,
-                                        totalTriangles: 8,
-                                        currentLevelIndex: 2
-                                    )
-                                })
-                        }
-                        GridRow {
-                            DashboardCard(
-                                title: "School Sports Day",
-                                imageNames: ["SocialTriangle"],
-                                progress: 0, currentExercise: 1,
-                                locked: true,
-                                action: {
-                                    dashboardController.selectExercise(
-                                        id: 3,
-                                        totalTriangles: 8,
-                                        currentLevelIndex: 1
-                                    )
-                                })
-                            DashboardCard(
-                                title: "Coming soon...",
-                                imageNames: ["SocialTriangle"],
-                                progress: 0, currentExercise: 1,
-                                locked: true,
-                                action: {
-                                    dashboardController.selectExercise(
-                                        id: 4,
-                                        totalTriangles: 8,
-                                        currentLevelIndex: 1
-                                    )
-                                })
+                                }
+                            )
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -96,7 +84,6 @@ struct DashboardView: View {
                     currentLevelIndex: params.currentLevelIndex,
                     exerciseId: params.id,
                     onCompletion: {
-                        // TODO: Handle navigation to the level
                         dashboardController.selectedExerciseParameters = nil
                         exerciseForNavigation = params
                         navigateToLevelSelector = true
@@ -114,24 +101,34 @@ struct DashboardView: View {
                     .environmentObject(navbarVisibility)
                 }
             }
-
         }
     }
-}
 
-struct DetailView: View {
-    let title: String
+    // MARK: - Helper Functions (This will be later taken from the storage)
 
-    var body: some View {
-        VStack {
-            Text("You are in the " + title + " view!")
+    func titleForExercise(exerciseId: Int) -> String {
+        switch exerciseId {
+        case 1: return "Getting Started"
+        case 2: return "A Day in the Park"
+        case 3: return "School Sports Day"
+        case 4: return "Coming soon..."
+        default: return "Exercise \(exerciseId)"
         }
+    }
+
+    func imageNamesForExercise(exerciseId: Int) -> [String] {
+        return ["SocialTriangle"]
+    }
+
+    func isExerciseLocked(exerciseId: Int, currentLevel: Int) -> Bool {
+        if exerciseId == 1 { return false }
+        return currentLevel == 1
     }
 }
 
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        DashboardView(userId: "user123")
             .environmentObject(NavbarVisibility())
             .previewInterfaceOrientation(.landscapeLeft)
             .previewDevice("iPad Pro 11-inch")

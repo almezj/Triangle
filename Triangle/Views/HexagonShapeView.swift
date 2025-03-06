@@ -71,7 +71,7 @@ struct HexagonShape: View {
 
                 Button(action: {
                     if globalIndex == currentLevelIndex {  // ✅ Only blue levels are playable
-                        print("✅ Level \(globalIndex) selected")
+                        print("✅ Level \(globalIndex) selected - HexagonShapeView button action")
                         onLevelSelect(globalIndex)
                     } else if globalIndex < currentLevelIndex {
                         print(
