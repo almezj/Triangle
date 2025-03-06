@@ -145,6 +145,9 @@ final class UserDataStore: ObservableObject {
             newProgress.exerciseProgresses.append(newExercise)
         }
 
+        print("Level \(levelId) completed for exercise \(exerciseId)")
+        print("New progress \(userData?.progress)")
+        
         // Save it back
         currentData.progress = newProgress
         userData = currentData
@@ -160,7 +163,7 @@ final class UserDataStore: ObservableObject {
         }
         print("UserData saved for user \(userId)")
         if let savedData = UserDefaults.standard.object(forKey: userId) {
-            print(UserDefaults.standard.object(forKey: userId))
+            print("New settings: \(userData.settings)")
         }
     }
 }
