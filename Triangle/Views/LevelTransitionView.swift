@@ -3,7 +3,6 @@ import SwiftUI
 
 struct LevelTransitionView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
-    @State private var navigateToLevelSelector = false
     @State private var riveViewModel = RiveViewModel(
         fileName: "ch_t", animationName: "Timeline 1")
     let totalTriangles: Int
@@ -26,12 +25,12 @@ struct LevelTransitionView: View {
             Color(hex: 0xB5CFE3)
                 .edgesIgnoringSafeArea(.all)
 
-            VStack(spacing: 30) {  // 🔹 Adjusted spacing between elements
-                Spacer()  // 🔹 Keeps content centered
+            VStack(spacing: 30) {  // Adjusted spacing between elements
+                Spacer()  // Keeps content centered
 
                 riveViewModel.view()
                     .frame(width: 300, height: 300)
-                    .padding(.bottom, 20)  // 🔹 Adds extra space below the animation
+                    .padding(.bottom, 20)  // Adds extra space below the animation
 
                 ProgressView()
                     .progressViewStyle(
@@ -39,21 +38,21 @@ struct LevelTransitionView: View {
                     )
                     .scaleEffect(2)
 
-                Spacer(minLength: 60)  // 🔹 Moves text lower while keeping layout balanced
+                Spacer(minLength: 60)  // Moves text lower while keeping layout balanced
 
-                // ✅ Infobite with improved background styling
+                // Infobite with improved background styling
                 Text(displayedInfobite)
                     .font(.system(size: 20, weight: .medium))
                     .foregroundColor(Color(hex: 0x4C708A))
                     .multilineTextAlignment(.center)
                     .padding()
                     .frame(maxWidth: 320)
-                    .background(Color(hex: 0x96B6CF).opacity(0.85))  // ✅ Themed background
+                    .background(Color(hex: 0x96B6CF).opacity(0.85))
                     .cornerRadius(15)
                     .shadow(
                         color: Color.black.opacity(0.2), radius: 5, x: 0, y: 3)
 
-                Spacer()  // 🔹 Ensures everything remains vertically balanced
+                Spacer()  // Ensures everything remains vertically balanced
             }
         }
         .navigationBarHidden(true)
@@ -62,7 +61,7 @@ struct LevelTransitionView: View {
             displayedInfobite =
                 infobites.randomElement()
                 ?? "Emotions help us understand the world!"
-            // Simulate a transition delay (e.g., for an animation or loading).
+            // After a delay, signal that the transition is complete.
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 onCompletion()
             }

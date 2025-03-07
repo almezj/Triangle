@@ -13,24 +13,32 @@ struct ExerciseParameters: Identifiable, Hashable {
     let currentLevelIndex: Int
 }
 
+enum DashboardDestination: Hashable, Identifiable {
+    case levelTransition(ExerciseParameters)
+    case levelSelector(ExerciseParameters)
+
+    var id: Self { self }
+}
+
+// MARK: - DashboardView
 struct DashboardView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
     @StateObject var dashboardController: DashboardController
-    @State private var navigateToLevelSelector: Bool = false
-    @State private var exerciseForNavigation: ExerciseParameters?
+    @State private var navigationPath = NavigationPath()
 
-    // Inject a preconfigured DashboardController.
+    // Initialize with a preconfigured DashboardController that uses the shared UserDataStore.
     init(userDataStore: UserDataStore) {
         _dashboardController = StateObject(
-            wrappedValue: DashboardController(userDataStore: userDataStore))
+            wrappedValue: DashboardController(userDataStore: userDataStore)
+        )
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             ScrollView {
                 VStack {
-                    // Define your exercise definitions
+                    // Define your exercise definitions.
                     let exercises: [(id: Int, totalLevels: Int)] = [
                         (1, 8), (2, 8), (3, 8), (4, 8),
                     ]
@@ -44,7 +52,8 @@ struct DashboardView: View {
                         ForEach(exercises, id: \.id) { exercise in
                             let info = dashboardController.getExerciseInfo(
                                 forExerciseId: exercise.id,
-                                totalLevels: exercise.totalLevels)
+                                totalLevels: exercise.totalLevels
+                            )
                             DashboardCard(
                                 title: titleForExercise(
                                     exerciseId: exercise.id),
@@ -54,12 +63,18 @@ struct DashboardView: View {
                                 currentExercise: info.currentLevel,
                                 locked: isExerciseLocked(
                                     exerciseId: exercise.id,
-                                    currentLevel: info.currentLevel),
+                                    currentLevel: info.currentLevel
+                                ),
                                 action: {
-                                    dashboardController.selectExercise(
+                                    // When a dashboard card is tapped, create parameters and push a levelTransition destination.
+                                    let params = ExerciseParameters(
                                         id: exercise.id,
                                         totalTriangles: exercise.totalLevels,
-                                        currentLevelIndex: info.currentLevel)
+                                        currentLevelIndex: info.currentLevel
+                                    )
+                                    navigationPath.append(
+                                        DashboardDestination.levelTransition(
+                                            params))
                                 }
                             )
                         }
@@ -74,26 +89,26 @@ struct DashboardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(hex: 0xB5CFE3))
             .edgesIgnoringSafeArea(.all)
-            .fullScreenCover(
-                item: $dashboardController.selectedExerciseParameters
-            ) { params in
-                LevelTransitionView(
-                    totalTriangles: params.totalTriangles,
-                    currentLevelIndex: params.currentLevelIndex,
-                    exerciseId: params.id,
-                    onCompletion: {
-                        dashboardController.selectedExerciseParameters = nil
-                        exerciseForNavigation = params
-                        navigateToLevelSelector = true
-                    }
-                )
-                .environmentObject(navbarVisibility)
-            }
-            .navigationDestination(isPresented: $navigateToLevelSelector) {
-                if let navParams = exerciseForNavigation {
+            .navigationDestination(for: DashboardDestination.self) {
+                destination in
+                switch destination {
+                case .levelTransition(let params):
+                    LevelTransitionView(
+                        totalTriangles: params.totalTriangles,
+                        currentLevelIndex: params.currentLevelIndex,
+                        exerciseId: params.id,
+                        onCompletion: {
+                            // Remove the levelTransition and push the levelSelector.
+                            navigationPath.removeLast()
+                            navigationPath.append(
+                                DashboardDestination.levelSelector(params))
+                        }
+                    )
+                    .environmentObject(navbarVisibility)
+                case .levelSelector(let params):
                     LevelSelectorView(
-                        totalTriangles: navParams.totalTriangles,
-                        currentLevelIndex: navParams.currentLevelIndex,
+                        totalTriangles: params.totalTriangles,
+                        currentLevelIndex: params.currentLevelIndex,
                         selectedLevelId: .constant(nil)
                     )
                     .environmentObject(navbarVisibility)
@@ -128,9 +143,6 @@ struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
         let userDataStore = UserDataStore(userId: "previewUser")
         userDataStore.userData = userDataStore.loadUserData(for: "previewUser")
-        let dashboardController = DashboardController(
-            userDataStore: userDataStore)
-
         return DashboardView(userDataStore: userDataStore)
             .environmentObject(NavbarVisibility())
             .environmentObject(userDataStore)
