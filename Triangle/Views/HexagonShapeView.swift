@@ -8,7 +8,7 @@ import SwiftUI
 
 struct HexagonShape: View {
     let hexagon: Hexagon
-    let hexIndex: Int  // Track hexagon index
+    let hexIndex: Int
     let size: CGFloat
     let offsetY: CGFloat
     @Binding var currentLevelIndex: Int
@@ -48,7 +48,6 @@ struct HexagonShape: View {
             ForEach(0..<hexagon.visibleCount, id: \.self) { triIndex in
                 let globalIndex = (hexIndex * 4) + triIndex + 1
 
-                // Set imageName conditionally based on globalIndex and currentLevelIndex
                 let tapEvent: () -> Void =
                     globalIndex > currentLevelIndex
                     ? {}
@@ -57,6 +56,7 @@ struct HexagonShape: View {
                     }
 
                 // Determine the correct color for each triangle button
+                // Hardcoded for now as the exercises are hardcoded
                 let triangleColor: Color = {
                     if globalIndex == 7 || globalIndex == 8 {
                         return ColorTheme.darker  // ✅ Always locked

@@ -22,6 +22,7 @@ struct HexagonView: View {
             LevelView(exerciseId: exerciseId, levelId: selectedLevel)
         } else {
             LevelSelectorView(
+                exerciseId:exerciseId,
                 totalTriangles: 10, currentLevelIndex: currentLevelIndex,
                 selectedLevelId: $selectedLevelId)
         }

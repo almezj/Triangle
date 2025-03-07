@@ -9,18 +9,21 @@ import SwiftUI
 
 struct LevelSelectorView: View {
     @EnvironmentObject var userDataStore: UserDataStore
+    let exerciseId: Int
     let totalTriangles: Int
     @Binding var selectedLevelId: Int?
 
     @State private var hexagons: [Hexagon] = []
     @State private var currentLevelIndex: Int
-    @State private var selectedExerciseId: Int? = nil  // Single navigation state
+    @State private var selectedExerciseId: Int? = nil
 
     init(
+        exerciseId: Int,
         totalTriangles: Int,
         currentLevelIndex: Int,
         selectedLevelId: Binding<Int?>
     ) {
+        self.exerciseId = exerciseId
         self.totalTriangles = totalTriangles
         self._currentLevelIndex = State(initialValue: currentLevelIndex)
         self._selectedLevelId = selectedLevelId
@@ -48,7 +51,7 @@ struct LevelSelectorView: View {
                                     if levelId == currentLevelIndex {
                                         print(
                                             "Navigating to level \(levelId)...")
-                                        selectedExerciseId = levelId
+                                        selectedExerciseId = exerciseId
                                     } else {
                                         print(
                                             "❌ Cannot access level \(levelId). Only level \(currentLevelIndex) is playable."
@@ -101,26 +104,16 @@ struct LevelSelectorView: View {
                     fatalError("No exercise found for ID \(exerciseId)")
                 }
             }()
-
             exercise.startExercise(onComplete: {
                 print(">>> Exercise completed <<<")
-                unlockNextLevel()
+                userDataStore.unlockNextLevel(
+                    forExerciseId: exerciseId,
+                    currentLevel: currentLevelIndex,
+                    totalLevels: totalTriangles
+                )
             })
             .onDisappear {
-                // Clear the navigation trigger so that navigation is only triggered once.
                 selectedExerciseId = nil
-            }
-        }
-    }
-
-    // Unlocks the next level ONLY if the current level is completed.
-    func unlockNextLevel() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if currentLevelIndex < totalTriangles {
-                print("✅ Unlocking Level \(currentLevelIndex + 1)")
-                currentLevelIndex += 1
-            } else {
-                print("✅ All levels completed!")
             }
         }
     }
@@ -130,6 +123,7 @@ struct LevelSelectorView_Previews: PreviewProvider {
     static var previews: some View {
         // Provide a preview binding for selectedLevelId.
         LevelSelectorView(
+            exerciseId: 1,
             totalTriangles: 6, currentLevelIndex: 3,
             selectedLevelId: .constant(nil)
         )

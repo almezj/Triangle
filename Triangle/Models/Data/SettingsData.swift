@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SettingsData: Codable {
+struct SettingsData: Codable, Equatable {
     var musicVolume: Double
     var sfxVolume: Double
     var textSize: Double

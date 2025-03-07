@@ -7,8 +7,14 @@
 
 import Foundation
 
-struct UserData: Codable {
+struct UserData: Codable, Equatable{
     var settings: SettingsData
     var progress: ProgressData
     var customization: CustomizationData
+    
+    mutating func prettyPrint() {
+        let jsonData = try! JSONEncoder().encode(self)
+        let jsonString = String(data: jsonData, encoding: .utf8) ?? "Error converting to JSON string"
+        print(jsonString)
+    }
 }

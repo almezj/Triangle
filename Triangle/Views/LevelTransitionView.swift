@@ -5,9 +5,6 @@ struct LevelTransitionView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @State private var riveViewModel = RiveViewModel(
         fileName: "ch_t", animationName: "Timeline 1")
-    let totalTriangles: Int
-    let currentLevelIndex: Int
-    let exerciseId: Int
     let onCompletion: () -> Void
     @State private var displayedInfobite: String = ""
 

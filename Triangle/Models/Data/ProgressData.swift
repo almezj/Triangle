@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct Level: Codable {
+struct Level: Codable, Equatable {
     var levelId: Int
     var completed: Bool
     var currency: Int
     var experience: Int
 }
 
-struct ExerciseProgress: Codable {
+struct ExerciseProgress: Codable, Equatable {
     var exerciseId: Int
     var currentLevelId: Int
     var levels: [Level]
@@ -33,9 +33,10 @@ struct ExerciseProgress: Codable {
             currentLevelId = levelId + 1
         }
     }
+    
 }
 
-struct ProgressData: Codable {
+struct ProgressData: Codable,Equatable {
     var exerciseProgresses: [ExerciseProgress]
 
     init(exerciseProgresses: [ExerciseProgress] = []) {
@@ -61,6 +62,10 @@ struct ProgressData: Codable {
             )
             exerciseProgresses.append(newExercise)
         }
+    }
+    
+    func prettyPrint() {
+        print(self.description)
     }
 }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CustomizationData: Codable {
+struct CustomizationData: Codable, Equatable {
     var currency: Int
     var unlockedCosmetics: [String]
 }

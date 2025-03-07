@@ -112,7 +112,6 @@ final class UserDataStore: ObservableObject {
     }
 
     func levelCompleted(forExerciseId exerciseId: Int, levelId: Int) {
-        // Load userData from memory
         guard var currentData = userData else { return }
         var newProgress = currentData.progress
 
@@ -120,38 +119,57 @@ final class UserDataStore: ObservableObject {
         if let index = newProgress.exerciseProgresses.firstIndex(where: {
             $0.exerciseId == exerciseId
         }) {
-            // Mark the level as completed
-            if let levelIndex = newProgress.exerciseProgresses[index].levels
-                .firstIndex(where: { $0.levelId == levelId })
-            {
-                newProgress.exerciseProgresses[index].levels[levelIndex]
-                    .completed = true
-            } else {
-                // If the level doesn’t exist, append a new record
-                newProgress.exerciseProgresses[index].levels.append(
-                    Level(
-                        levelId: levelId, completed: true, currency: 0,
-                        experience: 0))
-            }
+            newProgress.exerciseProgresses[index].completeLevel(
+                levelId: levelId)
         } else {
-            // If no exercise record exists, create one
+            // Create a new exercise record
             let newExercise = ExerciseProgress(
-                exerciseId: exerciseId, currentLevelId: levelId + 1,
+                exerciseId: exerciseId,
+                currentLevelId: levelId + 1,
                 levels: [
                     Level(
                         levelId: levelId, completed: true, currency: 0,
                         experience: 0)
-                ])
+                ]
+            )
             newProgress.exerciseProgresses.append(newExercise)
         }
 
         print("Level \(levelId) completed for exercise \(exerciseId)")
-        print("New progress \(userData?.progress)")
-        
+        print(
+            "New progress \(String(describing: userData?.progress.prettyPrint()))"
+        )
+
         // Save it back
         currentData.progress = newProgress
         userData = currentData
         save()
+    }
+
+    /// Unlocks the next level for a given exercise.
+    /// - Parameters:
+    ///   - exerciseId: The identifier for the exercise.
+    ///   - currentLevel: The current (completed) level.
+    ///   - totalLevels: The total number of levels available for this exercise.
+    func unlockNextLevel(
+        forExerciseId exerciseId: Int, currentLevel: Int, totalLevels: Int
+    ) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            // Mark the current level as completed.
+            self.levelCompleted(
+                forExerciseId: exerciseId, levelId: currentLevel)
+
+            if currentLevel < totalLevels {
+                print(
+                    "✅ Unlocking Level \(currentLevel + 1) of exercise \(exerciseId)"
+                )
+                print(
+                    "New progress: \(String(describing: self.userData?.progress.description))"
+                )
+            } else {
+                print("✅ All levels completed!")
+            }
+        }
     }
 
     /// Saves the current userData to persistent storage.

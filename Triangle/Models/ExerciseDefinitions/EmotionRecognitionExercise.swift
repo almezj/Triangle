@@ -22,6 +22,7 @@ struct EmotionRecognitionExercise: Exercise {
     }
 
     func startExercise(onComplete: @escaping () -> Void) -> AnyView {
+        print("Starting Emotion Recognition Exercise...")
         return AnyView(EmotionRecognitionView(predefinedEmotion: predefinedEmotion, onComplete: onComplete))
     }
 }

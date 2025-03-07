@@ -94,11 +94,7 @@ struct DashboardView: View {
                 switch destination {
                 case .levelTransition(let params):
                     LevelTransitionView(
-                        totalTriangles: params.totalTriangles,
-                        currentLevelIndex: params.currentLevelIndex,
-                        exerciseId: params.id,
                         onCompletion: {
-                            // Remove the levelTransition and push the levelSelector.
                             navigationPath.removeLast()
                             navigationPath.append(
                                 DashboardDestination.levelSelector(params))
@@ -107,6 +103,7 @@ struct DashboardView: View {
                     .environmentObject(navbarVisibility)
                 case .levelSelector(let params):
                     LevelSelectorView(
+                        exerciseId: params.id,
                         totalTriangles: params.totalTriangles,
                         currentLevelIndex: params.currentLevelIndex,
                         selectedLevelId: .constant(nil)
