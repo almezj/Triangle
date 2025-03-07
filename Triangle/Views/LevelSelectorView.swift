@@ -11,22 +11,19 @@ struct LevelSelectorView: View {
     @EnvironmentObject var userDataStore: UserDataStore
     let exerciseId: Int
     let totalTriangles: Int
-    @Binding var selectedLevelId: Int?
 
     @State private var hexagons: [Hexagon] = []
     @State private var currentLevelIndex: Int
-    @State private var selectedExerciseId: Int? = nil
+    @State private var navigateToLevel: Bool? = nil
 
     init(
         exerciseId: Int,
         totalTriangles: Int,
-        currentLevelIndex: Int,
-        selectedLevelId: Binding<Int?>
+        currentLevelIndex: Int
     ) {
         self.exerciseId = exerciseId
         self.totalTriangles = totalTriangles
         self._currentLevelIndex = State(initialValue: currentLevelIndex)
-        self._selectedLevelId = selectedLevelId
     }
 
     var body: some View {
@@ -51,7 +48,7 @@ struct LevelSelectorView: View {
                                     if levelId == currentLevelIndex {
                                         print(
                                             "Navigating to level \(levelId)...")
-                                        selectedExerciseId = exerciseId
+                                        navigateToLevel = true
                                     } else {
                                         print(
                                             "❌ Cannot access level \(levelId). Only level \(currentLevelIndex) is playable."
@@ -71,19 +68,27 @@ struct LevelSelectorView: View {
             }
             .rotationEffect(Angle(degrees: 180))
             .onAppear {
-                print("Appeared, reloading hexagons...")
+
+                currentLevelIndex = userDataStore.getCurrentLevel(
+                    exerciseId: exerciseId)
+                print("Current level set to \(currentLevelIndex)")
+                print("Reloading hexagons...")
                 hexagons = HexagonView.createHexagons(
                     for: totalTriangles,
                     currentLevelIndex: currentLevelIndex
                 )
             }
+            .onChange(of: userDataStore.userData) { newData, _ in
+                currentLevelIndex = userDataStore.getCurrentLevel(
+                    exerciseId: exerciseId)
+            }
         }
         .background(Color(ColorTheme.background))
         .ignoresSafeArea()
-        .navigationDestination(item: $selectedExerciseId) { exerciseId in
+        .navigationDestination(item: $navigateToLevel) { _ in
             let exercise: Exercise = {
-                print("Navigation to exercise \(exerciseId)")
-                switch exerciseId {
+                print("Navigation to exercise \(currentLevelIndex)")
+                switch currentLevelIndex {
                 case 1:
                     return EmotionRecognitionExercise(predefinedEmotion: .happy)
                 case 2:
@@ -101,19 +106,18 @@ struct LevelSelectorView: View {
                     return BodyLanguageRecognitionExercise(
                         targetBodyLanguage: .frustrated)
                 default:
-                    fatalError("No exercise found for ID \(exerciseId)")
+                    fatalError("No level found for ID \(currentLevelIndex)")
                 }
             }()
             exercise.startExercise(onComplete: {
                 print(">>> Exercise completed <<<")
                 userDataStore.unlockNextLevel(
                     forExerciseId: exerciseId,
-                    currentLevel: currentLevelIndex,
                     totalLevels: totalTriangles
                 )
             })
             .onDisappear {
-                selectedExerciseId = nil
+                navigateToLevel = nil
             }
         }
     }
@@ -121,11 +125,9 @@ struct LevelSelectorView: View {
 
 struct LevelSelectorView_Previews: PreviewProvider {
     static var previews: some View {
-        // Provide a preview binding for selectedLevelId.
         LevelSelectorView(
             exerciseId: 1,
-            totalTriangles: 6, currentLevelIndex: 3,
-            selectedLevelId: .constant(nil)
+            totalTriangles: 6, currentLevelIndex: 3
         )
         .environmentObject(UserDataStore(userId: "previewUser"))
         .previewInterfaceOrientation(.landscapeLeft)

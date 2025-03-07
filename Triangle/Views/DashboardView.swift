@@ -105,8 +105,7 @@ struct DashboardView: View {
                     LevelSelectorView(
                         exerciseId: params.id,
                         totalTriangles: params.totalTriangles,
-                        currentLevelIndex: params.currentLevelIndex,
-                        selectedLevelId: .constant(nil)
+                        currentLevelIndex: params.currentLevelIndex
                     )
                     .environmentObject(navbarVisibility)
                 }

@@ -152,9 +152,11 @@ final class UserDataStore: ObservableObject {
     ///   - currentLevel: The current (completed) level.
     ///   - totalLevels: The total number of levels available for this exercise.
     func unlockNextLevel(
-        forExerciseId exerciseId: Int, currentLevel: Int, totalLevels: Int
+        forExerciseId exerciseId: Int, totalLevels: Int
     ) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            let currentLevel = self.getCurrentLevel(exerciseId: exerciseId)
+            
             // Mark the current level as completed.
             self.levelCompleted(
                 forExerciseId: exerciseId, levelId: currentLevel)
@@ -170,6 +172,17 @@ final class UserDataStore: ObservableObject {
                 print("✅ All levels completed!")
             }
         }
+    }
+
+    func getCurrentLevel(exerciseId: Int) -> Int {
+        if let progress = userData?.progress,
+            let exerciseProgress = progress.exerciseProgresses.first(where: {
+                $0.exerciseId == exerciseId
+            })
+        {
+            return exerciseProgress.currentLevelId
+        }
+        return 1
     }
 
     /// Saves the current userData to persistent storage.
