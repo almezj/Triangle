@@ -10,86 +10,91 @@ import SwiftUI
 struct ProfileView: View {
     @StateObject var profileController = ProfileController()
     @EnvironmentObject var userDataStore: UserDataStore
+    @EnvironmentObject var authManager: AuthenticationManager
+    @State private var characterData: CharacterData = CharacterData
+        .defaultCharacter
 
     var body: some View {
+
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-
-                    // Animated Character Placeholder
+            TopNavigationBar(
+                title: authManager.currentUserId ?? "Profile", onBack: nil)
+            VStack {
+                Spacer()
+                HStack(alignment: .bottom) {
+                    // TODO: Add more stuff to the profile page such as achievements, character customization etc.
+                    // Currently there is only the character with two buttons to change the cosmetics
                     VStack {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 150, height: 150)
-                            .cornerRadius(75)
-                            .overlay(
-                                Text("Animated Character Here")
-                                    .font(.bodyText)
-                                    .foregroundColor(.gray)
-                            )
-                    }
-                    .frame(maxWidth: .infinity)
-
-                    Divider()
-
-                    // Progress Overview
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Your Progress")
-                            .font(.pageTitle)
-
-                        ProgressView(value: profileController.progress) {
-                            Text("Progress: \(Int(profileController.progress * 100))%")
-                                .font(.bodyText)
-                        }
-                        .progressViewStyle(
-                            LinearProgressViewStyle(tint: ColorTheme.primary)
-                        )
-
-                        HStack {
-                            Text("Milestones Achieved:")
-                                .font(.bodyText)
-                            Spacer()
-                            Text("3/5")  // Placeholder milestone data.
-                                .font(.bodyText)
-                                .foregroundColor(ColorTheme.primary)
-                        }
-                    }
-
-                    Divider()
-
-                    // Activity Feed
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Recent Activities")
-                            .font(.pageTitle)
-
-                        ForEach(profileController.activities, id: \.self) { activity in
-                            HStack {
-                                Circle()
-                                    .fill(ColorTheme.primary)
-                                    .frame(width: 8, height: 8)
-                                Text(activity)
-                                    .font(.bodyText)
-                                    .foregroundColor(.secondary)
+                        Character(characterData: characterData)
+                            .frame(height: 400)
+                            .padding()
+                        Button("Change Head Cosmetic") {
+                            if let catalog = userDataStore.cosmeticCatalog,
+                                let currentIndex = catalog.headCosmetics
+                                    .firstIndex(where: {
+                                        $0.cosmeticId
+                                            == characterData.headCosmetic
+                                            .cosmeticId
+                                    })
+                            {
+                                // Cycle through cosmetics
+                                let nextIndex =
+                                    (currentIndex + 1)
+                                    % catalog.headCosmetics.count
+                                characterData.headCosmetic =
+                                    catalog.headCosmetics[nextIndex]
+                                userDataStore.updateCharacter(characterData)
+                                print("Next head cosmetic: \(catalog.headCosmetics[nextIndex])")
+                            } else {
+                                print("No catalog found")
                             }
                         }
-                        
-                        // Settings button as a NavigationLink
-                        NavigationLink(destination: SettingsView(settingsController: SettingsController(userDataStore: userDataStore))) {
-                            Text("Settings")
-                                .font(.headline)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(ColorTheme.primary)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
+                        .padding()
+                        .background(ColorTheme.primary)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        Button("Change Eye Cosmetic") {
+                            if let catalog = userDataStore.cosmeticCatalog,
+                                let currentIndex = catalog.eyeCosmetics
+                                    .firstIndex(where: {
+                                        $0.cosmeticId
+                                            == characterData.eyeCosmetic
+                                            .cosmeticId
+                                    })
+                            {
+                                // Cycle to the next cosmetic; wrap around if at end
+                                let nextIndex =
+                                    (currentIndex + 1)
+                                    % catalog.eyeCosmetics.count
+                                characterData.eyeCosmetic =
+                                    catalog.eyeCosmetics[nextIndex]
+                                userDataStore.updateCharacter(characterData)
+                                print("Next eye cosmetic: \(catalog.eyeCosmetics[nextIndex])")
+                            }
                         }
-                        .padding(.top, 10)
+                        .padding()
+                        .background(ColorTheme.primary)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        
                     }
+                    .frame(maxWidth: .infinity)
                 }
                 .padding()
+                Spacer()
+                Spacer()
             }
             .background(ColorTheme.background)
             .toolbarBackground(.hidden, for: .navigationBar)
+            .onAppear {
+                print("Current user data: \(userDataStore.userData)")
+                if let storedCharacter = userDataStore.userData?.character {
+                    characterData = storedCharacter
+                    print("Loaded character data: \(characterData)")
+                } else {
+                    print("No character data found.")
+                }
+            }
         }
     }
 }
@@ -98,5 +103,6 @@ struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
             .environmentObject(UserDataStore(userId: "previewUser"))
+            .environmentObject(AuthenticationManager())
     }
 }

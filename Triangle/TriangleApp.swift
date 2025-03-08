@@ -32,12 +32,15 @@ struct TriangleApp: App {
                             "DataStore"
                                 + "\(UserDefaults.standard.dictionaryRepresentation())"
                         )
+                        userDataStore.cosmeticCatalog = loadCosmeticCatalog()
+                        print("Catalog loaded")
+                        print(userDataStore.cosmeticCatalog ?? "No catalog")
                     }
                 }
                 .onAppear {
                     Font.textScale = CGFloat(userDataStore.userData?.settings.textSize ?? 1)
                 }
-                .onChange(of: userDataStore.userData?.settings.textSize) { newSize in
+                .onChange(of: userDataStore.userData?.settings.textSize) { _, newSize in
                     Font.textScale = CGFloat(userDataStore.userData?.settings.textSize ?? 1)
                 }
         }

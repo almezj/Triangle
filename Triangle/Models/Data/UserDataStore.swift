@@ -9,6 +9,7 @@ import SwiftUI
 
 final class UserDataStore: ObservableObject {
     @Published var userData: UserData?
+    @Published var cosmeticCatalog: CosmeticCatalog?
     private var userId: String
 
     init(userId: String) {
@@ -67,6 +68,13 @@ final class UserDataStore: ObservableObject {
         save()
     }
 
+    func updateCharacter(_ newCharacter: CharacterData) {
+        userData?.character = newCharacter
+        save()
+        print("Character updated: \(newCharacter)")
+    }
+    
+
     /// Loads the user data for a given username.
     /// - Parameter userId: The unique identifier for the user.
     /// - Returns: A UserData instance containing settings, progress, and customization data.
@@ -86,11 +94,13 @@ final class UserDataStore: ObservableObject {
             musicVolume: 0.5, sfxVolume: 0.5, textSize: 1.0,
             selectedLanguage: "English")
         let defaultProgress = ProgressData()
-        let defaultCustomization = CustomizationData(
+        let defaultInventory = InventoryData(
             currency: 0, unlockedCosmetics: [])
+        let defaultCharacter: CharacterData = .defaultCharacter
         return UserData(
             settings: defaultSettings, progress: defaultProgress,
-            customization: defaultCustomization)
+            inventory: defaultInventory,
+            character: defaultCharacter)
     }
 
     /// Saves the user data for a given user identifier.
@@ -106,8 +116,8 @@ final class UserDataStore: ObservableObject {
     }
 
     /// Updates the customization data and saves the data.
-    func updateCustomization(_ newCustomization: CustomizationData) {
-        userData?.customization = newCustomization
+    func updateInventory(_ newInventory: InventoryData) {
+        userData?.inventory = newInventory
         save()
     }
 
@@ -156,7 +166,7 @@ final class UserDataStore: ObservableObject {
     ) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             let currentLevel = self.getCurrentLevel(exerciseId: exerciseId)
-            
+
             // Mark the current level as completed.
             self.levelCompleted(
                 forExerciseId: exerciseId, levelId: currentLevel)

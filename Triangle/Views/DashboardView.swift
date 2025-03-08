@@ -27,7 +27,6 @@ struct DashboardView: View {
     @StateObject var dashboardController: DashboardController
     @State private var navigationPath = NavigationPath()
 
-    // Initialize with a preconfigured DashboardController that uses the shared UserDataStore.
     init(userDataStore: UserDataStore) {
         _dashboardController = StateObject(
             wrappedValue: DashboardController(userDataStore: userDataStore)

@@ -10,9 +10,10 @@ import Foundation
 struct UserData: Codable, Equatable{
     var settings: SettingsData
     var progress: ProgressData
-    var customization: CustomizationData
+    var inventory: InventoryData
+    var character: CharacterData
     
-    mutating func prettyPrint() {
+    func prettyPrint() {
         let jsonData = try! JSONEncoder().encode(self)
         let jsonString = String(data: jsonData, encoding: .utf8) ?? "Error converting to JSON string"
         print(jsonString)

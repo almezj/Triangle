@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct CustomizationData: Codable, Equatable {
+struct InventoryData: Codable, Equatable {
     var currency: Int
     var unlockedCosmetics: [String]
 }
 
-extension CustomizationData {
+extension InventoryData {
     
-    static let defaultCustomization: CustomizationData = CustomizationData(
+    static let defaultInventory: InventoryData = InventoryData(
         currency: 0,
         unlockedCosmetics: []
     )

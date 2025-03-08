@@ -8,7 +8,6 @@
 import SwiftUI
 
 final class ProfileController: ObservableObject {
-    // Published properties representing user progress and recent activities.
     @Published var progress: Double = 0.75
     @Published var activities: [String] = [
         "Completed 'Social Cues' exercise",
