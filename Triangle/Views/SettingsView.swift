@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var userDataStore: UserDataStore
+    @EnvironmentObject var authManager: AuthenticationManager
     @StateObject var settingsController: SettingsController
     @State private var showPrivacyPolicy: Bool = false
 
@@ -32,6 +33,11 @@ struct SettingsView: View {
 
                             Button("Change Password") {
                                 print("Change Password button tapped")
+                            }
+                            .buttonStyle(TrianglePrimaryButton())
+                            Button("Log Out") {
+                                print("Log Out button tapped")
+                                authManager.logout(userDataStore: userDataStore)
                             }
                             .buttonStyle(TrianglePrimaryButton())
                         }

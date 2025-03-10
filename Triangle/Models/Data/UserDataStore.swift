@@ -10,6 +10,7 @@ import SwiftUI
 final class UserDataStore: ObservableObject {
     @Published var userData: UserData?
     @Published var cosmeticCatalog: CosmeticCatalog?
+    @EnvironmentObject var authManager: AuthenticationManager
     private var userId: String
 
     init(userId: String) {
@@ -20,6 +21,7 @@ final class UserDataStore: ObservableObject {
     func updateUserId(_ newUserId: String) {
         self.userId = newUserId
         self.userData = loadUserData(for: userId)
+        self.cosmeticCatalog = loadCosmeticCatalog()
         save()
     }
 
@@ -73,7 +75,6 @@ final class UserDataStore: ObservableObject {
         save()
         print("Character updated: \(newCharacter)")
     }
-    
 
     /// Loads the user data for a given username.
     /// - Parameter userId: The unique identifier for the user.
@@ -206,5 +207,14 @@ final class UserDataStore: ObservableObject {
         if let savedData = UserDefaults.standard.object(forKey: userId) {
             print("New settings: \(userData.settings)")
         }
+    }
+
+    func logout() {
+        self.userData = nil
+        self.cosmeticCatalog = nil
+        // Do not clear persistent data from UserDefaults!!!!!
+        print(
+            "UserDataStore: User data cleared from memory, persistent data remains."
+        )
     }
 }

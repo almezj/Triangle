@@ -43,6 +43,17 @@ struct TriangleApp: App {
                 .onChange(of: userDataStore.userData?.settings.textSize) { _, newSize in
                     Font.textScale = CGFloat(userDataStore.userData?.settings.textSize ?? 1)
                 }
+                .onChange(of: authManager.currentUserId) { _, newSize in
+                    if let userId = authManager.currentUserId, userId != "guest"
+                    {
+                        userDataStore.updateUserId(userId)
+                        print("Logged in as \(userId)")
+                        print(
+                            "DataStore"
+                            + "\(UserDefaults.standard.dictionaryRepresentation())"
+                        )
+                    }
+                }
         }
     }
 }

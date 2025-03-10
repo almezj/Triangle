@@ -44,7 +44,9 @@ struct ProfileView: View {
                                 characterData.headCosmetic =
                                     catalog.headCosmetics[nextIndex]
                                 userDataStore.updateCharacter(characterData)
-                                print("Next head cosmetic: \(catalog.headCosmetics[nextIndex])")
+                                print(
+                                    "Next head cosmetic: \(catalog.headCosmetics[nextIndex])"
+                                )
                             } else {
                                 print("No catalog found")
                             }
@@ -69,14 +71,29 @@ struct ProfileView: View {
                                 characterData.eyeCosmetic =
                                     catalog.eyeCosmetics[nextIndex]
                                 userDataStore.updateCharacter(characterData)
-                                print("Next eye cosmetic: \(catalog.eyeCosmetics[nextIndex])")
+                                print(
+                                    "Next eye cosmetic: \(catalog.eyeCosmetics[nextIndex])"
+                                )
                             }
                         }
                         .padding()
                         .background(ColorTheme.primary)
                         .foregroundColor(.white)
                         .cornerRadius(8)
-                        
+                        NavigationLink(
+                            destination: SettingsView(
+                                settingsController: SettingsController(
+                                    userDataStore: userDataStore))
+                        ) {
+                            Text("Settings")
+                                .font(.headline)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(ColorTheme.primary)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                        }
+                        .padding(.top, 10)
                     }
                     .frame(maxWidth: .infinity)
                 }

@@ -31,7 +31,9 @@ final class AuthenticationManager: ObservableObject {
         self.currentUserId = userId
     }
 
-    func logout() {
-        self.currentUserId = nil
+    func logout(userDataStore: UserDataStore) {
+        currentUserId = nil
+        userDataStore.logout()
+        print("AuthenticationManager: User logged out.")
     }
 }
