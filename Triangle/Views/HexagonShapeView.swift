@@ -59,18 +59,18 @@ struct HexagonShape: View {
                 // Hardcoded for now as the exercises are hardcoded
                 let triangleColor: Color = {
                     if globalIndex == 7 || globalIndex == 8 {
-                        return ColorTheme.darker  // ✅ Always locked
+                        return ColorTheme.lockedLevelColor
                     } else if globalIndex < currentLevelIndex {
-                        return ColorTheme.green  // ✅ Completed levels
+                        return ColorTheme.completedLevelColor
                     } else if globalIndex == currentLevelIndex {
-                        return ColorTheme.primary  // ✅ Current level is blue
+                        return ColorTheme.currentLevelColor
                     } else {
-                        return ColorTheme.darker  // ✅ Future levels stay locked
+                        return ColorTheme.lockedLevelColor
                     }
                 }()
 
                 Button(action: {
-                    if globalIndex == currentLevelIndex {  // ✅ Only blue levels are playable
+                    if globalIndex == currentLevelIndex {
                         print("✅ Level \(globalIndex) selected - HexagonShapeView button action")
                         onLevelSelect(globalIndex)
                     } else if globalIndex < currentLevelIndex {

@@ -18,6 +18,9 @@ struct ColorTheme {
     static let lightGray = Color(hex: 0xD9D9D9)
     static let shadowGray = Color.gray.opacity(0.4)
     static let green = Color(hex: 0x72B1A0)
+    static let completedLevelColor = Color(hex: 0x72B1A0)
+    static let currentLevelColor = Color(hex: 0x229374)
+    static let lockedLevelColor = Color(hex: 0x7297B1).opacity(0.5)
 }
 
 // MARK: - Font Styles (Dynamic Type Ready)
