@@ -18,7 +18,7 @@ struct HeadCosmetic: Codable, Equatable, Cosmetic {
     var price: Int
 
     var uniqueId: String {
-        return "eye_\(cosmeticId)"
+        return "head_\(cosmeticId)"
     }
 
     static let defaultCosmetic = HeadCosmetic(

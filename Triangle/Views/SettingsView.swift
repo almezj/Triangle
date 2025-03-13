@@ -164,7 +164,7 @@ struct SettingsView: View {
                 .background(ColorTheme.background)
                 .toolbarBackground(.hidden, for: .navigationBar)
             } else {
-                // Loading state if userData is not yet available
+                // Loading state
                 ProgressView("Loading...")
             }
         }
