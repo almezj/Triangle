@@ -10,12 +10,12 @@ import SwiftUI
 final class UserDataStore: ObservableObject {
     @Published var userData: UserData?
     @Published var cosmeticCatalog: CosmeticCatalog?
-    @EnvironmentObject var authManager: AuthenticationManager
     private var userId: String
 
     init(userId: String) {
         self.userId = userId
         self.userData = nil
+        self.cosmeticCatalog = loadCosmeticCatalog()
     }
 
     func updateUserId(_ newUserId: String) {
@@ -195,6 +195,39 @@ final class UserDataStore: ObservableObject {
         }
         return 1
     }
+
+    /// Returns up to 4 random unique cosmetic items from the entire catalog (head + eye).
+    func getRandomCosmetics(count: Int = 4) -> [any Cosmetic] {
+        // Ensure the catalog is loaded.
+        guard let catalog = cosmeticCatalog else {
+            print("No cosmetic catalog loaded.")
+            return []
+        }
+
+        // Combine head and eye cosmetics into a single array.
+        let allCosmetics: [any Cosmetic] =
+            catalog.headCosmetics + catalog.eyeCosmetics
+
+        // Filter out duplicates by uniqueId, preserving the first occurrence of each.
+        var seenIds = Set<String>()
+        let noDuplicates = allCosmetics.filter { cosmetic in
+            let id = cosmetic.uniqueId
+            if seenIds.contains(id) {
+                return false
+            } else {
+                seenIds.insert(id)
+                return true
+            }
+        }
+
+        // Shuffle the filtered array so items are in random order.
+        let shuffled = noDuplicates.shuffled()
+
+        // Return up to the specified count.
+        return Array(shuffled.prefix(count))
+    }
+    
+    
 
     /// Saves the current userData to persistent storage.
     private func save() {

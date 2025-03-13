@@ -180,6 +180,7 @@ struct SettingsView_Previews: PreviewProvider {
 
         return SettingsView(settingsController: settingsController)
             .environmentObject(userDataStore)
+            .environmentObject(AuthenticationManager())
             .previewDevice("iPad Pro 11-inch")
             .previewInterfaceOrientation(.landscapeLeft)
     }

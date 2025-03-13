@@ -118,8 +118,8 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
-            .environmentObject(UserDataStore(userId: "previewUser"))
+        return ProfileView()
+            .environmentObject(UserDataStore(userId: "guest"))
             .environmentObject(AuthenticationManager())
     }
 }

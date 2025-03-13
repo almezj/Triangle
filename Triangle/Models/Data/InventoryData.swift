@@ -15,7 +15,7 @@ struct InventoryData: Codable, Equatable {
 extension InventoryData {
     
     static let defaultInventory: InventoryData = InventoryData(
-        currency: 0,
+        currency: 1000,
         unlockedCosmetics: []
     )
     
