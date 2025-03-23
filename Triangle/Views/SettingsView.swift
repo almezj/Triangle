@@ -19,6 +19,7 @@ struct SettingsView: View {
 
     var body: some View {
         NavigationStack {
+            
             if let settings = userDataStore.userData?.settings {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {

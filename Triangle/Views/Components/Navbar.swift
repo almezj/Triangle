@@ -52,13 +52,12 @@ struct Navbar: View {
             Color.clear.ignoresSafeArea()
             HalfCircleShape()
                 .fill(.ultraThinMaterial)
-                .shadow(radius: 5)
                 .frame(width: 350, height: 130)
-                .offset(y: 20)// Adjust as needed
+                .offset(y: 20)
 
             VStack(spacing: 16) {
                 HStack(spacing: -20) {
-                    // Leaderboard Button
+                    // Shop Button
                     Button(action: { selectedTab = .shop }) {
                         ZStack {
                             TriangleShape()

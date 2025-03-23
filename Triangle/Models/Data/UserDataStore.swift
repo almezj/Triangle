@@ -194,6 +194,19 @@ final class UserDataStore: ObservableObject {
         }
         return 1
     }
+    
+    // This assumes there are 10 levels in each exercise
+    // TODO: Once the exercises are loaded from a file, change this behavior
+    func caltulateNormalizedProgress(exerciseId: Int) -> Double {
+        if let progress = userData?.progress,
+           let exerciseProgress = progress.exerciseProgresses.first(where: {
+               $0.exerciseId == exerciseId
+           })
+        {
+            return Double(exerciseProgress.currentLevelId) / 10.0
+        }
+        return 0.0
+    }
 
     /// Returns up to 4 random unique cosmetic items from the entire catalog (head + eye).
     func getRandomCosmetics(count: Int = 4) -> [any Cosmetic] {
