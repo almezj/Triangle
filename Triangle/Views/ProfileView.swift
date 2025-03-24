@@ -35,6 +35,17 @@ struct ProfileView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(20)
                         }
+                        NavigationLink(
+                            destination: SettingsView(userDataStore: userDataStore)
+                        ) {
+                            Text("Settings")
+                                .font(.pageTitle)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(ColorTheme.primary)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                        }
                     }
                     .padding()
                     VStack {
