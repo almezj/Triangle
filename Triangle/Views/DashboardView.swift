@@ -28,15 +28,17 @@ struct DashboardView: View {
                     VStack {
                         LazyVGrid(
                             columns: [
-                                GridItem(.flexible()), GridItem(.flexible()),
+                                GridItem(.flexible()),
                             ],
                             spacing: 10
                         ) {
                             NavigationLink(destination: ExerciseSelectorView()) {
                                 DashboardCard(title: "Exercises", imageName: "exercises_mascot")
+                                    .frame(maxHeight: 400)
                             }
                             NavigationLink(destination: ExerciseSelectorView()) {
-                                DashboardCard(title: "Minigames", imageName: "")
+                                DashboardCard(title: "Minigames", imageName: "minigames_mascot")
+                                    .frame(maxHeight: 400)
                             }
                         }
                     }

@@ -38,7 +38,7 @@ struct DashboardCard: View {
         DashboardCard(
             title: "Exercises", imageName: "exercises_mascot")
         DashboardCard(
-            title: "Minigames", imageName: "gamepad.fill")
+            title: "Minigames", imageName: "minigames_mascot")
     }
     .frame(width: 1000, height: 500)
 }
