@@ -1,19 +1,13 @@
 //
-//  ContentView.swift
+//  MinigameSelectortView.swift
 //  Triangle
 //
-//  Created by Josef Zemlicka on 02.01.2025.
+//  Created by Josef Zemlicka on 24.03.2025.
 //
 
 import SwiftUI
 
-struct ExerciseParameters: Identifiable, Hashable {
-    let id: Int
-    let totalTriangles: Int
-    let currentLevelIndex: Int
-}
-
-struct ExerciseSelectorView: View {
+struct MinigameSelectorView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
     @EnvironmentObject var dashboardController: DashboardController
@@ -26,7 +20,7 @@ struct ExerciseSelectorView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                TopNavigationBar(title: "Exercises", onBack: { dismiss() })
+                TopNavigationBar(title: "Minigames", onBack: { dismiss() })
                 ScrollView {
                     VStack {
                         LazyVGrid(
@@ -36,11 +30,19 @@ struct ExerciseSelectorView: View {
                             ],
                             spacing: 10
                         ) {
-                            ForEach(exercises, id: \.id) { exercise in
-                                NavigationLink(destination: LevelSelectorView(exerciseId: exercise.id, totalTriangles: 10)) {
-                                    ExerciseCard(id: exercise.id)
+                        NavigationLink(destination: MinigameView()) {
+                                    DashboardCard(title: "Flappy Tom", imageName: "minigame_character")
                                 }
-                            }
+                        
+                        .frame(maxWidth: .infinity)
+                        NavigationLink(destination: MinigameView()) {
+                                    DashboardCard(title: "Hoops", imageName: "minigame_character")
+                                }
+                        
+                        .frame(maxWidth: .infinity)
+                        NavigationLink(destination: MinigameView()) {
+                                    DashboardCard(title: "Memory Match", imageName: "minigame_character")
+                                }
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -60,11 +62,17 @@ struct ExerciseSelectorView: View {
     }
 }
 
-struct ExerciseSelectorView_Previews: PreviewProvider {
+struct MinigameView: View{
+    var body: some View {
+        Text("Minigame View")
+    }
+}
+
+struct MinigameSelectorView_Previews: PreviewProvider {
     static var previews: some View {
         let userDataStore = UserDataStore(userId: "previewUser")
         userDataStore.userData = userDataStore.loadUserData(for: "previewUser")
-        return ExerciseSelectorView()
+        return MinigameSelectorView()
             .environmentObject(NavbarVisibility())
             .environmentObject(userDataStore)
             .previewInterfaceOrientation(.landscapeLeft)

@@ -36,7 +36,7 @@ struct DashboardView: View {
                                 DashboardCard(title: "Exercises", imageName: "exercises_mascot")
                                     .frame(maxHeight: 400)
                             }
-                            NavigationLink(destination: ExerciseSelectorView()) {
+                            NavigationLink(destination: MinigameSelectorView()) {
                                 DashboardCard(title: "Minigames", imageName: "minigames_mascot")
                                     .frame(maxHeight: 400)
                             }
