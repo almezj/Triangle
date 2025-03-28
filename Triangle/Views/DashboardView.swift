@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  DashboardView.swift
 //  Triangle
 //
 //  Created by Josef Zemlicka on 02.01.2025.
@@ -13,6 +13,7 @@ struct DashboardView: View {
     @EnvironmentObject var userDataStore: UserDataStore
     @StateObject var dashboardController: DashboardController
     @State private var navigationPath = NavigationPath()
+    @StateObject var tutorialController = DashboardTutorialController()
 
     init(userDataStore: UserDataStore) {
         _dashboardController = StateObject(
@@ -21,36 +22,56 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
-            VStack(spacing: 0) {
-                TopNavigationBar(title: "Dashboard", onBack: nil)
-                ScrollView {
-                    VStack {
-                        LazyVGrid(
-                            columns: [
-                                GridItem(.flexible()),
-                            ],
-                            spacing: 10
-                        ) {
-                            NavigationLink(destination: ExerciseSelectorView()) {
-                                DashboardCard(title: "Exercises", imageName: "exercises_mascot")
-                                    .frame(maxHeight: 400)
-                            }
-                            NavigationLink(destination: MinigameSelectorView()) {
-                                DashboardCard(title: "Minigames", imageName: "minigames_mascot")
-                                    .frame(maxHeight: 400)
+        ZStack {
+            NavigationStack(path: $navigationPath) {
+                VStack(spacing: 0) {
+                    TopNavigationBar(title: "Dashboard", onBack: nil)
+                    ScrollView {
+                        VStack {
+                            LazyVGrid(
+                                columns: [
+                                    GridItem(.flexible()),
+                                ],
+                                spacing: 10
+                            ) {
+                                NavigationLink(destination: ExerciseSelectorView()) {
+                                    DashboardCard(title: "Exercises", imageName: "exercises_mascot")
+                                        .frame(maxHeight: 400)
+                                }
+
+                                NavigationLink(destination: MinigameSelectorView()) {
+                                    DashboardCard(title: "Minigames", imageName: "minigames_mascot")
+                                        .frame(maxHeight: 400)
+                                        .modifier(Highlightable())
+                                }
+                                .onPreferenceChange(HighlightedViewID.self) { frame in
+                                    if tutorialController.isTutorialActive {
+                                        tutorialController.highlightFrame = frame
+                                    }
+                                }
+                                .simultaneousGesture(TapGesture().onEnded {
+                                    if tutorialController.isTutorialActive {
+                                        tutorialController.isTutorialActive = false
+                                    }
+                                })
                             }
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
+                    .padding()
                 }
-                .padding()
-
+                .toolbar(.hidden, for: .navigationBar)
+                .background(Color(hex: 0xB5CFE3))
             }
-            // Hide the system navigation bar.
-            .toolbar(.hidden, for: .navigationBar)
-            .background(Color(hex: 0xB5CFE3))
+
+            if tutorialController.isTutorialActive {
+                TutorialOverlay(
+                    frame: tutorialController.highlightFrame,
+                    message: "Tap here to play Minigames!"
+                )
+            }
         }
+        .environmentObject(tutorialController)
     }
 
     // MARK: - Helper Functions
