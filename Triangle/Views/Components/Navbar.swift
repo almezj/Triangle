@@ -50,10 +50,10 @@ struct Navbar: View {
     var body: some View {
         ZStack {
             Color.clear.ignoresSafeArea()
-            HalfCircleShape()
-                .fill(.ultraThinMaterial)
-                .frame(width: 350, height: 130)
-                .offset(y: 20)
+//            HalfCircleShape()
+//                .fill(.ultraThinMaterial)
+//                .frame(width: 350, height: 130)
+//                .offset(y: 20)
 
             VStack(spacing: 16) {
                 HStack(spacing: -20) {

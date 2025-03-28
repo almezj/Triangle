@@ -21,7 +21,7 @@ struct ProfileView: View {
                     title: authManager.currentUserId ?? "Profile", onBack: nil)
                 ScrollView {
                     VStack {
-                        Character(characterData: characterData)
+                        Character(characterData: characterData, useAnimations: true)
                             .frame(height: 400)
                             .padding()
                         NavigationLink(

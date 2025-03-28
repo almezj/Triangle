@@ -30,18 +30,18 @@ struct MinigameSelectorView: View {
                             ],
                             spacing: 10
                         ) {
-                        NavigationLink(destination: MinigameView()) {
-                                    DashboardCard(title: "Flappy Tom", imageName: "minigame_character")
+                        NavigationLink(destination: FlappyTomGameView()) {
+                                    DashboardCard(title: "Flappy Tom", imageName: "hoops")
                                 }
                         
                         .frame(maxWidth: .infinity)
                         NavigationLink(destination: MinigameView()) {
-                                    DashboardCard(title: "Hoops", imageName: "minigame_character")
+                                    DashboardCard(title: "Hoops", imageName: "hoops")
                                 }
                         
                         .frame(maxWidth: .infinity)
                         NavigationLink(destination: MinigameView()) {
-                                    DashboardCard(title: "Memory Match", imageName: "minigame_character")
+                                    DashboardCard(title: "Memory Match", imageName: "memorymatch")
                                 }
                         }
                         .frame(maxWidth: .infinity)

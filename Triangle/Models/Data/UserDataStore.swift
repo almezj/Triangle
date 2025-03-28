@@ -8,6 +8,7 @@
 import SwiftUI
 
 final class UserDataStore: ObservableObject {
+    static let shared = UserDataStore(userId: "guest")
     @Published var userData: UserData?
     @Published var cosmeticCatalog: CosmeticCatalog?
     private var userId: String

@@ -100,6 +100,17 @@ struct ShopView: View {
                 .background(ColorTheme.primary)
                 .foregroundColor(.white)
                 .cornerRadius(8)
+                
+                Button("Lock all cosmetics") {
+                    print("All cosmetics locked")
+                    userDataStore.userData?.inventory.unlockedCosmetics.self = UnlockedCosmetics.defaultUnlockedCosmetics
+                    userDataStore.userData?.character = CharacterData.defaultCharacter
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(ColorTheme.primary)
+                .foregroundColor(.white)
+                .cornerRadius(8)
 
                 Spacer()
             }
