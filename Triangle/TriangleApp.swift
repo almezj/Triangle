@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct TriangleApp: App {
     @StateObject var authManager = AuthenticationManager()
-    @StateObject var userDataStore = UserDataStore(userId: "guest")
+    @StateObject var userDataStore = UserDataStore.shared
 
     init() {
         print(
