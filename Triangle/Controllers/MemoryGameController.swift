@@ -28,30 +28,47 @@ class MemoryGameController: ObservableObject {
         
         // Get random head cosmetic (excluding "none")
         let availableHeadCosmetics = catalog.headCosmetics.filter { $0.cosmeticId != 1 }
-        guard let headCosmetic = availableHeadCosmetics.randomElement() else {
+        if availableHeadCosmetics.isEmpty {
+            print("No available head cosmetics found.")
             return nil
         }
         
         // Get random eye cosmetic (excluding "none")
         let availableEyeCosmetics = catalog.eyeCosmetics.filter { $0.cosmeticId != 1 }
-        guard let eyeCosmetic = availableEyeCosmetics.randomElement() else {
+        if availableEyeCosmetics.isEmpty {
+            print("No available eye cosmetics found.")
             return nil
         }
         
-        // Create a unique identifier for this combination
-        let combinationId = "\(headCosmetic.cosmeticId)_\(eyeCosmetic.cosmeticId)"
+        // Try to find a unique combination
+        var attempts = 0
+        let maxAttempts = 10 // Prevent infinite recursion
         
-        // If this combination has been used before, try again
-        if usedCombinations.contains(combinationId) {
-            return getRandomCosmeticPair(usedCombinations: usedCombinations)
+        while attempts < maxAttempts {
+            guard let headCosmetic = availableHeadCosmetics.randomElement(),
+                  let eyeCosmetic = availableEyeCosmetics.randomElement() else {
+                attempts += 1
+                continue
+            }
+            
+            // Create a unique identifier for this combination
+            let combinationId = "\(headCosmetic.cosmeticId)_\(eyeCosmetic.cosmeticId)"
+            
+            // If this combination hasn't been used before, return it
+            if !usedCombinations.contains(combinationId) {
+                return (head: headCosmetic, eye: eyeCosmetic)
+            }
+            
+            attempts += 1
         }
         
-        return (head: headCosmetic, eye: eyeCosmetic)
+        print("Could not find a unique combination after \(maxAttempts) attempts.")
+        return nil
     }
     
     func startLevel(_ level: Int) {
         let numberOfPairs = calculateNumberOfPairs(for: level)
-        var cardArray: [Card] = []
+        var cardArray: [MemoryCard] = []
         var usedCombinations = Set<String>()
         
         // Create pairs of cards with unique character data
@@ -71,8 +88,8 @@ class MemoryGameController: ObservableObject {
                 colorId: 1
             )
             
-            let card1 = Card(characterData: characterData, isFaceUp: true)
-            let card2 = Card(characterData: characterData, isFaceUp: true)
+            let card1 = MemoryCard(characterData: characterData, isFaceUp: true)
+            let card2 = MemoryCard(characterData: characterData, isFaceUp: true)
             cardArray.append(contentsOf: [card1, card2])
         }
         

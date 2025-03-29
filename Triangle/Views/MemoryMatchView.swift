@@ -94,7 +94,7 @@ struct MemoryMatchView: View {
 }
 
 struct CardView: View {
-    let card: Card
+    let card: MemoryCard
     let isDisabled: Bool
     
     var body: some View {
