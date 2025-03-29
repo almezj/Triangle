@@ -14,9 +14,9 @@ struct MinigameSelectorView: View {
     @Environment(\.dismiss) var dismiss
 
     private let exercises: [(id: Int, totalLevels: Int)] = [
-        (1, 8), (2, 8), (3, 8), (4, 8)
+        (1, 8), (2, 8), (3, 8), (4, 8),
     ]
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -26,23 +26,28 @@ struct MinigameSelectorView: View {
                         LazyVGrid(
                             columns: [
                                 GridItem(.flexible()),
-                                GridItem(.flexible())
+                                GridItem(.flexible()),
                             ],
                             spacing: 10
                         ) {
-                        NavigationLink(destination: FlappyTomGameView()) {
-                                    DashboardCard(title: "Flappy Tom", imageName: "hoops")
-                                }
-                        
-                        .frame(maxWidth: .infinity)
-                        NavigationLink(destination: MinigameView()) {
-                                    DashboardCard(title: "Hoops", imageName: "hoops")
-                                }
-                        
-                        .frame(maxWidth: .infinity)
-                        NavigationLink(destination: MinigameView()) {
-                                    DashboardCard(title: "Memory Match", imageName: "memorymatch")
-                                }
+                            NavigationLink(destination: FlappyTomGameView()) {
+                                DashboardCard(
+                                    title: "Flappy Tom", imageName: "hoops")
+                            }
+
+                            .frame(maxWidth: .infinity)
+                            NavigationLink(destination: MinigameView()) {
+                                DashboardCard(
+                                    title: "Hoops", imageName: "hoops")
+                            }
+
+                            .frame(maxWidth: .infinity)
+                            NavigationLink(destination: MemoryMatchView()) {
+                                DashboardCard(
+                                    title: "Memory Match",
+                                    imageName: "memorymatch")
+                            }
+                            .frame(maxWidth: .infinity)
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -62,7 +67,7 @@ struct MinigameSelectorView: View {
     }
 }
 
-struct MinigameView: View{
+struct MinigameView: View {
     var body: some View {
         Text("Minigame View")
     }

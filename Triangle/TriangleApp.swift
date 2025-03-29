@@ -11,7 +11,7 @@ import SwiftUI
 struct TriangleApp: App {
     @StateObject var authManager = AuthenticationManager()
     @StateObject var userDataStore = UserDataStore.shared
-
+    
     init() {
         print(
             "UserDefaults at startup: \(UserDefaults.standard.dictionaryRepresentation())"
