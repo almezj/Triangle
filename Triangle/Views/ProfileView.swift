@@ -7,88 +7,86 @@
 
 import SwiftUI
 
-// TODO: Come up with a better layout for the profile view and settle on what we want to show on this screen
-// TODO: Add animated character
-
-
 struct ProfileView: View {
-    @State private var progress: Double = 0.75 // Example progress value
-    @State private var activities: [String] = [
-        "Completed 'Social Cues' exercise",
-        "Unlocked 'Party Hat' cosmetic",
-        "Achieved Level 5 in Focus Training"
-    ]
+    @StateObject var profileController = ProfileController()
+    @EnvironmentObject var userDataStore: UserDataStore
+    @EnvironmentObject var authManager: AuthenticationManager
+    @State private var characterData: CharacterData = CharacterData
+        .defaultCharacter
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-
+            VStack(spacing: 0) {
+                TopNavigationBar(
+                    title: authManager.currentUserId ?? "Profile", onBack: nil)
+                ScrollView {
                     VStack {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 150, height: 150)
-                            .cornerRadius(75)
-                            .overlay(Text("Animated Character Here").font(.montserratBody).foregroundColor(.gray))
-                    }
-                    .frame(maxWidth: .infinity)
-
-                    Divider()
-
-                    // Progress Overview
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Your Progress")
-                            .font(.montserratHeadline)
-
-                        ProgressView(value: progress) {
-                            Text("Progress: \(Int(progress * 100))%")
-                                .font(.montserratBody)
+                        Character(characterData: characterData, useAnimations: true)
+                            .frame(height: 400)
+                            .padding()
+                        NavigationLink(
+                            destination: InventoryView()
+                        ) {
+                            Text("Customise")
+                                .font(.pageTitle)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(ColorTheme.primary)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
                         }
-                        .progressViewStyle(LinearProgressViewStyle(tint: ColorTheme.primary))
-
-                        HStack {
-                            Text("Milestones Achieved:")
-                                .font(.montserratBody)
-                            Spacer()
-                            Text("3/5") // Example milestone data
-                                .font(.montserratBody)
+                        NavigationLink(
+                            destination: SettingsView(userDataStore: userDataStore)
+                        ) {
+                            Text("Settings")
+                                .font(.pageTitle)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(ColorTheme.primary)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                        }
+                    }
+                    .padding()
+                    VStack {
+                        ZStack {
+                            Rectangle()
+                                .frame(height: 700)
                                 .foregroundColor(ColorTheme.primary)
+                                .cornerRadius(20)
+                            Text("Badges\nand\nAchievements")
+                                .multilineTextAlignment(.center)
+                                .font(
+                                    .system(
+                                        size: 32, weight: .bold,
+                                        design: .default)
+                                )
+                                .foregroundColor(.white)
                         }
                     }
-
-                    Divider()
-
-                    // Activity Feed
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Recent Activities")
-                            .font(.montserratHeadline)
-
-                        ForEach(activities, id: \ .self) { activity in
-                            HStack {
-                                Circle()
-                                    .fill(ColorTheme.primary)
-                                    .frame(width: 8, height: 8)
-
-                                Text(activity)
-                                    .font(.montserratBody)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-
+                    .padding()
                 }
-                .padding()
+                .frame(maxHeight: .infinity)
+                .background(ColorTheme.background)
             }
-            .background(ColorTheme.background)
-            .toolbarBackground(.hidden, for: .navigationBar)
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            print("Current user data: \(userDataStore.userData)")
+            if let storedCharacter = userDataStore.userData?.character {
+                characterData = storedCharacter
+                print("Loaded character data: \(characterData)")
+            } else {
+                print("No character data found.")
+            }
         }
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
-            .previewDevice("iPad Pro 11-inch")
+        return ProfileView()
+            .environmentObject(UserDataStore(userId: "guest"))
+            .environmentObject(AuthenticationManager())
     }
 }
-

@@ -7,78 +7,81 @@
 
 import SwiftUI
 
+// MARK: - DashboardView
 struct DashboardView: View {
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    Navbar()
-                    VStack(spacing: 40) {
+    @EnvironmentObject var navbarVisibility: NavbarVisibility
+    @EnvironmentObject var userDataStore: UserDataStore
+    @StateObject var dashboardController: DashboardController
+    @State private var navigationPath = NavigationPath()
 
-                        Grid(horizontalSpacing: 40, verticalSpacing: 40) {
-                            GridRow {
-                                DashboardCard(
-                                    title: "Getting Started",
-                                    imageNames: ["SocialTriangle"],
-                                    destination: LevelTransitionView(
-                                        totalTriangles: 8,  // ✅ Pass actual values
-                                        currentLevelIndex: 1 // ✅ Adjust as needed
-                                    ),
-                                    progress: 0,
-                                    currentExercise: 1,
-                                    locked: false)
-                                DashboardCard(
-                                    title: "A Day in the Park",
-                                    imageNames: ["SocialTriangle"],
-                                    destination: HexagonView(
-                                        exerciseId: 2, currentLevelIndex: 3),
-                                    progress: 0.3, currentExercise: 1,
-                                    locked: true)
+    init(userDataStore: UserDataStore) {
+        _dashboardController = StateObject(
+            wrappedValue: DashboardController(userDataStore: userDataStore)
+        )
+    }
+
+    var body: some View {
+        NavigationStack(path: $navigationPath) {
+            VStack(spacing: 0) {
+                TopNavigationBar(title: "Dashboard", onBack: nil)
+                ScrollView {
+                    VStack {
+                        LazyVGrid(
+                            columns: [
+                                GridItem(.flexible()),
+                            ],
+                            spacing: 10
+                        ) {
+                            NavigationLink(destination: ExerciseSelectorView()) {
+                                DashboardCard(title: "Exercises", imageName: "exercises_mascot")
+                                    .frame(maxHeight: 400)
                             }
-                            GridRow {
-                                DashboardCard(
-                                    title: "School Sports Day",
-                                    imageNames: ["SocialTriangle"],
-                                    destination: HexagonView(
-                                        exerciseId: 3, currentLevelIndex: 1),
-                                    progress: 0, currentExercise: 1,
-                                    locked: true)
-                                DashboardCard(
-                                    title: "Coming soon...",
-                                    imageNames: ["SocialTriangle"],
-                                    destination: HexagonView(
-                                        exerciseId: 4, currentLevelIndex: 1),
-                                    progress: 0, currentExercise: 1,
-                                    locked: true)
+                            NavigationLink(destination: MinigameSelectorView()) {
+                                DashboardCard(title: "Minigames", imageName: "minigames_mascot")
+                                    .frame(maxHeight: 400)
                             }
                         }
-                        .frame(maxWidth: .infinity)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
+                    .frame(maxWidth: .infinity)
                 }
                 .padding()
+
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Hide the system navigation bar.
+            .toolbar(.hidden, for: .navigationBar)
             .background(Color(hex: 0xB5CFE3))
-            .edgesIgnoringSafeArea(.all)
         }
     }
-}
 
-struct DetailView: View {
-    let title: String
+    // MARK: - Helper Functions
 
-    var body: some View {
-        VStack {
-            Text("You are in the " + title + " view!")
+    func titleForExercise(exerciseId: Int) -> String {
+        switch exerciseId {
+        case 1: return "Getting Started"
+        case 2: return "A Day in the Park"
+        case 3: return "School Sports Day"
+        case 4: return "Coming soon..."
+        default: return "Exercise \(exerciseId)"
         }
+    }
+
+    func imageNamesForExercise(exerciseId: Int) -> [String] {
+        return ["SocialTriangle"]
+    }
+
+    func isExerciseLocked(exerciseId: Int, currentLevel: Int) -> Bool {
+        if exerciseId == 1 { return false }
+        return currentLevel == 1
     }
 }
 
 struct DashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardView()
+        let userDataStore = UserDataStore(userId: "previewUser")
+        userDataStore.userData = userDataStore.loadUserData(for: "previewUser")
+        return DashboardView(userDataStore: userDataStore)
+            .environmentObject(NavbarVisibility())
+            .environmentObject(userDataStore)
             .previewInterfaceOrientation(.landscapeLeft)
             .previewDevice("iPad Pro 11-inch")
     }
