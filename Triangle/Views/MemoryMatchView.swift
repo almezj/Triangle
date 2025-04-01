@@ -104,12 +104,12 @@ struct CardView: View {
             ZStack {
                 if card.isFaceUp {
                     base.fill(.white)
-                    base.strokeBorder(Color.blue, lineWidth: 2)
+                    base.strokeBorder(ColorTheme.primary, lineWidth: 2)
                     Character(characterData: card.characterData, useAnimations: false)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(8)
                 } else {
-                    base.fill(Color.blue)
+                    base.fill(ColorTheme.primary)
                 }
             }
         }

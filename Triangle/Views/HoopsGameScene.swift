@@ -11,6 +11,7 @@ class HoopsGameScene: SKScene {
     private var gameTimer: Timer?
     private var lastUpdateTime: TimeInterval = 0
     private var isGameOver: Bool = false
+    private var gameStarted: Bool = false
     
     // Game constants
     private let hoopWidth: CGFloat = 120
@@ -24,7 +25,36 @@ class HoopsGameScene: SKScene {
         // Convert ColorTheme.background (SwiftUI Color) to UIColor for SpriteKit
         backgroundColor = UIColor(red: 0.71, green: 0.81, blue: 0.89, alpha: 1.0) // B5CFE3
         setupGame()
-        startGame()
+        // Don't start game automatically
+        // Game will be started via the startGame method
+    }
+    
+    func startGame() {
+        gameStarted = true
+        isGameOver = false
+        lives = 3
+        score = 0
+        
+        // Ensure background score label exists and is visible
+        if backgroundScoreLabel == nil {
+            backgroundScoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+            backgroundScoreLabel.text = "0"
+            backgroundScoreLabel.fontSize = 200
+            backgroundScoreLabel.fontColor = UIColor(red: 0.67, green: 0.77, blue: 0.85, alpha: 1.0)
+            backgroundScoreLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+            backgroundScoreLabel.zPosition = -1
+            addChild(backgroundScoreLabel)
+        } else {
+            backgroundScoreLabel.text = "0"
+            backgroundScoreLabel.isHidden = false
+        }
+        
+        updateLivesDisplay()
+        
+        // Start spawning balls
+        gameTimer = Timer.scheduledTimer(withTimeInterval: spawnInterval, repeats: true) { [weak self] _ in
+            self?.spawnBall()
+        }
     }
     
     private func setupGame() {
@@ -59,19 +89,6 @@ class HoopsGameScene: SKScene {
             heart.position = CGPoint(x: startX + (heartSize + spacing) * CGFloat(i), y: startY)
             livesNodes.append(heart)
             addChild(heart)
-        }
-    }
-    
-    private func startGame() {
-        isGameOver = false
-        lives = 3
-        score = 0
-        backgroundScoreLabel.text = "0"
-        updateLivesDisplay()
-        
-        // Start spawning balls
-        gameTimer = Timer.scheduledTimer(withTimeInterval: spawnInterval, repeats: true) { [weak self] _ in
-            self?.spawnBall()
         }
     }
     
@@ -128,7 +145,7 @@ class HoopsGameScene: SKScene {
         if isGameOver {
             // Remove game over labels
             gameOverLabel?.parent?.children.forEach { node in
-                if node is SKLabelNode {
+                if node is SKLabelNode && node != backgroundScoreLabel {
                     node.removeFromParent()
                 }
             }
@@ -137,6 +154,11 @@ class HoopsGameScene: SKScene {
             enumerateChildNodes(withName: "ball") { node, _ in
                 node.removeFromParent()
             }
+            
+            // Reset and show background score label
+            backgroundScoreLabel.text = "0"
+            backgroundScoreLabel.isHidden = false
+            backgroundScoreLabel.zPosition = -1
             
             // Restart the game
             startGame()

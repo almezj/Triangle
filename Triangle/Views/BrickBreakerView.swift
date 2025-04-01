@@ -1,40 +1,31 @@
 import SwiftUI
 import SpriteKit
 
-struct HoopsGameView: View {
+struct BrickBreakerView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
     @State private var showingStartModal = true
-    @State private var gameScene: HoopsGameScene
     
-    init() {
-        let scene = HoopsGameScene()
+    var scene: SKScene {
+        let scene = BrickBreakerScene()
         scene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        scene.scaleMode = .aspectFill
-        _gameScene = State(initialValue: scene)
+        scene.scaleMode = .fill
+        return scene
     }
     
     var body: some View {
         ZStack {
             VStack (spacing: 0) {
-                TopNavigationBar(
-                    title: "Hoops",
-                    onBack: { dismiss() }
-                )
-                SpriteView(scene: gameScene)
+                TopNavigationBar(title: "Brick Breaker", onBack: { dismiss() })
+                SpriteView(scene: scene)
                     .ignoresSafeArea()
             }
             
             if showingStartModal {
-                StartGameModal(
-                    title: "Hoops",
-                    description: "Swipe to catch the balls! Try to score as many baskets as you can.",
-                    onStart: { 
-                        showingStartModal = false
-                        gameScene.startGame()
-                    }
-                )
+                BrickBreakerStartModal {
+                    showingStartModal = false
+                }
             }
         }
         .toolbarVisibility(.hidden)
@@ -48,5 +39,5 @@ struct HoopsGameView: View {
 }
 
 #Preview {
-    HoopsGameView()
+    BrickBreakerView()
 } 

@@ -32,7 +32,9 @@ class FlappyTomGameScene: SKScene, SKPhysicsContactDelegate {
         createPlayer()
         createGround()
         createScoreLabel()
-        startSpawningObstacles()
+        
+        // Pause physics until game starts
+        physicsWorld.speed = 0
     }
 
     // TODO: Make the player the current character with customisations
@@ -84,11 +86,20 @@ class FlappyTomGameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func createScoreLabel() {
-        scoreLabel.fontSize = 40
-        scoreLabel.fontColor = UIColor(ColorTheme.primary)
-        scoreLabel.position = CGPoint(x: frame.midX, y: frame.height - 60)
+        scoreLabel.fontSize = 200
+        scoreLabel.fontColor = UIColor(ColorTheme.primary).withAlphaComponent(0.2)
+        scoreLabel.position = CGPoint(x: frame.midX, y: frame.midY)
+        scoreLabel.zPosition = -1  // Place behind other elements
         scoreLabel.text = "0"
         addChild(scoreLabel)
+    }
+
+    // MARK: - Game State Management
+    
+    func startGame() {
+        gameStarted = true
+        physicsWorld.speed = 1.0
+        startSpawningObstacles()
     }
 
     // MARK: - Obstacle Spawning
@@ -178,10 +189,9 @@ class FlappyTomGameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: - Touch Handling
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if !gameStarted {
-            gameStarted = true
-            // Reset vertical velocity
-            player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+            return // Don't do anything until gameStarted is true
         }
+        
         if !gameOver {
             // Flap on tap
             player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)

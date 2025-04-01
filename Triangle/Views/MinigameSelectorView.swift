@@ -46,6 +46,12 @@ struct MinigameSelectorView: View {
                                     imageName: "memorymatch")
                             }
                             .frame(maxWidth: .infinity)
+                            NavigationLink(destination: BrickBreakerView()) {
+                                DashboardCard(
+                                    title: "Brick Breaker",
+                                    imageName: "hoops")
+                            }
+                            .frame(maxWidth: .infinity)
                         }
                         .frame(maxWidth: .infinity)
                     }

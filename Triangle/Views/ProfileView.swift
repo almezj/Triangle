@@ -11,8 +11,6 @@ struct ProfileView: View {
     @StateObject var profileController = ProfileController()
     @EnvironmentObject var userDataStore: UserDataStore
     @EnvironmentObject var authManager: AuthenticationManager
-    @State private var characterData: CharacterData = CharacterData
-        .defaultCharacter
 
     var body: some View {
         NavigationStack {
@@ -21,7 +19,7 @@ struct ProfileView: View {
                     title: authManager.currentUserId ?? "Profile", onBack: nil)
                 ScrollView {
                     VStack {
-                        Character(characterData: characterData, useAnimations: true)
+                        Character(characterData: userDataStore.userData?.character ?? CharacterData.defaultCharacter, useAnimations: true)
                             .frame(height: 400)
                             .padding()
                         NavigationLink(
@@ -71,15 +69,6 @@ struct ProfileView: View {
             }
         }
         .navigationBarHidden(true)
-        .onAppear {
-            print("Current user data: \(userDataStore.userData)")
-            if let storedCharacter = userDataStore.userData?.character {
-                characterData = storedCharacter
-                print("Loaded character data: \(characterData)")
-            } else {
-                print("No character data found.")
-            }
-        }
     }
 }
 
