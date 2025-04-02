@@ -11,7 +11,12 @@ struct ExerciseCard: View {
     @EnvironmentObject var userDataStore: UserDataStore
     @State private var currentLevel: Int = 0
     let id: Int
+    let isLocked: Bool
     
+    init(id: Int, isLocked: Bool = false) {
+        self.id = id
+        self.isLocked = isLocked
+    }
 
     var body: some View {
         let title = "Exercise \(id)"
@@ -36,6 +41,20 @@ struct ExerciseCard: View {
         .padding()
         .background(Color(hex: 0x96B6CF))
         .cornerRadius(20)
+        .overlay(
+            Group {
+                if isLocked {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(ColorTheme.darker.opacity(0.7))
+                        
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.white)
+                    }
+                }
+            }
+        )
         .onAppear {
             currentLevel = userDataStore.getCurrentLevel(exerciseId: self.id)
         }
@@ -46,7 +65,7 @@ struct ExerciseCard: View {
     HStack {
         ExerciseCard(id: 1)
             .environmentObject(UserDataStore(userId: "guest"))
-        ExerciseCard(id: 2)
+        ExerciseCard(id: 2, isLocked: true)
             .environmentObject(UserDataStore(userId: "guest"))
     }
     .frame(width: 1000, height: 500)

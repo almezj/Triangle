@@ -37,8 +37,12 @@ struct ExerciseSelectorView: View {
                             spacing: 10
                         ) {
                             ForEach(exercises, id: \.id) { exercise in
-                                NavigationLink(destination: LevelSelectorView(exerciseId: exercise.id, totalTriangles: 10)) {
-                                    ExerciseCard(id: exercise.id)
+                                if exercise.id == 1 {
+                                    NavigationLink(destination: LevelSelectorView(exerciseId: exercise.id, totalTriangles: 10)) {
+                                        ExerciseCard(id: exercise.id, isLocked: false)
+                                    }
+                                } else {
+                                    ExerciseCard(id: exercise.id, isLocked: true)
                                 }
                             }
                         }
