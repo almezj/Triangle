@@ -19,6 +19,8 @@ final class AuthenticationManager: ObservableObject {
             }
         }
     }
+    
+    @Published var needsProfileSelection: Bool = false
 
     init() {
         if let savedUser = UserDefaults.standard.string(forKey: "currentUserId")

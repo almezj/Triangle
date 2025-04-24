@@ -18,7 +18,8 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            TopNavigationBar(title: "Settings", onBack: nil)
             
             if let settings = userDataStore.userData?.settings {
                 ScrollView {
@@ -27,6 +28,8 @@ struct SettingsView: View {
                         Group {
                             Text("Account")
                                 .font(.pageTitle)
+                                .foregroundColor(ColorTheme.text)
+                                
                             Button("Update Email") {
                                 print("Update Email button tapped")
                             }
@@ -36,6 +39,13 @@ struct SettingsView: View {
                                 print("Change Password button tapped")
                             }
                             .buttonStyle(TrianglePrimaryButton())
+                            
+                            Button("Switch Profile") {
+                                print("Switch Profile button tapped")
+                                authManager.needsProfileSelection = true
+                            }
+                            .buttonStyle(TrianglePrimaryButton())
+                            
                             Button("Log Out") {
                                 print("Log Out button tapped")
                                 authManager.logout(userDataStore: userDataStore)
@@ -49,9 +59,11 @@ struct SettingsView: View {
                         Group {
                             Text("Accessibility")
                                 .font(.pageTitle)
+                                .foregroundColor(ColorTheme.text)
                             VStack(alignment: .leading) {
                                 Text("Text Size")
                                     .font(.bodyText)
+                                    .foregroundColor(ColorTheme.text)
                                 Slider(
                                     value: Binding(
                                         get: { settings.textSize },
@@ -64,6 +76,7 @@ struct SettingsView: View {
                                     step: 0.1,
                                     label: { Text("Text Size") }
                                 )
+                                .tint(ColorTheme.primary)
                             }
                         }
 
@@ -73,9 +86,11 @@ struct SettingsView: View {
                         Group {
                             Text("Sound")
                                 .font(.pageTitle)
+                                .foregroundColor(ColorTheme.text)
                             VStack(alignment: .leading) {
                                 Text("Music Volume")
                                     .font(.bodyText)
+                                    .foregroundColor(ColorTheme.text)
                                 Slider(
                                     value: Binding(
                                         get: { settings.musicVolume },
@@ -88,9 +103,11 @@ struct SettingsView: View {
                                     step: 0.1,
                                     label: { Text("Music Volume") }
                                 )
+                                .tint(ColorTheme.primary)
 
                                 Text("SFX Volume")
                                     .font(.bodyText)
+                                    .foregroundColor(ColorTheme.text)
                                 Slider(
                                     value: Binding(
                                         get: { settings.sfxVolume },
@@ -103,6 +120,7 @@ struct SettingsView: View {
                                     step: 0.1,
                                     label: { Text("SFX Volume") }
                                 )
+                                .tint(ColorTheme.primary)
                             }
                         }
 
@@ -112,9 +130,11 @@ struct SettingsView: View {
                         Group {
                             Text("General")
                                 .font(.pageTitle)
+                                .foregroundColor(ColorTheme.text)
                             VStack(alignment: .leading) {
                                 Text("Language")
                                     .font(.bodyText)
+                                    .foregroundColor(ColorTheme.text)
                                 Picker(
                                     "Language",
                                     selection: Binding(
@@ -146,9 +166,11 @@ struct SettingsView: View {
                         Group {
                             Text("App Info")
                                 .font(.pageTitle)
+                                .foregroundColor(ColorTheme.text)
                             VStack(alignment: .leading) {
                                 Text("Version: 1.0.0")
                                     .font(.bodyText)
+                                    .foregroundColor(ColorTheme.text)
                                 Button("Privacy Policy") {
                                     showPrivacyPolicy = true
                                 }
@@ -163,12 +185,12 @@ struct SettingsView: View {
                     .padding()
                 }
                 .background(ColorTheme.background)
-                .toolbarBackground(.hidden, for: .navigationBar)
             } else {
                 // Loading state
                 ProgressView("Loading...")
             }
         }
+        .navigationBarHidden(true)
     }
 }
 

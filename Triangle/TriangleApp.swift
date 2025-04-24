@@ -60,17 +60,29 @@ struct TriangleApp: App {
 
 struct RootView: View {
     @EnvironmentObject var authManager: AuthenticationManager
-    @State private var showProfileSelector = true
+    @State private var shouldShowProfileSelector = true
 
     var body: some View {
-        if authManager.currentUserId != nil {
-            if showProfileSelector {
-                ProfileSelectorView(showProfileSelector: $showProfileSelector)
+        Group {
+            if authManager.currentUserId != nil {
+                if shouldShowProfileSelector {
+                    ProfileSelectorView(showProfileSelector: $shouldShowProfileSelector)
+                } else {
+                    ContentView()
+                }
             } else {
-                ContentView()
+                OnboardingView()
             }
-        } else {
-            OnboardingView()
+        }
+        .onChange(of: authManager.needsProfileSelection) { _, newValue in
+            if newValue {
+                shouldShowProfileSelector = true
+            }
+        }
+        .onChange(of: shouldShowProfileSelector) { _, newValue in
+            if !newValue {
+                authManager.needsProfileSelection = false
+            }
         }
     }
 }
