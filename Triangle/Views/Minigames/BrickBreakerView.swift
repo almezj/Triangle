@@ -5,6 +5,7 @@ struct BrickBreakerView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
+    @StateObject private var gameController = BrickBreakerGameController()
     @State private var showingStartModal = true
     @State private var showingEndModal = false
     @State private var finalScore = 0
@@ -33,6 +34,7 @@ struct BrickBreakerView: View {
             if showingEndModal {
                 EndGameModal(
                     score: finalScore,
+                    highScore: gameController.gameModel.highScore,
                     currencyReward: finalScore * 2, // 2 coins per brick
                     onRestart: {
                         showingEndModal = false
@@ -50,6 +52,7 @@ struct BrickBreakerView: View {
             navbarVisibility.isVisible = false
             scene.onGameOver = { score in
                 finalScore = score
+                gameController.handleGameOver(score: score)
                 showingEndModal = true
             }
         }

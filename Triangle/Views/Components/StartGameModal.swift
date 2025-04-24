@@ -14,29 +14,31 @@ struct StartGameModal: View {
             VStack(spacing: 20) {
                 Text(title)
                     .font(.pageTitle)
-                    .foregroundColor(.white)
+                    .foregroundColor(ColorTheme.text)
                 
                 Text(description)
-                    .font(.bodyText)
-                    .foregroundColor(.white)
+                    .font(.title2)
+                    .foregroundColor(ColorTheme.text)
                     .multilineTextAlignment(.center)
                 
-                Button(action: onStart) {
-                    Text("Start Game")
-                        .font(.buttonText)
-                        .foregroundColor(ColorTheme.secondary)
-                        .frame(width: 200, height: 50)
-                        .background(ColorTheme.primary)
-                        .cornerRadius(25)
-                }
-                
-                Button(action: onBack) {
-                    Text("Back to Menu")
-                        .font(.buttonText)
-                        .foregroundColor(ColorTheme.primary)
-                        .frame(width: 200, height: 50)
-                        .background(ColorTheme.secondary)
-                        .cornerRadius(25)
+                VStack(spacing: 15) {
+                    Button(action: onStart) {
+                        Text("Start Game")
+                            .font(.buttonText)
+                            .foregroundColor(ColorTheme.secondary)
+                            .frame(width: 200, height: 50)
+                            .background(ColorTheme.primary)
+                            .cornerRadius(25)
+                    }
+                    
+                    Button(action: onBack) {
+                        Text("Back to Menu")
+                            .font(.buttonText)
+                            .foregroundColor(ColorTheme.primary)
+                            .frame(width: 200, height: 50)
+                            .background(ColorTheme.secondary)
+                            .cornerRadius(25)
+                    }
                 }
             }
             .padding(30)

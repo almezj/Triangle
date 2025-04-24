@@ -11,6 +11,7 @@ struct MemoryMatchView: View {
     @StateObject private var gameController = MemoryGameController()
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var navbarVisibility: NavbarVisibility
+    @State private var showingStartModal = true
     @State private var showingEndModal = false
     @State private var finalScore = 0
     
@@ -55,10 +56,23 @@ struct MemoryMatchView: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    .padding()
                 }
             }
             .overlay {
+                if showingStartModal {
+                    StartGameModal(
+                        title: "Memory Match",
+                        description: "Find matching pairs of cards! Match all pairs to win.",
+                        onStart: {
+                            showingStartModal = false
+                            gameController.startLevel(1)
+                        },
+                        onBack: {
+                            dismiss()
+                        }
+                    )
+                }
+                
                 if showingEndModal {
                     EndGameModal(
                         score: finalScore,

@@ -5,13 +5,14 @@ struct HoopsGameView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
-    @StateObject private var gameController = HoopsGameController()
+    @StateObject private var gameController: HoopsGameController
     @State private var showingStartModal = true
     @State private var showingEndModal = false
     @State private var finalScore = 0
     @State private var gameScene: HoopsGameScene
     
     init() {
+        _gameController = StateObject(wrappedValue: HoopsGameController(userDataStore: UserDataStore.shared))
         let scene = HoopsGameScene()
         scene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         scene.scaleMode = .aspectFill
@@ -64,10 +65,7 @@ struct HoopsGameView: View {
             navbarVisibility.isVisible = false
             gameScene.onGameOver = { score in
                 finalScore = score
-                // Update high score if needed
-                if score > gameController.gameModel.highScore {
-                    gameController.updateHighScore(score)
-                }
+                gameController.handleGameOver(score: score)
                 showingEndModal = true
             }
         }

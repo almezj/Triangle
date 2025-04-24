@@ -11,20 +11,22 @@ struct BrickBreakerStartModal: View {
             VStack(spacing: 20) {
                 Text("Brick Breaker")
                     .font(.pageTitle)
-                    .foregroundColor(.white)
+                    .foregroundColor(ColorTheme.text)
                 
                 Text("Break all the bricks to win!")
-                    .font(.bodyText)
-                    .foregroundColor(.white)
+                    .font(.title2)
+                    .foregroundColor(ColorTheme.text)
                     .multilineTextAlignment(.center)
                 
-                Button(action: onStart) {
-                    Text("Start Game")
-                        .font(.buttonText)
-                        .foregroundColor(ColorTheme.secondary)
-                        .frame(width: 200, height: 50)
-                        .background(ColorTheme.primary)
-                        .cornerRadius(25)
+                VStack(spacing: 15) {
+                    Button(action: onStart) {
+                        Text("Start Game")
+                            .font(.buttonText)
+                            .foregroundColor(ColorTheme.secondary)
+                            .frame(width: 200, height: 50)
+                            .background(ColorTheme.primary)
+                            .cornerRadius(25)
+                    }
                 }
             }
             .padding(30)

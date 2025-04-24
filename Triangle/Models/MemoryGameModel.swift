@@ -21,4 +21,5 @@ struct MemoryGameModel {
     var level: Int
     var moves: Int = 0
     var isGameComplete: Bool = false
+    var highScore: Int = 0
 } 

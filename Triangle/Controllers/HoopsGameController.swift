@@ -3,8 +3,10 @@ import SwiftUI
 class HoopsGameController: ObservableObject {
     @Published private(set) var gameModel: HoopsGameModel
     private var screenWidth: CGFloat = 0
+    private let userDataStore: UserDataStore
     
-    init() {
+    init(userDataStore: UserDataStore = UserDataStore.shared) {
+        self.userDataStore = userDataStore
         self.gameModel = HoopsGameModel()
         // Load high score from UserDefaults
         self.gameModel.highScore = UserDefaults.standard.integer(forKey: "HoopsHighScore")
@@ -60,5 +62,17 @@ class HoopsGameController: ObservableObject {
                ballPosition.x <= basketRight &&
                ballPosition.y >= basketTop &&
                ballPosition.y <= basketTop + HoopsGameModel.basketHeight
+    }
+    
+    func handleGameOver(score: Int) {
+        // Update high score if needed
+        if score > gameModel.highScore {
+            updateHighScore(score)
+        }
+        // Add currency reward (1 coin per point)
+        if var inventory = userDataStore.userData?.inventory {
+            inventory.currency += score
+            userDataStore.updateInventory(inventory)
+        }
     }
 } 
