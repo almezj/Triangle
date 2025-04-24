@@ -16,11 +16,10 @@ class MemoryGameController: ObservableObject {
     
     init() {
         self.userDataStore = UserDataStore.shared
-        // Initialize with an empty model then start level 1
+        // Initialize with an empty model
         self.gameModel = MemoryGameModel(cards: [], level: 1)
         // Load high score from UserDefaults
         self.gameModel.highScore = UserDefaults.standard.integer(forKey: "MemoryMatchHighScore")
-        startLevel(1)
     }
     
     func updateHighScore(_ newScore: Int) {

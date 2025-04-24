@@ -34,6 +34,9 @@ struct MemoryMatchView: View {
                         // Game grid
                         let playAreaSize = min(geometry.size.width - 40, geometry.size.height - 200)
                         ZStack {
+                            ColorTheme.background
+                                .ignoresSafeArea()
+                            
                             LazyVGrid(columns: columns, spacing: 10) {
                                 ForEach(gameController.gameModel.cards) { card in
                                     if card.isMatched {
@@ -58,6 +61,7 @@ struct MemoryMatchView: View {
                     }
                 }
             }
+            .background(ColorTheme.background)
             .overlay {
                 if showingStartModal {
                     StartGameModal(
@@ -104,6 +108,7 @@ struct MemoryMatchView: View {
         .onDisappear {
             navbarVisibility.isVisible = true
         }
+        .toolbarVisibility(.hidden)
     }
 }
 
