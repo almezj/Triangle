@@ -28,8 +28,8 @@ struct ProfileView: View {
                             .font(.pageTitle)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(ColorTheme.primary)
-                            .foregroundColor(.white)
+                            .background(ColorTheme.accent)
+                            .foregroundColor(ColorTheme.text)
                             .cornerRadius(20)
                     }
                     NavigationLink(
@@ -39,8 +39,8 @@ struct ProfileView: View {
                             .font(.pageTitle)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(ColorTheme.primary)
-                            .foregroundColor(.white)
+                            .background(ColorTheme.accent)
+                            .foregroundColor(ColorTheme.text)
                             .cornerRadius(20)
                     }
                 }
