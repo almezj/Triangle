@@ -21,6 +21,8 @@ struct ExerciseCard: View {
     var body: some View {
         let title = "Exercise \(id)"
         let imageName = "SocialTriangle"
+        let isCompleted = currentLevel > 6
+        
         VStack(alignment: .leading, spacing: 15) {
             Text(title)
                 .font(.cardTitle)
@@ -31,12 +33,12 @@ struct ExerciseCard: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: .infinity, alignment: .center)
             Spacer()
-            Text("Level \(currentLevel)")
+            Text(isCompleted ? "Completed" : "Level \(currentLevel)")
                 .font(.headline)
                 .fontWeight(.medium)
-                .foregroundColor(Color(hex: 0x4C708A))
+                .foregroundColor(isCompleted ? ColorTheme.currentLevelColor : Color(hex: 0x4C708A))
             ProgressView(value: userDataStore.caltulateNormalizedProgress(exerciseId: self.id))
-                .tint(Color(hex: 0x4C708A))
+                .tint(isCompleted ? ColorTheme.currentLevelColor : Color(hex: 0x4C708A))
         }
         .padding()
         .background(Color(hex: 0x96B6CF))

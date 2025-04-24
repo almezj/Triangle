@@ -196,7 +196,7 @@ final class UserDataStore: ObservableObject {
         return 1
     }
     
-    // This assumes there are 10 levels in each exercise
+    // This assumes there are 6 levels in each exercise
     // TODO: Once the exercises are loaded from a file, change this behavior
     func caltulateNormalizedProgress(exerciseId: Int) -> Double {
         if let progress = userData?.progress,
@@ -204,7 +204,7 @@ final class UserDataStore: ObservableObject {
                $0.exerciseId == exerciseId
            })
         {
-            return Double(exerciseProgress.currentLevelId) / 10.0
+            return Double(exerciseProgress.currentLevelId) / 7.0
         }
         return 0.0
     }

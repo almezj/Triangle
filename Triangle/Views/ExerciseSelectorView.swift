@@ -38,8 +38,13 @@ struct ExerciseSelectorView: View {
                         ) {
                             ForEach(exercises, id: \.id) { exercise in
                                 if exercise.id == 1 {
-                                    NavigationLink(destination: LevelSelectorView(exerciseId: exercise.id, totalTriangles: 10)) {
+                                    let currentLevel = userDataStore.getCurrentLevel(exerciseId: exercise.id)
+                                    if currentLevel > 6 {
                                         ExerciseCard(id: exercise.id, isLocked: false)
+                                    } else {
+                                        NavigationLink(destination: getExerciseForCurrentLevel(exerciseId: exercise.id)) {
+                                            ExerciseCard(id: exercise.id, isLocked: false)
+                                        }
                                     }
                                 } else {
                                     ExerciseCard(id: exercise.id, isLocked: true)
@@ -52,15 +57,59 @@ struct ExerciseSelectorView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
-            .navigationDestination(for: ExerciseParameters.self) { params in
-                LevelSelectorView(
-                    exerciseId: params.id,
-                    totalTriangles: params.totalTriangles
-                )
-                .environmentObject(navbarVisibility)
-            }
             .background(Color(hex: 0xB5CFE3))
         }
+    }
+    
+    private func getExerciseForCurrentLevel(exerciseId: Int) -> some View {
+        let currentLevel = userDataStore.getCurrentLevel(exerciseId: exerciseId)
+        
+        // If we've completed all levels, show a completion message and dismiss
+        if currentLevel > 6 {
+            return AnyView(
+                VStack {
+                    Text("Congratulations!")
+                        .font(.largeTitle)
+                        .padding()
+                    Text("You've completed all levels!")
+                        .font(.title2)
+                        .padding()
+                    Button("Back to Exercises") {
+                        dismiss()
+                    }
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(hex: 0xB5CFE3))
+            )
+        }
+        
+        let exercise: Exercise = {
+            switch currentLevel {
+            case 1:
+                return EmotionRecognitionExercise(predefinedEmotion: .happy)
+            case 2:
+                return EmotionRecognitionExercise(predefinedEmotion: .angry)
+            case 3:
+                return EmotionRecognitionExercise(predefinedEmotion: .crying)
+            case 4:
+                return BodyLanguageRecognitionExercise(targetBodyLanguage: .proud)
+            case 5:
+                return BodyLanguageRecognitionExercise(targetBodyLanguage: .angry)
+            case 6:
+                return BodyLanguageRecognitionExercise(targetBodyLanguage: .frustrated)
+            default:
+                fatalError("No level found for ID \(currentLevel)")
+            }
+        }()
+        
+        return exercise.startExercise(onComplete: {
+            print(">>> Exercise completed <<<")
+            userDataStore.unlockNextLevel(forExerciseId: exerciseId, totalLevels: 10)
+        })
     }
 }
 
