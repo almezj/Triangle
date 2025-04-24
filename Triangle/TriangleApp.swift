@@ -60,10 +60,15 @@ struct TriangleApp: App {
 
 struct RootView: View {
     @EnvironmentObject var authManager: AuthenticationManager
+    @State private var showProfileSelector = true
 
     var body: some View {
         if authManager.currentUserId != nil {
-            ContentView()
+            if showProfileSelector {
+                ProfileSelectorView(showProfileSelector: $showProfileSelector)
+            } else {
+                ContentView()
+            }
         } else {
             OnboardingView()
         }

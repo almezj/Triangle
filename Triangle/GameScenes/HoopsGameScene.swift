@@ -12,6 +12,7 @@ class HoopsGameScene: SKScene {
     private var lastUpdateTime: TimeInterval = 0
     private var isGameOver: Bool = false
     private var gameStarted: Bool = false
+    var onGameOver: ((Int) -> Void)?
     
     // Game constants
     private let hoopWidth: CGFloat = 120
@@ -113,43 +114,11 @@ class HoopsGameScene: SKScene {
         isGameOver = true
         gameTimer?.invalidate()
         gameTimer = nil
-        
-        // Show game over message
-        let gameOverLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        gameOverLabel.text = "Game Over!"
-        gameOverLabel.fontSize = 50
-        gameOverLabel.fontColor = UIColor(red: 0.45, green: 0.44, blue: 0.44, alpha: 1.0)
-        gameOverLabel.position = CGPoint(x: frame.midX, y: frame.midY + 100)
-        addChild(gameOverLabel)
-        
-        // Show final score
-        let finalScoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        finalScoreLabel.text = "Final Score: \(score)"
-        finalScoreLabel.fontSize = 40
-        finalScoreLabel.fontColor = UIColor(red: 0.45, green: 0.44, blue: 0.44, alpha: 1.0)
-        finalScoreLabel.position = CGPoint(x: frame.midX, y: frame.midY + 40)
-        addChild(finalScoreLabel)
-        
-        // Show tap to restart message
-        let tapToRestartLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        tapToRestartLabel.text = "Tap to Restart"
-        tapToRestartLabel.fontSize = 30
-        tapToRestartLabel.fontColor = UIColor(red: 0.45, green: 0.44, blue: 0.44, alpha: 1.0)
-        tapToRestartLabel.position = CGPoint(x: frame.midX, y: frame.midY - 20)
-        addChild(tapToRestartLabel)
-        
-        self.gameOverLabel = gameOverLabel
+        onGameOver?(score)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isGameOver {
-            // Remove game over labels
-            gameOverLabel?.parent?.children.forEach { node in
-                if node is SKLabelNode && node != backgroundScoreLabel {
-                    node.removeFromParent()
-                }
-            }
-            
             // Remove any remaining balls
             enumerateChildNodes(withName: "ball") { node, _ in
                 node.removeFromParent()

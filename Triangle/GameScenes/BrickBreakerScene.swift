@@ -47,6 +47,8 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
     private var scoreLabel: SKLabelNode!
     private var livesLabel: SKLabelNode!
     
+    var onGameOver: ((Int) -> Void)?
+    
     override func didMove(to view: SKView) {
         backgroundColor = UIColor(red: 0.71, green: 0.81, blue: 0.89, alpha: 1.0) // B5CFE3
         physicsWorld.contactDelegate = self
@@ -163,7 +165,7 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    private func restartGame() {
+    func restartGame() {
         // Remove existing ball if it exists
         ball.removeFromParent()
         
@@ -204,24 +206,7 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.isDynamic = false
         score = 0
         backgroundScoreLabel.text = "0"
-        
-        // Show game over label
-        gameOverLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        gameOverLabel.text = "Game Over"
-        gameOverLabel.fontSize = 48
-        gameOverLabel.fontColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
-        gameOverLabel.position = CGPoint(x: frame.midX, y: frame.midY)
-        gameOverLabel.name = "gameOverLabel"
-        addChild(gameOverLabel)
-        
-        // Show tap to restart label
-        let tapLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        tapLabel.text = "Tap to Restart"
-        tapLabel.fontSize = 24
-        tapLabel.fontColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
-        tapLabel.position = CGPoint(x: frame.midX, y: frame.midY - 40)
-        tapLabel.name = "gameOverLabel"
-        addChild(tapLabel)
+        onGameOver?(score)
     }
     
     private func gameWon() {
@@ -236,21 +221,7 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
             node.removeFromParent()
         }
         
-        let winLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        winLabel.text = "You Win!"
-        winLabel.fontSize = 48
-        winLabel.fontColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
-        winLabel.position = CGPoint(x: frame.midX, y: frame.midY)
-        winLabel.name = "gameOverLabel"
-        addChild(winLabel)
-        
-        let tapToRestartLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        tapToRestartLabel.text = "Tap to Play Again"
-        tapToRestartLabel.fontSize = 24
-        tapToRestartLabel.fontColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
-        tapToRestartLabel.position = CGPoint(x: frame.midX, y: frame.midY - 40)
-        tapToRestartLabel.name = "gameOverLabel"
-        addChild(tapToRestartLabel)
+        onGameOver?(score)
     }
     
     private func roundCompleted() {

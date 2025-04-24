@@ -14,6 +14,7 @@ class LoginController: ObservableObject {
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
     @Published var navigateToDashboard: Bool = false
+    @Published var showProfileSelector: Bool = false
 
     var authManager: AuthenticationManager?
 
@@ -38,7 +39,7 @@ class LoginController: ObservableObject {
                 storedPassword == self.password
             {
                 self.authManager?.login(withUserId: self.username)
-                self.navigateToDashboard = true
+                self.showProfileSelector = true
                 print(self.authManager?.currentUserId ?? "No user logged in")
             } else {
                 self.errorMessage = "Invalid password."

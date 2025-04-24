@@ -13,6 +13,8 @@ struct FlappyTomGameView: View {
     @EnvironmentObject var userDataStore: UserDataStore
     @Environment(\.dismiss) var dismiss
     @State private var showingStartModal = true
+    @State private var showingEndModal = false
+    @State private var finalScore = 0
     @State private var gameScene: FlappyTomGameScene
     
     init() {
@@ -35,7 +37,26 @@ struct FlappyTomGameView: View {
                     description: "Tap to make Tom fly! Avoid the obstacles and try to get the highest score.",
                     onStart: { 
                         showingStartModal = false
-                        gameScene.startGame()  // Call startGame method when modal is dismissed
+                        gameScene.startGame()
+                    },
+                    onBack: {
+                        dismiss()
+                    }
+                )
+            }
+            
+            if showingEndModal {
+                EndGameModal(
+                    score: finalScore,
+                    currencyReward: finalScore, // 1 coin per point
+                    onRestart: {
+                        showingEndModal = false
+                        gameScene.restartGame()
+                        gameScene.startGame()  // Add this line to start the game after restarting
+                    },
+                    onBackToMenu: {
+                        showingEndModal = false
+                        dismiss()
                     }
                 )
             }
@@ -43,6 +64,10 @@ struct FlappyTomGameView: View {
         .toolbarVisibility(.hidden)
         .onAppear {
             navbarVisibility.isVisible = false
+            gameScene.onGameOver = { score in
+                finalScore = score
+                showingEndModal = true
+            }
         }
         .onDisappear {
             navbarVisibility.isVisible = true

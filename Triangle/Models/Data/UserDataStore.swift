@@ -221,10 +221,18 @@ final class UserDataStore: ObservableObject {
         let allCosmetics: [any Cosmetic] =
             catalog.headCosmetics + catalog.eyeCosmetics
 
-        // Initialize the set with the "none" cosmetics so that they are not being chosen
-        var seenIds: Set<String> = ["eye_1", "head_1"]
-        seenIds.insert("eye_1")
-        seenIds.insert("head_1")
+        // Initialize the set with cosmetics that should not be in the shop pool
+        var seenIds: Set<String> = [
+            "eye_1",  // None eye cosmetic
+            "head_1", // None head cosmetic
+            "eye_6",  // 8-bit sunglasses
+            "eye_7",  // Gold 8-bit sunglasses
+            "eye_8",  // Rainbow 8-bit sunglasses
+            "head_10", // Wizard hat
+            "head_11", // Soda can hat
+            "head_12", // Foam glove hat
+        ]
+        
         let noDuplicates = allCosmetics.filter { cosmetic in
             let id = cosmetic.uniqueId
             if seenIds.contains(id) {

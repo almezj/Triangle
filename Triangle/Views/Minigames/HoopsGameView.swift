@@ -6,6 +6,8 @@ struct HoopsGameView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
     @State private var showingStartModal = true
+    @State private var showingEndModal = false
+    @State private var finalScore = 0
     @State private var gameScene: HoopsGameScene
     
     init() {
@@ -33,6 +35,24 @@ struct HoopsGameView: View {
                     onStart: { 
                         showingStartModal = false
                         gameScene.startGame()
+                    },
+                    onBack: {
+                        dismiss()
+                    }
+                )
+            }
+            
+            if showingEndModal {
+                EndGameModal(
+                    score: finalScore,
+                    currencyReward: finalScore, // 1 coin per point
+                    onRestart: {
+                        showingEndModal = false
+                        gameScene.startGame()
+                    },
+                    onBackToMenu: {
+                        showingEndModal = false
+                        dismiss()
                     }
                 )
             }
@@ -40,6 +60,10 @@ struct HoopsGameView: View {
         .toolbarVisibility(.hidden)
         .onAppear {
             navbarVisibility.isVisible = false
+            gameScene.onGameOver = { score in
+                finalScore = score
+                showingEndModal = true
+            }
         }
         .onDisappear {
             navbarVisibility.isVisible = true

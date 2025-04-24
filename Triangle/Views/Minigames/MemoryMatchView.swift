@@ -11,6 +11,8 @@ struct MemoryMatchView: View {
     @StateObject private var gameController = MemoryGameController()
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var navbarVisibility: NavbarVisibility
+    @State private var showingEndModal = false
+    @State private var finalScore = 0
     
     private var columns: [GridItem] {
         let size = gameController.getGridSize()
@@ -85,9 +87,29 @@ struct MemoryMatchView: View {
             .background(Color(hex: 0xB5CFE3))
             .onAppear {
                 navbarVisibility.isVisible = false
+                gameController.onGameOver = { moves in
+                    finalScore = moves
+                    showingEndModal = true
+                }
             }
             .onDisappear {
                 navbarVisibility.isVisible = true
+            }
+            .overlay {
+                if showingEndModal {
+                    EndGameModal(
+                        score: finalScore,
+                        currencyReward: finalScore * 2, // 2 coins per move
+                        onRestart: {
+                            showingEndModal = false
+                            gameController.startLevel(1)
+                        },
+                        onBackToMenu: {
+                            showingEndModal = false
+                            dismiss()
+                        }
+                    )
+                }
             }
         }
     }

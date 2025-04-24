@@ -17,53 +17,34 @@ struct ProfileView: View {
             VStack(spacing: 0) {
                 TopNavigationBar(
                     title: authManager.currentUserId ?? "Profile", onBack: nil)
-                ScrollView {
-                    VStack {
-                        Character(characterData: userDataStore.userData?.character ?? CharacterData.defaultCharacter, useAnimations: true)
-                            .frame(height: 400)
+                VStack {
+                    Character(characterData: userDataStore.userData?.character ?? CharacterData.defaultCharacter, useAnimations: true)
+                        .frame(height: 500)
+                        .padding()
+                    NavigationLink(
+                        destination: InventoryView()
+                    ) {
+                        Text("Customise")
+                            .font(.pageTitle)
                             .padding()
-                        NavigationLink(
-                            destination: InventoryView()
-                        ) {
-                            Text("Customise")
-                                .font(.pageTitle)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(ColorTheme.primary)
-                                .foregroundColor(.white)
-                                .cornerRadius(20)
-                        }
-                        NavigationLink(
-                            destination: SettingsView(userDataStore: userDataStore)
-                        ) {
-                            Text("Settings")
-                                .font(.pageTitle)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(ColorTheme.primary)
-                                .foregroundColor(.white)
-                                .cornerRadius(20)
-                        }
+                            .frame(maxWidth: .infinity)
+                            .background(ColorTheme.primary)
+                            .foregroundColor(.white)
+                            .cornerRadius(20)
                     }
-                    .padding()
-                    VStack {
-                        ZStack {
-                            Rectangle()
-                                .frame(height: 700)
-                                .foregroundColor(ColorTheme.primary)
-                                .cornerRadius(20)
-                            Text("Badges\nand\nAchievements")
-                                .multilineTextAlignment(.center)
-                                .font(
-                                    .system(
-                                        size: 32, weight: .bold,
-                                        design: .default)
-                                )
-                                .foregroundColor(.white)
-                        }
+                    NavigationLink(
+                        destination: SettingsView(userDataStore: userDataStore)
+                    ) {
+                        Text("Settings")
+                            .font(.pageTitle)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(ColorTheme.primary)
+                            .foregroundColor(.white)
+                            .cornerRadius(20)
                     }
-                    .padding()
                 }
+                .padding()
                 .frame(maxHeight: .infinity)
                 .background(ColorTheme.background)
             }

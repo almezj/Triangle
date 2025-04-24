@@ -14,6 +14,7 @@ class FlappyTomGameScene: SKScene, SKPhysicsContactDelegate {
     var gameOver = false
     var score = 0
     let scoreLabel = SKLabelNode(fontNamed: "Helvetica-Bold")
+    var onGameOver: ((Int) -> Void)?
 
     // Physics Categories
     struct PhysicsCategory {
@@ -98,8 +99,31 @@ class FlappyTomGameScene: SKScene, SKPhysicsContactDelegate {
     
     func startGame() {
         gameStarted = true
+        gameOver = false
+        score = 0
+        scoreLabel.text = "0"
         physicsWorld.speed = 1.0
         startSpawningObstacles()
+    }
+
+    func restartGame() {
+        // Remove all existing nodes
+        removeAllChildren()
+        
+        // Reset game state
+        gameStarted = false
+        gameOver = false
+        score = 0
+        
+        // Reset physics world
+        physicsWorld.speed = 0
+        physicsWorld.removeAllJoints()
+        
+        // Recreate the scene
+        backgroundColor = UIColor(ColorTheme.background)
+        createPlayer()
+        createGround()
+        createScoreLabel()
     }
 
     // MARK: - Obstacle Spawning
@@ -231,7 +255,8 @@ class FlappyTomGameScene: SKScene, SKPhysicsContactDelegate {
                 enumerateChildNodes(withName: "//*") { node, _ in
                     node.removeAllActions()
                 }
-                // TODO: Game Over modal
+                // Notify the view about game over
+                onGameOver?(score)
             }
         }
     }

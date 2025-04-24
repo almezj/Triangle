@@ -4,6 +4,7 @@ struct OnboardingView: View {
     @State private var currentForm: FormType = .none
     @StateObject var controller = LoginController()
     @EnvironmentObject var authManager: AuthenticationManager
+    @State private var showProfileSelector = false
 
     enum FormType {
         case none, login, register
@@ -96,10 +97,9 @@ struct OnboardingView: View {
                                 }
                             }
                             .navigationDestination(
-                                isPresented: $controller.navigateToDashboard
+                                isPresented: $controller.showProfileSelector
                             ) {
-                                ContentView()
-                                    .environmentObject(NavbarVisibility())
+                                ProfileSelectorView(showProfileSelector: $showProfileSelector)
                             }
                         } else if currentForm == .register {
                             RegisterForm()

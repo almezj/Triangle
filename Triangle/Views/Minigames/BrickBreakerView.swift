@@ -6,8 +6,10 @@ struct BrickBreakerView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
     @State private var showingStartModal = true
+    @State private var showingEndModal = false
+    @State private var finalScore = 0
     
-    var scene: SKScene {
+    var scene: BrickBreakerScene {
         let scene = BrickBreakerScene()
         scene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         scene.scaleMode = .fill
@@ -27,10 +29,29 @@ struct BrickBreakerView: View {
                     showingStartModal = false
                 }
             }
+            
+            if showingEndModal {
+                EndGameModal(
+                    score: finalScore,
+                    currencyReward: finalScore * 2, // 2 coins per brick
+                    onRestart: {
+                        showingEndModal = false
+                        scene.restartGame()
+                    },
+                    onBackToMenu: {
+                        showingEndModal = false
+                        dismiss()
+                    }
+                )
+            }
         }
         .toolbarVisibility(.hidden)
         .onAppear {
             navbarVisibility.isVisible = false
+            scene.onGameOver = { score in
+                finalScore = score
+                showingEndModal = true
+            }
         }
         .onDisappear {
             navbarVisibility.isVisible = true

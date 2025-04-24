@@ -12,6 +12,7 @@ class MemoryGameController: ObservableObject {
     @Published private(set) var isGameReady = false
     private var indexOfFirstFaceUpCard: Int?
     private var userDataStore: UserDataStore
+    var onGameOver: ((Int) -> Void)?
     
     init() {
         self.userDataStore = UserDataStore.shared
@@ -175,7 +176,11 @@ class MemoryGameController: ObservableObject {
                 // Check if game is complete
                 if cardsAfterMatch.allSatisfy({ $0.isMatched }) {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        if self.gameModel.level >= 9 { // Max level reached
+                            self.onGameOver?(self.gameModel.moves)
+                        } else {
                         self.goToNextLevel()
+                        }
                     }
                 }
             }

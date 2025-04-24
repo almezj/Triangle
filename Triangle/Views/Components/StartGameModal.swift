@@ -4,6 +4,7 @@ struct StartGameModal: View {
     let title: String
     let description: String
     let onStart: () -> Void
+    let onBack: () -> Void
     
     var body: some View {
         ZStack {
@@ -28,6 +29,15 @@ struct StartGameModal: View {
                         .background(ColorTheme.primary)
                         .cornerRadius(25)
                 }
+                
+                Button(action: onBack) {
+                    Text("Back to Menu")
+                        .font(.buttonText)
+                        .foregroundColor(ColorTheme.primary)
+                        .frame(width: 200, height: 50)
+                        .background(ColorTheme.secondary)
+                        .cornerRadius(25)
+                }
             }
             .padding(30)
             .background(ColorTheme.background)
@@ -41,6 +51,7 @@ struct StartGameModal: View {
     StartGameModal(
         title: "Game Title",
         description: "Game description goes here",
-        onStart: {}
+        onStart: {},
+        onBack: {}
     )
 } 
