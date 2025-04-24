@@ -5,6 +5,7 @@ struct HoopsGameView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var navbarVisibility: NavbarVisibility
     @EnvironmentObject var userDataStore: UserDataStore
+    @StateObject private var gameController = HoopsGameController()
     @State private var showingStartModal = true
     @State private var showingEndModal = false
     @State private var finalScore = 0
@@ -45,6 +46,7 @@ struct HoopsGameView: View {
             if showingEndModal {
                 EndGameModal(
                     score: finalScore,
+                    highScore: gameController.gameModel.highScore,
                     currencyReward: finalScore, // 1 coin per point
                     onRestart: {
                         showingEndModal = false
@@ -62,6 +64,10 @@ struct HoopsGameView: View {
             navbarVisibility.isVisible = false
             gameScene.onGameOver = { score in
                 finalScore = score
+                // Update high score if needed
+                if score > gameController.gameModel.highScore {
+                    gameController.updateHighScore(score)
+                }
                 showingEndModal = true
             }
         }

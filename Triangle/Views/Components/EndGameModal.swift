@@ -2,6 +2,7 @@ import SwiftUI
 
 struct EndGameModal: View {
     let score: Int
+    let highScore: Int
     let currencyReward: Int
     let onRestart: () -> Void
     let onBackToMenu: () -> Void
@@ -14,16 +15,39 @@ struct EndGameModal: View {
             VStack(spacing: 20) {
                 Text("Game Over")
                     .font(.pageTitle)
-                    .foregroundColor(.white)
+                    .foregroundColor(ColorTheme.text)
                 
                 VStack(spacing: 15) {
-                    Text("Score: \(score)")
-                        .font(.title2)
-                        .foregroundColor(.white)
+                    HStack{
+                        Text("High Score:")
+                            .font(.title2)
+                            .foregroundColor(ColorTheme.text)
+                        Text("\(highScore)")
+                            .font(.shopCardTitle)
+                            .foregroundColor(ColorTheme.text)
+                    }
+                    HStack{
+                        Text("Score:")
+                            .font(.title2)
+                            .foregroundColor(ColorTheme.text)
+                        Text("\(score)")
+                            .font(.shopCardTitle)
+                            .foregroundColor(ColorTheme.text)
+                    }
                     
-                    Text("Reward: \(currencyReward) coins")
-                        .font(.title2)
-                        .foregroundColor(.white)
+                    HStack{
+                        Text("Reward:")
+                            .font(.title2)
+                            .foregroundColor(ColorTheme.text)
+                        Text("\(currencyReward)")
+                            .font(.shopCardTitle)
+                            .foregroundColor(ColorTheme.text)
+                        Image("currency_icon")
+                            .resizable()
+                            .frame(width: 25, height: 25)
+                            .padding(.leading, -5)
+                    }
+                    
                 }
                 
                 VStack(spacing: 15) {
@@ -56,7 +80,7 @@ struct EndGameModal: View {
 
 #Preview {
     EndGameModal(
-        score: 100,
+        score: 100, highScore: 350,
         currencyReward: 50,
         onRestart: {},
         onBackToMenu: {}

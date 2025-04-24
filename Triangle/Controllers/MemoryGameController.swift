@@ -18,7 +18,15 @@ class MemoryGameController: ObservableObject {
         self.userDataStore = UserDataStore.shared
         // Initialize with an empty model then start level 1
         self.gameModel = MemoryGameModel(cards: [], level: 1)
+        // Load high score from UserDefaults
+        self.gameModel.highScore = UserDefaults.standard.integer(forKey: "MemoryMatchHighScore")
         startLevel(1)
+    }
+    
+    func updateHighScore(_ newScore: Int) {
+        gameModel.highScore = newScore
+        // Save new high score
+        UserDefaults.standard.set(gameModel.highScore, forKey: "MemoryMatchHighScore")
     }
     
     private func getRandomCosmeticPair(usedCombinations: Set<String>) -> (head: HeadCosmetic, eye: EyeCosmetic)? {

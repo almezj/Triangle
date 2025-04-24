@@ -52,53 +52,17 @@ struct MemoryMatchView: View {
                                 }
                             }
                             .frame(width: playAreaSize, height: playAreaSize)
-                            .padding()
-                            
-                            if !gameController.isGameReady {
-                                // Overlay message while cards are face up
-                                VStack {
-                                    Text("Memorize the pairs!")
-                                        .font(.title)
-                                        .bold()
-                                    Text("Cards will flip in 3 seconds...")
-                                        .font(.headline)
-                                }
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.black.opacity(0.5))
-                                .cornerRadius(15)
-                            }
                         }
-                        
-                        // Restart button
-                        Button(action: { gameController.restartCurrentLevel() }) {
-                            Text("Restart Level")
-                                .font(.title3)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        }
-                        .padding(.bottom)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
+                    .padding()
                 }
-            }
-            .toolbar(.hidden, for: .navigationBar)
-            .background(Color(hex: 0xB5CFE3))
-            .onAppear {
-                navbarVisibility.isVisible = false
-                gameController.onGameOver = { moves in
-                    finalScore = moves
-                    showingEndModal = true
-                }
-            }
-            .onDisappear {
-                navbarVisibility.isVisible = true
             }
             .overlay {
                 if showingEndModal {
                     EndGameModal(
                         score: finalScore,
+                        highScore: gameController.gameModel.highScore,
                         currencyReward: finalScore * 2, // 2 coins per move
                         onRestart: {
                             showingEndModal = false
@@ -111,6 +75,20 @@ struct MemoryMatchView: View {
                     )
                 }
             }
+        }
+        .onAppear {
+            navbarVisibility.isVisible = false
+            gameController.onGameOver = { score in
+                finalScore = score
+                // Update high score if needed
+                if score > gameController.gameModel.highScore {
+                    gameController.updateHighScore(score)
+                }
+                showingEndModal = true
+            }
+        }
+        .onDisappear {
+            navbarVisibility.isVisible = true
         }
     }
 }

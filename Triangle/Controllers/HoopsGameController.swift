@@ -32,12 +32,16 @@ class HoopsGameController: ObservableObject {
         gameModel.score += 1
         // Update high score if current score is higher
         if gameModel.score > gameModel.highScore {
-            gameModel.highScore = gameModel.score
-            // Save new high score
-            UserDefaults.standard.set(gameModel.highScore, forKey: "HoopsHighScore")
+            updateHighScore(gameModel.score)
         }
         // Randomize basket position for next throw
         randomizeBasketPosition()
+    }
+    
+    func updateHighScore(_ newScore: Int) {
+        gameModel.highScore = newScore
+        // Save new high score
+        UserDefaults.standard.set(gameModel.highScore, forKey: "HoopsHighScore")
     }
     
     func resetGame() {
