@@ -46,11 +46,14 @@ struct TopNavigationBar: View {
                             "\(userDataStore.userData?.inventory.currency ?? 0)"
                         )
                         .font(.shopCardTitle)
+                        .fontWeight(.black)
                         .foregroundColor(ColorTheme.currencyColor)
+                        .shadow(color: Color.black.opacity(0.6), radius: 3, x: 0, y: 0)
                         Image("currency_icon")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 28, height: 28)
+                            .shadow(color: Color.black.opacity(0.6), radius: 2, x: 0, y: 0)
                     }
                     
                 }

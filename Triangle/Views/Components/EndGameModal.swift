@@ -19,7 +19,7 @@ struct EndGameModal: View {
                     .foregroundColor(ColorTheme.text)
                 
                 VStack(spacing: 15) {
-                    // Score and High Score
+                    // Score, High Score, and Currency Reward
                     HStack {
                         VStack(alignment: .leading) {
                             Text("Score")
@@ -32,7 +32,7 @@ struct EndGameModal: View {
                         
                         Spacer()
                         
-                        VStack(alignment: .trailing) {
+                        VStack(alignment: .center) {
                             Text("High Score")
                                 .font(.bodyText)
                                 .foregroundColor(ColorTheme.text)
@@ -40,22 +40,24 @@ struct EndGameModal: View {
                                 .font(.pageSubtitle)
                                 .foregroundColor(ColorTheme.primary)
                         }
-                    }
-                    
-                    // Currency Reward
-                    HStack {
-                        Text("Currency Earned")
-                            .font(.bodyText)
-                            .foregroundColor(ColorTheme.text)
+                        
                         Spacer()
-                        HStack(spacing: 5) {
-                            Text("\(currencyReward)")
-                                .font(.pageSubtitle)
-                                .foregroundColor(ColorTheme.currencyColor)
-                            Image("currency_icon")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 18, height: 18)
+                        
+                        VStack(alignment: .trailing) {
+                            Text("Reward")
+                                .font(.bodyText)
+                                .foregroundColor(ColorTheme.text)
+                            HStack(spacing: 5) {
+                                Text("\(currencyReward)")
+                                    .font(.pageSubtitle)
+                                    .foregroundColor(ColorTheme.currencyColor)
+                                    .shadow(color: Color.black.opacity(0.6), radius: 3, x: 0, y: 0)
+                                Image("currency_icon")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 18, height: 18)
+                                    .shadow(color: Color.black.opacity(0.6), radius: 3, x: 0, y: 0)
+                            }
                         }
                     }
                     
