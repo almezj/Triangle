@@ -12,14 +12,15 @@ struct SettingsView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @StateObject var settingsController: SettingsController
     @State private var showPrivacyPolicy: Bool = false
-
+    @Environment(\.dismiss) var dismiss
+    
     init(userDataStore: UserDataStore) {
         _settingsController = StateObject(wrappedValue: SettingsController(userDataStore: userDataStore))
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            TopNavigationBar(title: "Settings", onBack: nil)
+            TopNavigationBar(title: "Settings", onBack: { dismiss() })
             
             if let settings = userDataStore.userData?.settings {
                 ScrollView {
