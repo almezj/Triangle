@@ -74,5 +74,8 @@ class HoopsGameController: ObservableObject {
             inventory.currency += score
             userDataStore.updateInventory(inventory)
         }
+        
+        // Check for milestone unlocks
+        userDataStore.checkMilestones(score: score, gameType: "hoops")
     }
 } 

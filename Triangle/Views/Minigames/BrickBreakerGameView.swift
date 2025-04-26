@@ -9,6 +9,7 @@ struct BrickBreakerGameView: View {
     @State private var showingStartModal = true
     @State private var showingEndModal = false
     @State private var finalScore = 0
+    @State private var unlockedCosmetics: [any Cosmetic] = []
     @State private var gameScene: BrickBreakerScene
     
     init() {
@@ -44,13 +45,16 @@ struct BrickBreakerGameView: View {
                     score: finalScore,
                     highScore: gameController.gameModel.highScore,
                     currencyReward: finalScore * 2, // 2 coins per brick
+                    unlockedCosmetics: unlockedCosmetics,
                     onRestart: {
                         showingEndModal = false
+                        unlockedCosmetics = []
                         gameScene.restartGame()
                         gameScene.startGame()
                     },
                     onBackToMenu: {
                         showingEndModal = false
+                        unlockedCosmetics = []
                         dismiss()
                     }
                 )
@@ -61,7 +65,27 @@ struct BrickBreakerGameView: View {
             navbarVisibility.isVisible = false
             gameScene.onGameOver = { score in
                 finalScore = score
+                
+                // Check for milestone unlocks and store all unlocked cosmetics
+                let previousHeadCount = userDataStore.userData?.inventory.unlockedCosmetics.headCosmetics.count ?? 0
+                let previousEyeCount = userDataStore.userData?.inventory.unlockedCosmetics.eyeCosmetics.count ?? 0
+                
                 gameController.handleGameOver(score: score)
+                userDataStore.checkMilestones(score: score, gameType: "brickbreaker")
+                
+                // Get all newly unlocked cosmetics
+                if let newHeadCount = userDataStore.userData?.inventory.unlockedCosmetics.headCosmetics.count,
+                   newHeadCount > previousHeadCount {
+                    let newlyUnlockedHeads = userDataStore.userData?.inventory.unlockedCosmetics.headCosmetics.suffix(newHeadCount - previousHeadCount) ?? []
+                    unlockedCosmetics.append(contentsOf: newlyUnlockedHeads)
+                }
+                
+                if let newEyeCount = userDataStore.userData?.inventory.unlockedCosmetics.eyeCosmetics.count,
+                   newEyeCount > previousEyeCount {
+                    let newlyUnlockedEyes = userDataStore.userData?.inventory.unlockedCosmetics.eyeCosmetics.suffix(newEyeCount - previousEyeCount) ?? []
+                    unlockedCosmetics.append(contentsOf: newlyUnlockedEyes)
+                }
+                
                 showingEndModal = true
             }
         }

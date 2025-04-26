@@ -16,6 +16,7 @@ struct FlappyTomGameView: View {
     @State private var showingStartModal = true
     @State private var showingEndModal = false
     @State private var finalScore = 0
+    @State private var unlockedCosmetics: [any Cosmetic] = []
     @State private var gameScene: FlappyTomGameScene
     
     init() {
@@ -51,13 +52,16 @@ struct FlappyTomGameView: View {
                     score: finalScore,
                     highScore: gameController.gameModel.highScore,
                     currencyReward: finalScore, // 1 coin per point
+                    unlockedCosmetics: unlockedCosmetics,
                     onRestart: {
                         showingEndModal = false
+                        unlockedCosmetics = []
                         gameScene.restartGame()
-                        gameScene.startGame()  // Add this line to start the game after restarting
+                        gameScene.startGame()
                     },
                     onBackToMenu: {
                         showingEndModal = false
+                        unlockedCosmetics = []
                         dismiss()
                     }
                 )
@@ -68,10 +72,31 @@ struct FlappyTomGameView: View {
             navbarVisibility.isVisible = false
             gameScene.onGameOver = { score in
                 finalScore = score
+                
+                // Check for milestone unlocks and store all unlocked cosmetics
+                let previousHeadCount = userDataStore.userData?.inventory.unlockedCosmetics.headCosmetics.count ?? 0
+                let previousEyeCount = userDataStore.userData?.inventory.unlockedCosmetics.eyeCosmetics.count ?? 0
+                
                 // Update high score if needed
                 if score > gameController.gameModel.highScore {
                     gameController.updateHighScore(score)
                 }
+                
+                userDataStore.checkMilestones(score: score, gameType: "flappytom")
+                
+                // Get all newly unlocked cosmetics
+                if let newHeadCount = userDataStore.userData?.inventory.unlockedCosmetics.headCosmetics.count,
+                   newHeadCount > previousHeadCount {
+                    let newlyUnlockedHeads = userDataStore.userData?.inventory.unlockedCosmetics.headCosmetics.suffix(newHeadCount - previousHeadCount) ?? []
+                    unlockedCosmetics.append(contentsOf: newlyUnlockedHeads)
+                }
+                
+                if let newEyeCount = userDataStore.userData?.inventory.unlockedCosmetics.eyeCosmetics.count,
+                   newEyeCount > previousEyeCount {
+                    let newlyUnlockedEyes = userDataStore.userData?.inventory.unlockedCosmetics.eyeCosmetics.suffix(newEyeCount - previousEyeCount) ?? []
+                    unlockedCosmetics.append(contentsOf: newlyUnlockedEyes)
+                }
+                
                 showingEndModal = true
             }
         }

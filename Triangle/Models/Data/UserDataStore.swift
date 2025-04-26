@@ -12,6 +12,7 @@ final class UserDataStore: ObservableObject {
     @Published var userData: UserData?
     @Published var cosmeticCatalog: CosmeticCatalog?
     private var userId: String
+    private var milestoneData: MilestoneData = MilestoneData.defaultMilestones
 
     init(userId: String) {
         self.userId = userId
@@ -231,6 +232,7 @@ final class UserDataStore: ObservableObject {
             "head_10", // Wizard hat
             "head_11", // Soda can hat
             "head_12", // Foam glove hat
+            "head_13" // Sport Headband
         ]
         
         let noDuplicates = allCosmetics.filter { cosmetic in
@@ -340,5 +342,47 @@ final class UserDataStore: ObservableObject {
         print(
             "UserDataStore: User data cleared from memory, persistent data remains."
         )
+    }
+
+    func checkMilestones(score: Int, gameType: String) {
+        let milestones: [GameMilestone]
+        switch gameType {
+        case "hoops":
+            milestones = milestoneData.hoops
+        case "memory":
+            milestones = milestoneData.memory
+        case "brickbreaker":
+            milestones = milestoneData.brickBreaker
+        case "flappytom":
+            milestones = milestoneData.flappyTom
+        default:
+            return
+        }
+        
+        guard var inventory = userData?.inventory else { return }
+        
+        for milestone in milestones {
+            if score >= milestone.score {
+                if milestone.cosmeticType == "head" {
+                    if let cosmetic = findHeadCosmetic(id: milestone.cosmeticId) {
+                        inventory.unlockHeadCosmetic(cosmetic)
+                    }
+                } else if milestone.cosmeticType == "eye" {
+                    if let cosmetic = findEyeCosmetic(id: milestone.cosmeticId) {
+                        inventory.unlockEyeCosmetic(cosmetic)
+                    }
+                }
+            }
+        }
+        
+        updateInventory(inventory)
+    }
+    
+    private func findHeadCosmetic(id: String) -> HeadCosmetic? {
+        return cosmeticCatalog?.headCosmetics.first { $0.uniqueId == id }
+    }
+    
+    private func findEyeCosmetic(id: String) -> EyeCosmetic? {
+        return cosmeticCatalog?.eyeCosmetics.first { $0.uniqueId == id }
     }
 }

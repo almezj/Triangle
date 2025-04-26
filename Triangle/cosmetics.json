@@ -98,7 +98,7 @@
             "offsetXRatio": 0.00,
             "offsetYRatio": -0.32,
             "rotation": 0,
-            "price": 20
+            "price": 0
         },
         {
             "cosmeticId": 11,
@@ -108,7 +108,7 @@
             "offsetXRatio": 0.00,
             "offsetYRatio": -0.28,
             "rotation": 0,
-            "price": 20
+            "price": 0
         },
         {
             "cosmeticId": 12,
@@ -118,7 +118,17 @@
             "offsetXRatio": 0.02,
             "offsetYRatio": -0.33,
             "rotation": 0,
-            "price": 20
+            "price": 0
+        },
+        {
+            "cosmeticId": 13,
+            "assetName": "hc_sport_headband",
+            "cosmeticTitle": "Sport Headband",
+            "relativeScale": 0.48,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.17,
+            "rotation": 0,
+            "price": 0
         },
     ],
     "eyeCosmetics": [
