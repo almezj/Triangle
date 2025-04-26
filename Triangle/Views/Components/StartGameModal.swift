@@ -22,22 +22,22 @@ struct StartGameModal: View {
                     .multilineTextAlignment(.center)
                 
                 VStack(spacing: 15) {
-                    Button(action: onStart) {
-                        Text("Start Game")
-                            .font(.buttonText)
-                            .foregroundColor(ColorTheme.secondary)
-                            .frame(width: 200, height: 50)
-                            .background(ColorTheme.primary)
-                            .cornerRadius(25)
-                    }
-                    
-                    Button(action: onBack) {
-                        Text("Back to Menu")
-                            .font(.buttonText)
-                            .foregroundColor(ColorTheme.primary)
-                            .frame(width: 200, height: 50)
-                            .background(ColorTheme.secondary)
-                            .cornerRadius(25)
+                Button(action: onStart) {
+                    Text("Start Game")
+                        .font(.buttonText)
+                        .foregroundColor(ColorTheme.secondary)
+                        .frame(width: 200, height: 50)
+                        .background(ColorTheme.primary)
+                        .cornerRadius(25)
+                }
+                
+                Button(action: onBack) {
+                    Text("Back to Menu")
+                        .font(.buttonText)
+                        .foregroundColor(ColorTheme.primary)
+                        .frame(width: 200, height: 50)
+                        .background(ColorTheme.secondary)
+                        .cornerRadius(25)
                     }
                 }
             }

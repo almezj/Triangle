@@ -50,6 +50,9 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
     var onGameOver: ((Int) -> Void)?
     
     override func didMove(to view: SKView) {
+        // Set the scene's scale mode to fill the screen
+        scaleMode = .fill
+        
         backgroundColor = UIColor(red: 0.71, green: 0.81, blue: 0.89, alpha: 1.0) // B5CFE3
         physicsWorld.contactDelegate = self
         setupGame()
@@ -63,15 +66,18 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         // Background score label
         backgroundScoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
         backgroundScoreLabel.text = "0"
-        backgroundScoreLabel.fontSize = 200
+        backgroundScoreLabel.fontSize = frame.height * 0.2 // Scale font size relative to screen height
         backgroundScoreLabel.fontColor = UIColor(red: 0.67, green: 0.77, blue: 0.85, alpha: 1.0)
         backgroundScoreLabel.position = CGPoint(x: frame.midX, y: frame.midY)
         backgroundScoreLabel.zPosition = -1
         addChild(backgroundScoreLabel)
         
-        // Setup paddle
-        paddle = SKSpriteNode(color: UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0), size: CGSize(width: paddleWidth, height: paddleHeight))
-        paddle.position = CGPoint(x: frame.midX, y: frame.minY + 100)
+        // Setup paddle with relative size
+        let paddleWidth = frame.width * 0.2 // 20% of screen width
+        let paddleHeight = frame.height * 0.03 // 3% of screen height
+        paddle = SKSpriteNode(color: UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0), 
+                            size: CGSize(width: paddleWidth, height: paddleHeight))
+        paddle.position = CGPoint(x: frame.midX, y: frame.minY + frame.height * 0.15) // 15% from bottom
         addChild(paddle)
         
         // Setup ball
@@ -113,16 +119,27 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupBricks() {
-        let startX = (frame.width - CGFloat(currentBrickColumns) * (currentBrickWidth + currentBrickSpacing)) / 2
-        let startY = frame.height - 200
+        // Calculate available width for bricks (leaving some margin on the sides)
+        let availableWidth = frame.width * 0.9 // Use 90% of screen width
+        let margin = frame.width * 0.05 // 5% margin on each side
+        
+        // Calculate brick width and spacing based on number of columns
+        let totalSpacing = CGFloat(currentBrickColumns - 1) * (frame.width * 0.02) // 2% spacing between bricks
+        let brickWidth = (availableWidth - totalSpacing) / CGFloat(currentBrickColumns)
+        let brickHeight = frame.height * 0.05 // 5% of screen height
+        let brickSpacing = frame.width * 0.02 // 2% of screen width
+        
+        // Calculate starting position with margin
+        let startX = margin + brickWidth/2
+        let startY = frame.height * 0.85 // 85% from bottom
         
         for row in 0..<currentBrickRows {
             for col in 0..<currentBrickColumns {
                 let brick = SKSpriteNode(color: UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0), 
-                                       size: CGSize(width: currentBrickWidth, height: currentBrickHeight))
+                                       size: CGSize(width: brickWidth, height: brickHeight))
                 brick.position = CGPoint(
-                    x: startX + CGFloat(col) * (currentBrickWidth + currentBrickSpacing) + currentBrickWidth/2,
-                    y: startY - CGFloat(row) * (currentBrickHeight + currentBrickSpacing) - currentBrickHeight/2
+                    x: startX + CGFloat(col) * (brickWidth + brickSpacing),
+                    y: startY - CGFloat(row) * (brickHeight + brickSpacing) - brickHeight/2
                 )
                 brick.physicsBody = SKPhysicsBody(rectangleOf: brick.size)
                 brick.physicsBody?.isDynamic = false
@@ -151,7 +168,8 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isGameOver {
-            restartGame()
+            // Don't restart here, let the view handle it through the modal
+            return
         } else if bricks.isEmpty && isGameWon {
             startNextRound()
         } else if !gameStarted {
@@ -165,47 +183,23 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func restartGame() {
-        // Remove existing ball if it exists
-        ball.removeFromParent()
-        
-        // Remove any existing game over labels
-        enumerateChildNodes(withName: "gameOverLabel") { node, _ in
-            node.removeFromParent()
-        }
-        
-        // Reset game state
-        isGameOver = false
-        isGameWon = false
-        score = 0
-        round = 1
-        gameStarted = false
-        
-        // Update labels
-        updateLabels()
-        
-        // Reset paddle position
-        paddle.position.x = frame.midX
-        
-        // Setup new ball
-        setupBall()
-        
-        // Remove all bricks and create new ones
-        bricks.forEach { $0.removeFromParent() }
-        bricks.removeAll()
-        setupBricks()
-    }
-    
     private func loseLife() {
+        guard !isGameOver else { return }
         gameOver()
     }
     
     private func gameOver() {
+        guard !isGameOver else { return }
         isGameOver = true
-        ball.removeFromParent()
+        
+        // Stop the ball
         ball.physicsBody?.isDynamic = false
-        score = 0
-        backgroundScoreLabel.text = "0"
+        ball.removeFromParent()
+        
+        // Removed: in-scene Game Over label
+        // The modal in the SwiftUI view will handle the game over UI
+        
+        // Call onGameOver with the current score
         onGameOver?(score)
     }
     
@@ -234,18 +228,18 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         // Create round completed label
         let roundLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
         roundLabel.text = "Round \(round) Completed!"
-        roundLabel.fontSize = 32
-        roundLabel.fontColor = .white
-        roundLabel.position = CGPoint(x: frame.midX, y: frame.midY + 30)
+        roundLabel.fontSize = frame.height * 0.05 // 5% of screen height
+        roundLabel.fontColor = UIColor(red: 0.45, green: 0.69, blue: 0.63, alpha: 1.0) // ColorTheme.completedLevelColor
+        roundLabel.position = CGPoint(x: frame.midX, y: frame.midY + frame.height * 0.1)
         roundLabel.name = "roundCompletedLabel"
         addChild(roundLabel)
         
         // Create tap to continue label
         let tapLabel = SKLabelNode(fontNamed: "AvenirNext-Regular")
         tapLabel.text = "Tap to continue"
-        tapLabel.fontSize = 24
-        tapLabel.fontColor = .white
-        tapLabel.position = CGPoint(x: frame.midX, y: frame.midY - 20)
+        tapLabel.fontSize = frame.height * 0.03 // 3% of screen height
+        tapLabel.fontColor = UIColor(red: 0.13, green: 0.58, blue: 0.45, alpha: 1.0) // ColorTheme.currentLevelColor
+        tapLabel.position = CGPoint(x: frame.midX, y: frame.midY - frame.height * 0.05)
         tapLabel.name = "tapToContinueLabel"
         addChild(tapLabel)
     }
@@ -336,6 +330,7 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
             // Update score
             score += 1
             backgroundScoreLabel.text = "\(score)"
+            scoreLabel.text = "Score: \(score)"
             
             // Check if all bricks are destroyed
             if bricks.isEmpty {
@@ -348,24 +343,24 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         // Score label
         scoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
         scoreLabel.text = "Score: 0"
-        scoreLabel.fontSize = 24
+        scoreLabel.fontSize = frame.height * 0.03 // 3% of screen height
         scoreLabel.fontColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
-        scoreLabel.position = CGPoint(x: frame.minX + 100, y: frame.maxY - 50)
+        scoreLabel.position = CGPoint(x: frame.minX + frame.width * 0.2, y: frame.maxY - frame.height * 0.05)
         addChild(scoreLabel)
         
         // Round label
         roundLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
         roundLabel.text = "Round: 1"
-        roundLabel.fontSize = 24
+        roundLabel.fontSize = frame.height * 0.03 // 3% of screen height
         roundLabel.fontColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
-        roundLabel.position = CGPoint(x: frame.midX, y: frame.maxY - 50)
+        roundLabel.position = CGPoint(x: frame.midX, y: frame.maxY - frame.height * 0.05)
         addChild(roundLabel)
     }
     
     private func setupWalls() {
         // Left wall
-        let leftWall = SKSpriteNode(color: .clear, size: CGSize(width: 20, height: frame.height))
-        leftWall.position = CGPoint(x: frame.minX + 10, y: frame.midY)
+        let leftWall = SKSpriteNode(color: .clear, size: CGSize(width: 1, height: frame.height))
+        leftWall.position = CGPoint(x: frame.minX, y: frame.midY)
         leftWall.physicsBody = SKPhysicsBody(rectangleOf: leftWall.size)
         leftWall.physicsBody?.isDynamic = false
         leftWall.physicsBody?.categoryBitMask = PhysicsCategory.wall
@@ -374,8 +369,8 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         addChild(leftWall)
         
         // Right wall
-        let rightWall = SKSpriteNode(color: .clear, size: CGSize(width: 20, height: frame.height))
-        rightWall.position = CGPoint(x: frame.maxX - 10, y: frame.midY)
+        let rightWall = SKSpriteNode(color: .clear, size: CGSize(width: 1, height: frame.height))
+        rightWall.position = CGPoint(x: frame.maxX, y: frame.midY)
         rightWall.physicsBody = SKPhysicsBody(rectangleOf: rightWall.size)
         rightWall.physicsBody?.isDynamic = false
         rightWall.physicsBody?.categoryBitMask = PhysicsCategory.wall
@@ -384,8 +379,8 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         addChild(rightWall)
         
         // Top wall
-        let topWall = SKSpriteNode(color: .clear, size: CGSize(width: frame.width, height: 20))
-        topWall.position = CGPoint(x: frame.midX, y: frame.maxY - 10)
+        let topWall = SKSpriteNode(color: .clear, size: CGSize(width: frame.width, height: 1))
+        topWall.position = CGPoint(x: frame.midX, y: frame.maxY)
         topWall.physicsBody = SKPhysicsBody(rectangleOf: topWall.size)
         topWall.physicsBody?.isDynamic = false
         topWall.physicsBody?.categoryBitMask = PhysicsCategory.wall
@@ -394,8 +389,8 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         addChild(topWall)
         
         // Bottom wall (invisible)
-        let bottomWall = SKSpriteNode(color: .clear, size: CGSize(width: frame.width, height: 20))
-        bottomWall.position = CGPoint(x: frame.midX, y: frame.minY + 10)
+        let bottomWall = SKSpriteNode(color: .clear, size: CGSize(width: frame.width, height: 1))
+        bottomWall.position = CGPoint(x: frame.midX, y: frame.minY)
         bottomWall.physicsBody = SKPhysicsBody(rectangleOf: bottomWall.size)
         bottomWall.physicsBody?.isDynamic = false
         bottomWall.physicsBody?.categoryBitMask = PhysicsCategory.bottomWall
@@ -410,6 +405,7 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupBall() {
+        let ballSize = frame.width * 0.03 // 3% of screen width
         let ballShape = SKShapeNode(circleOfRadius: ballSize/2)
         ballShape.fillColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
         ballShape.strokeColor = UIColor(red: 0.30, green: 0.44, blue: 0.54, alpha: 1.0)
@@ -418,12 +414,12 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         ball = SKSpriteNode()
         ball.addChild(ballShape)
         ball.size = CGSize(width: ballSize, height: ballSize)
-        ball.position = CGPoint(x: frame.midX, y: frame.minY + 120)
+        ball.position = CGPoint(x: frame.midX, y: frame.minY + frame.height * 0.2) // 20% from bottom
         addChild(ball)
         
         // Setup ball physics
         ball.physicsBody = SKPhysicsBody(circleOfRadius: ballSize/2)
-        ball.physicsBody?.isDynamic = false  // Start with ball not moving
+        ball.physicsBody?.isDynamic = false
         ball.physicsBody?.allowsRotation = false
         ball.physicsBody?.friction = 0
         ball.physicsBody?.restitution = 1.0
@@ -436,7 +432,7 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.collisionBitMask = PhysicsCategory.paddle | PhysicsCategory.wall | PhysicsCategory.brick
     }
     
-    private func startGame() {
+    func startGame() {
         gameStarted = true
         ball.physicsBody?.isDynamic = true
         let randomAngle = CGFloat.random(in: -CGFloat.pi/4...CGFloat.pi/4)
@@ -444,6 +440,34 @@ class BrickBreakerScene: SKScene, SKPhysicsContactDelegate {
         let dx = speed * sin(randomAngle)
         let dy = speed * cos(randomAngle)
         ball.physicsBody?.velocity = CGVector(dx: dx, dy: dy)
+    }
+    
+    func restartGame() {
+        // Remove existing ball if it exists
+        ball.removeFromParent()
+        
+        // Reset game state
+        isGameOver = false
+        isGameWon = false
+        score = 0
+        round = 1
+        gameStarted = false
+        
+        // Update labels
+        backgroundScoreLabel.text = "0"
+        scoreLabel.text = "Score: 0"
+        roundLabel.text = "Round: 1"
+        
+        // Reset paddle position
+        paddle.position.x = frame.midX
+        
+        // Setup new ball
+        setupBall()
+        
+        // Remove all bricks and create new ones
+        bricks.forEach { $0.removeFromParent() }
+        bricks.removeAll()
+        setupBricks()
     }
 }
 

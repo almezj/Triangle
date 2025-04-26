@@ -20,6 +20,8 @@ struct MemoryGameModel {
     var cards: [MemoryCard]
     var level: Int
     var moves: Int = 0
+    var movesLimit: Int
+    var movesRemaining: Int
     var isGameComplete: Bool = false
     var highScore: Int = 0
 } 

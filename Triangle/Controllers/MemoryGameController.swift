@@ -17,7 +17,7 @@ class MemoryGameController: ObservableObject {
     init() {
         self.userDataStore = UserDataStore.shared
         // Initialize with an empty model
-        self.gameModel = MemoryGameModel(cards: [], level: 1)
+        self.gameModel = MemoryGameModel(cards: [], level: 1, movesLimit: 0, movesRemaining: 0)
         // Load high score from UserDefaults
         self.gameModel.highScore = UserDefaults.standard.integer(forKey: "MemoryMatchHighScore")
     }
@@ -74,8 +74,15 @@ class MemoryGameController: ObservableObject {
         return nil
     }
     
+    private func calculateMovesLimit(for level: Int) -> Int {
+        let numberOfPairs = calculateNumberOfPairs(for: level)
+        // Base moves: 2 moves per pair, plus 50% extra for mistakes
+        return Int(Double(numberOfPairs * 2) * 1.5)
+    }
+    
     func startLevel(_ level: Int) {
         let numberOfPairs = calculateNumberOfPairs(for: level)
+        let movesLimit = calculateMovesLimit(for: level)
         var cardArray: [MemoryCard] = []
         var usedCombinations = Set<String>()
         
@@ -103,7 +110,12 @@ class MemoryGameController: ObservableObject {
         
         // Shuffle the cards and update the game model
         cardArray.shuffle()
-        self.gameModel = MemoryGameModel(cards: cardArray, level: level)
+        self.gameModel = MemoryGameModel(
+            cards: cardArray,
+            level: level,
+            movesLimit: movesLimit,
+            movesRemaining: movesLimit
+        )
         indexOfFirstFaceUpCard = nil
         isGameReady = false
         
@@ -145,14 +157,20 @@ class MemoryGameController: ObservableObject {
             cardToUpdate.isFaceUp = true
             updatedCards[index] = cardToUpdate
             
-            // Update moves count
+            // Update moves count and remaining moves
             var updatedModel = gameModel
             updatedModel.moves += 1
+            updatedModel.movesRemaining -= 1
             updatedModel.cards = updatedCards
             self.gameModel = updatedModel
             
             checkForMatch(index1: firstIndex, index2: index)
             indexOfFirstFaceUpCard = nil
+            
+            // Check if moves are exhausted
+            if gameModel.movesRemaining <= 0 {
+                onGameOver?(gameModel.moves)
+            }
         } else {
             // First card: flip and record its index
             var cardToUpdate = updatedCards[index]
@@ -186,7 +204,7 @@ class MemoryGameController: ObservableObject {
                         if self.gameModel.level >= 9 { // Max level reached
                             self.onGameOver?(self.gameModel.moves)
                         } else {
-                        self.goToNextLevel()
+                            self.goToNextLevel()
                         }
                     }
                 }
