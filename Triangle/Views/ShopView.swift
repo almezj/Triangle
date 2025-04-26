@@ -81,36 +81,31 @@ struct ShopView: View {
 
                 Spacer()
 
-                Button("Refresh Shop") {
-                    print("Shop refreshed")
-                    randomCosmetics = userDataStore.getRandomCosmetics()
+                HStack(spacing: 50){
+                    Button("Refresh Shop") {
+                        print("Shop refreshed")
+                        randomCosmetics = userDataStore.getRandomCosmetics()
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(ColorTheme.primary)
+                    .font(.buttonText)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    
+                    Button("Lock all cosmetics") {
+                        print("All cosmetics locked")
+                        userDataStore.userData?.inventory.unlockedCosmetics.self = UnlockedCosmetics.defaultUnlockedCosmetics
+                        userDataStore.userData?.character = CharacterData.defaultCharacter
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(ColorTheme.primary)
+                    .font(.buttonText)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(ColorTheme.primary)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-
-                Button("Add 1000 currency") {
-                    print("1000 currency added")
-                    userDataStore.userData?.inventory.addCurrency(1000)
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(ColorTheme.primary)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                
-                Button("Lock all cosmetics") {
-                    print("All cosmetics locked")
-                    userDataStore.userData?.inventory.unlockedCosmetics.self = UnlockedCosmetics.defaultUnlockedCosmetics
-                    userDataStore.userData?.character = CharacterData.defaultCharacter
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(ColorTheme.primary)
-                .foregroundColor(.white)
-                .cornerRadius(8)
+                .padding(.horizontal, 50)
 
                 Spacer()
             }
