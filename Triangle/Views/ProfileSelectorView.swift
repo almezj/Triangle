@@ -117,14 +117,6 @@ struct ProfileSelectorView: View {
                             action: {},
                             isNewButton: false
                         )
-                        ProfileButton(
-                            username: "Mom",
-                            character: placeholderCharacter3,
-                            buttonSize: buttonSize,
-                            action: {},
-                            isNewButton: false
-                        )
-                        
                         // New profile button
                         ProfileButton(
                             username: "New",
