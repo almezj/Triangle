@@ -30,6 +30,9 @@ extension Font {
     static var pageTitle: Font {
         Font.system(size: 38 * textScale, weight: .black, design: .rounded)
     }
+    static var profileName: Font {
+        Font.system(size: 32 * textScale, weight: .black, design: .rounded)
+    }
     static var cardTitle: Font {
         Font.system(size: 38 * textScale, weight: .black, design: .rounded)
     }
