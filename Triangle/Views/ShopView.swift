@@ -37,37 +37,9 @@ struct ShopView: View {
             VStack {
                 Spacer()
 
-                if horizontalSizeClass == .compact {
-                    VStack(spacing: 16) {
-                        HStack(spacing: 16) {
-                            ForEach(randomCosmetics.prefix(2), id: \.uniqueId) {
-                                cosmetic in
-                                ShopCard(
-                                    cosmetic: cosmetic,
-                                    isUnlocked: isCosmeticUnlocked(cosmetic)
-                                ) {
-                                    userDataStore.buyCosmetic(cosmetic)
-                                }
-                            }
-                        }
-                        HStack(spacing: 16) {
-                            ForEach(
-                                randomCosmetics.dropFirst(2).prefix(2),
-                                id: \.uniqueId
-                            ) { cosmetic in
-                                ShopCard(
-                                    cosmetic: cosmetic,
-                                    isUnlocked: isCosmeticUnlocked(cosmetic)
-                                ) {
-                                    userDataStore.buyCosmetic(cosmetic)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                } else {
+                VStack(spacing: 16) {
                     HStack(spacing: 16) {
-                        ForEach(randomCosmetics, id: \.uniqueId) { cosmetic in
+                        ForEach(randomCosmetics.prefix(2), id: \.uniqueId) { cosmetic in
                             ShopCard(
                                 cosmetic: cosmetic,
                                 isUnlocked: isCosmeticUnlocked(cosmetic)
@@ -76,8 +48,18 @@ struct ShopView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, 16)
+                    HStack(spacing: 16) {
+                        ForEach(randomCosmetics.dropFirst(2).prefix(2), id: \.uniqueId) { cosmetic in
+                            ShopCard(
+                                cosmetic: cosmetic,
+                                isUnlocked: isCosmeticUnlocked(cosmetic)
+                            ) {
+                                userDataStore.buyCosmetic(cosmetic)
+                            }
+                        }
+                    }
                 }
+                .padding(.horizontal, 16)
 
                 Spacer()
 
@@ -106,6 +88,7 @@ struct ShopView: View {
                     .cornerRadius(8)
                 }
                 .padding(.horizontal, 50)
+                .padding(.bottom, 50)
 
                 Spacer()
             }
